@@ -17,9 +17,11 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
+      "prefix": "",
       "styles": [
-        "styles.css"
+        "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "styles.css",
+        "../node_modules/nvd3/build/nv.d3.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

@@ -1,0 +1,14 @@
+<!-- <time-series-graph [signalResponseInput]="signalResponse.data[0]"  && signalResponse.data.length > 0"></time-series-graph>
+
+<data-table [diagnosticDataInput]="signalResponse.data[0]" *ngIf="signalResponse && signalResponse.data.length > 0"></data-table> -->
+
+<div *ngIf="signalResponse">
+  <div>
+    <h2>{{signalResponse.metaData.displayName}}</h2>
+    <p>{{signalResponse.metaData.description}}</p>
+  </div>
+  
+  <div *ngFor="let data of signalResponse.data">
+    <dynamic-data [diagnosticData]="data"></dynamic-data>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<div>
+    <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Site Name</label>
+          <input class="form-control" name="sitename" ngModel placeholder="Enter site name">
+        </div>
+        <button type="submit" class="btn btn-primary" [routerLink]="['/sites', {site: sitename }]">Go</button>
+      </form>
+</div>

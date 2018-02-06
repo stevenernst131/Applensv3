@@ -1,0 +1,12 @@
+<table class="table table-hover" *ngIf="diagnosticData && diagnosticData.dataTable">
+  <thead>
+    <tr>
+      <th scope="col" *ngFor="let column of diagnosticData.dataTable.columns">{{column.columnName}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of diagnosticData.dataTable.rows">
+      <td *ngFor="let rowValue of row">{{rowValue}}</td>
+    </tr>
+  </tbody>
+</table>
