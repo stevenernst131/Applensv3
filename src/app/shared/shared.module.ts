@@ -8,12 +8,14 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { HttpModule } from '@angular/http';
 import { SiteService } from './services/site.service';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     DiagnosticDataModule,
-    HttpModule
+    HttpModule,
+    FormsModule
   ],
   declarations: [TreeViewComponent, SignalContainerComponent, SideNavComponent],
   exports: [TreeViewComponent, SignalContainerComponent, SideNavComponent]

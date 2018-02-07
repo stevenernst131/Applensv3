@@ -13,7 +13,7 @@ export class SiteFinderComponent implements OnInit {
   site: string;
   loading: boolean = true;
 
-  mathingSites: ObserverSiteInfo[] = [];
+  matchingSites: ObserverSiteInfo[] = [];
 
   constructor(private _route: ActivatedRoute, private _router: Router, private _siteService: SiteService) { }
 
@@ -26,7 +26,7 @@ export class SiteFinderComponent implements OnInit {
         this._router.navigate([`subscriptions/${matchingSite.Subscription}/resourceGroups/${matchingSite.ResourceGroupName}/sites/${matchingSite.SiteName}`]);
       }
       else if (observerSiteResponse.details.length > 1) {
-        this.mathingSites = observerSiteResponse.details;
+        this.matchingSites = observerSiteResponse.details;
       }
 
       this.loading = false;

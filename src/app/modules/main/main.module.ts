@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MainComponent } from './main/main.component';
 import { SharedModule } from '../../shared/shared.module';
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
+import { FormsModule } from '@angular/forms';
 
 export const MainModuleRoutes : ModuleWithProviders = RouterModule.forChild([
   {
@@ -18,7 +19,8 @@ export const MainModuleRoutes : ModuleWithProviders = RouterModule.forChild([
     CommonModule,
     MainModuleRoutes,
     SharedModule,
-    DiagnosticDataModule
+    DiagnosticDataModule,
+    FormsModule
   ],
   declarations: [MainComponent]
 })

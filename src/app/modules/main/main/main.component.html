@@ -1,9 +1,40 @@
-<div>
-    <form>
+<!-- <div>
+  <form>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Site Name</label>
+      <input class="form-control" name="sitename" ngModel placeholder="Enter site name">
+    </div>
+    <button type="submit" class="btn btn-primary" [routerLink]="['/sites', { site: sitename }]">Go</button>
+  </form>
+</div> -->
+
+<div class="container">
+  <div class="card card-register mx-auto mt-5">
+    <div class="card-header">Search Applens</div>
+
+    <div class="card-body">
+      <form #form="ngForm" (ngSubmit)="onSubmit(form.value)">
         <div class="form-group">
-          <label for="exampleInputEmail1">Site Name</label>
-          <input class="form-control" name="sitename" ngModel placeholder="Enter site name">
+          <div class="form-row">
+            <div class="col-md-6">
+              <label>Resource Type</label>
+              <div class="dropdown" [ngClass]="{ 'show': showResourceTypeOptions }">
+                <button class="btn btn-secondary dropdown-toggle" type="button" (click)="showResourceTypeOptions = !showResourceTypeOptions">
+                  {{this.selectedResourceType.displayName}}
+                </button>
+                <div class="dropdown-menu" [ngClass]="{ 'show': showResourceTypeOptions }">
+                  <a class="dropdown-item" [ngClass]="{ 'disabled': !type.enabled }" *ngFor="let type of resourceTypes" (click)="selectedResourceType = type; showResourceTypeOptions = false">{{type.displayName}}</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label>Resource Name</label>
+              <input class="form-control" [(ngModel)]="resourceName" name="resourceName" type="text" aria-describedby="nameHelp" placeholder="Enter resource name">
+            </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary" [routerLink]="['/sites', {site: sitename }]">Go</button>
+        <button class="btn btn-primary btn-block" [disabled]="!(resourceName && resourceName.length > 0)" type="Submit">Go</button>
       </form>
+    </div>
+  </div>
 </div>
