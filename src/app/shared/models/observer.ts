@@ -1,6 +1,6 @@
 export interface ObserverSiteResponse {
-    siteName: string;
-    details: ObserverSiteInfo[];
+    SiteName: string;
+    Details: ObserverSiteInfo[];
 }
 
 export interface ObserverSiteInfo {
@@ -10,4 +10,5 @@ export interface ObserverSiteInfo {
     Subscription: string;
     WebSpace: string;
     ResourceGroupName: string;
+    SlotName: string;
 }

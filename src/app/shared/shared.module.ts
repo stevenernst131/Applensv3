@@ -7,8 +7,9 @@ import { DiagnosticApiService } from './services/diagnostic-api.service';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { HttpModule } from '@angular/http';
 import { SiteService } from './services/site.service';
-import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { FormsModule } from '@angular/forms';
+import { StartupService } from './services/startup.service';
+import { ObserverService } from './services/observer.service';
 
 @NgModule({
   imports: [
@@ -17,8 +18,8 @@ import { FormsModule } from '@angular/forms';
     HttpModule,
     FormsModule
   ],
-  declarations: [TreeViewComponent, SignalContainerComponent, SideNavComponent],
-  exports: [TreeViewComponent, SignalContainerComponent, SideNavComponent]
+  declarations: [TreeViewComponent, SignalContainerComponent],
+  exports: [TreeViewComponent, SignalContainerComponent]
 })
 export class SharedModule { 
   static forRoot(): ModuleWithProviders {
@@ -26,7 +27,9 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         DiagnosticApiService,
-        SiteService
+        SiteService,
+        StartupService,
+        ObserverService
       ]
     }
   }

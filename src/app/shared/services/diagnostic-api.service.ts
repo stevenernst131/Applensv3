@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class DiagnosticApiService {
 
-  public readonly diagnosticApi: string = "http://localhost:29141";
+  public readonly diagnosticApi: string = "http://localhost:53564/";// "http://localhost:29141";
 
   constructor(private _http: Http) { }
 
@@ -21,6 +21,8 @@ export class DiagnosticApiService {
   }
 
   public get<T>(path: string): Observable<T> {
+    
+
     var url: string = `${this.diagnosticApi}/${path}`;
 
     return this._http.get(url, {

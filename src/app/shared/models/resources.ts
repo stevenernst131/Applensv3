@@ -1,3 +1,5 @@
+import { Dictionary } from "./extensions";
+
 export enum ResourceType {
     Site,
     Function,
@@ -8,4 +10,9 @@ export interface ResourceTypeState {
     displayName: string;
     resourceType: ResourceType,
     enabled: boolean;
+}
+
+export interface ActivatedResource {
+    type: ResourceType,
+    resourceDefinition: Dictionary<string>
 }

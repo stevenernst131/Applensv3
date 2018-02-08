@@ -6,13 +6,8 @@
 </div> -->
 
 <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-        <a class="nav-link" href="index.html">
-            <i class="fa fa-fw fa-dashboard"></i>
-            <span class="nav-link-text">SiteName</span>
-        </a>
-    </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components" *ngFor="let navItem of sideNavItems">
+    <resource-menu-item></resource-menu-item>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" *ngFor="let navItem of sideNavItems">
         <a class="nav-link nav-link-collapse" (click)="navItem.toggleExpanded()" [ngClass]="{'collapsed': !navItem.expanded }">
             <i class="fa fa-fw" [ngClass]="navItem.symbol"></i>
             <span class="nav-link-text">{{navItem.name}}</span>

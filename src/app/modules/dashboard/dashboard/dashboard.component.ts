@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ResourceService } from '../../../shared/services/resource.service';
+import { ResourceServiceFactory } from '../../../shared/providers/resource.service.provider';
+import { StartupService } from '../../../shared/services/startup.service';
+import { SiteService } from '../../../shared/services/site.service';
+import { ActivatedRoute } from '@angular/router/src/router_state';
 
 @Component({
   selector: 'dashboard',
@@ -7,9 +12,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor(public resourceService: ResourceService, private _startupService: StartupService) { }
 
   ngOnInit() {
+    // This could also be done by just injecting route snapshot
+    this.resourceService.setResourcePath(this._startupService.getResourceRoute());
   }
 
 }

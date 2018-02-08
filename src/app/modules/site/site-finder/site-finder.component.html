@@ -7,11 +7,11 @@
     <div class="" style="margin:5px;float:left" *ngFor="let site of matchingSites">
       <div class="card" style="width: 18rem;">
         <div class="card-body">
-          <h5 class="card-title">{{site.SiteName}}</h5>
+          <h5 class="card-title">{{site.SiteName}}<span *ngIf="site.SlotName && site.SlotName.length > 0">({{site.SlotName}})</span></h5>
           <p class="card-text">{{site.Subscription}}</p>
           <p class="card-text">{{site.ResourceGroupName}}</p>
           <p class="card-text">{{site.StampName}}</p>
-          <a [routerLink]="['/subscriptions', site.Subscription, 'resourceGroups', site.ResourceGroupName, 'sites', site.SiteName]"
+          <a (click)="navigateToSite(site)"
             class="btn btn-primary">Select</a>
         </div>
       </div>

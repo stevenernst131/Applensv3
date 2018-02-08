@@ -13,12 +13,15 @@ export const MainModuleRoutes : ModuleWithProviders = RouterModule.forChild([
   }
 ])
 
+/*
+ * If possible do no import SharedModule to this module
+ * This will mean that we don't have to initialize that module to start up the app 
+ */
 
 @NgModule({
   imports: [
     CommonModule,
     MainModuleRoutes,
-    SharedModule,
     DiagnosticDataModule,
     FormsModule
   ],
