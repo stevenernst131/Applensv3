@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedResource, ResourceType } from '../models/resources';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export abstract class ResourceService {
@@ -11,5 +12,7 @@ export abstract class ResourceService {
 
   public abstract setResourcePath(path: string[]): void;
 
-  public abstract getResourceName(resourceUri: string): string;
+  public abstract getResourceName(): string;
+
+  public abstract getCurrentResource(): Observable<any>;
 }

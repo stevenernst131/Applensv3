@@ -14,7 +14,15 @@ export const Routes = RouterModule.forRoot([
     loadChildren: 'app/modules/site/site.module#SiteModule'
   },
   {
+    path: 'hostingEnvironments/:hostingEnvironment',
+    loadChildren: 'app/modules/ase/ase.module#AseModule'
+  },
+  {
     path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/sites/:site',
+    loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule'
+  },
+  {
+    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/hostingEnvironments/:hostingEnvironment',
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule'
   }
 ]);

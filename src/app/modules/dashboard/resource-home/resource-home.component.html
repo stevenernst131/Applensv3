@@ -1,3 +1,5 @@
-<p>
-  resource-home works!
-</p>
+<div>
+  <div *ngFor="let key of keys">
+    <b>{{key}}:</b> {{resource[key]}}
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { SiteService } from './services/site.service';
 import { FormsModule } from '@angular/forms';
 import { StartupService } from './services/startup.service';
 import { ObserverService } from './services/observer.service';
+import { AseService } from './services/ase.service';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ export class SharedModule {
         DiagnosticApiService,
         SiteService,
         StartupService,
-        ObserverService
+        ObserverService,
+        AseService
       ]
     }
   }

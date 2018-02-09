@@ -15,18 +15,21 @@ export class MainComponent implements OnInit {
   resourceTypes: ResourceTypeState[] = [
     {
       resourceType: ResourceType.Site,
+      routeName: 'sites',
       displayName: 'Site',
       enabled : true 
     },
     {
       resourceType: ResourceType.Function,
+      routeName: 'function',
       displayName: 'Function',
       enabled : false 
     },
     {
       resourceType: ResourceType.AppServiceEnvironment,
+      routeName: 'hostingEnvironments',
       displayName: 'App Service Environment',
-      enabled : false 
+      enabled : true 
     }
   ];
 
@@ -38,7 +41,7 @@ export class MainComponent implements OnInit {
 
   onSubmit(form: any) {
     //TODO: handle different types
-    this._router.navigate(['sites', form.resourceName ]);
+    this._router.navigate([this.selectedResourceType.routeName, form.resourceName ]);
   }
 
 }

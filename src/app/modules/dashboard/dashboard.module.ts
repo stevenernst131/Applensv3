@@ -13,6 +13,7 @@ import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
 import { SiteService } from '../../shared/services/site.service';
 import { ResourceHomeComponent } from './resource-home/resource-home.component';
+import { AseService } from '../../shared/services/ase.service';
 
 @Injectable()
 export class InitResolver implements Resolve<any>{
@@ -55,7 +56,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     {
       provide: ResourceService,
       useFactory: ResourceServiceFactory,
-      deps: [StartupService, SiteService]
+      deps: [StartupService, SiteService, AseService]
     }
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent]

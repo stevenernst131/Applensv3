@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class DiagnosticApiService {
 
-  public readonly diagnosticApi: string = "http://localhost:53564/";// "http://localhost:29141";
+  public readonly diagnosticApi: string = "http://localhost:29141";
 
   constructor(private _http: Http) { }
 

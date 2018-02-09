@@ -6,11 +6,12 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 import { ActivatedResource, ResourceType } from '../models/resources';
 import { ResourceService } from './resource.service';
+import { ObserverService } from './observer.service';
 
 @Injectable()
 export class SiteService extends ResourceService {
 
-  public currentResource: BehaviorSubject<ObserverSiteResponse> = new BehaviorSubject(null);
+  private _currentResource: BehaviorSubject<ObserverSiteInfo> = new BehaviorSubject(null);
 
   public readonly lensPrefix: string = 'App';
   public readonly imgSrc: string = 'assets/img/Azure-WebApps-Logo.png';
@@ -21,26 +22,43 @@ export class SiteService extends ResourceService {
   private _slotName: string;
   private _isStagingSlot: boolean;
 
-  constructor(private _diagnosticApiService: DiagnosticApiService) {
+  private _siteObject: ObserverSiteInfo;
+
+  constructor(private _diagnosticApiService: DiagnosticApiService, private _observerApiService: ObserverService) {
     super();
   }
 
   public setResourcePath(path: string[]): void {
     this.processResourcePath(path);
+
+    this._observerApiService.getSite(this._siteName)
+      .subscribe((observerResponse: ObserverSiteResponse) =>
+        this._currentResource.next(this.getSiteFromObserverResponse(observerResponse))
+      );
   }
 
-  public getResourceName(resourceUri: string): string {
-    return this._isStagingSlot ? `${this._siteName}(${this._slotName})`: this._siteName;
+  public getResourceName(): string {
+    return this._isStagingSlot ? `${this._siteName}(${this._slotName})` : this._siteName;
+  }
+
+  public getCurrentResource(): Observable<ObserverSiteInfo> {
+    return this._currentResource;
   }
 
   private processResourcePath(path: string[]): void {
     this._subscription = path[path.indexOf('subscriptions') + 1];
     this._resourceGroup = path[path.indexOf('resourceGroups') + 1];
     this._siteName = path[path.indexOf('sites') + 1];
-    this._slotName = path.indexOf('slots') > 0 ? path[path.indexOf('slots') + 1]: '';
+    this._slotName = path.indexOf('slots') > 0 ? path[path.indexOf('slots') + 1] : '';
     this._isStagingSlot = path.indexOf('slots') > 0;
   }
 
-  
+  private getSiteFromObserverResponse(observerResponse: ObserverSiteResponse): ObserverSiteInfo {
+    return observerResponse.details.find(site =>
+      site.Subscription.toLowerCase() === this._subscription.toLowerCase() &&
+      site.ResourceGroupName.toLowerCase() === this._resourceGroup.toLowerCase())
+  }
+
+
 
 }

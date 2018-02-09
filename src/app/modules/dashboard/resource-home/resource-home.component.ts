@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ResourceService } from '../../../shared/services/resource.service';
 
 @Component({
   selector: 'resource-home',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ResourceHomeComponent implements OnInit {
 
-  constructor() { }
+  resource: any;
+  keys: string[];
+
+  constructor(private _resourceService: ResourceService) { }
 
   ngOnInit() {
+    this._resourceService.getCurrentResource().subscribe(resource => {
+      if (resource) {
+        this.resource = resource;
+        this.keys = Object.keys(this.resource);
+      }
+    });
   }
 
 }

@@ -19,7 +19,6 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "",
       "styles": [
-        "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/nvd3/build/nv.d3.css",
         "../node_modules/startbootstrap-sb-admin/css/sb-admin.min.css",
         "../node_modules/font-awesome/css/font-awesome.css",

@@ -29,6 +29,9 @@ export class StartupService {
     if (resourceRoute[5].toLowerCase() == 'sites') {
       type = ResourceType.Site;
     }
+    else if (resourceRoute[5].toLowerCase() == 'hostingenvironments') {
+      type = ResourceType.AppServiceEnvironment;
+    }
 
     this._resourceType = type;
   }

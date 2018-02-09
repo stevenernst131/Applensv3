@@ -8,6 +8,7 @@ export enum ResourceType {
 
 export interface ResourceTypeState {
     displayName: string;
+    routeName: string;
     resourceType: ResourceType,
     enabled: boolean;
 }

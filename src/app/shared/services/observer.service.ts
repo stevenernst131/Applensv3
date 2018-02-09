@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ObserverSiteResponse, ObserverSiteInfo } from '../models/observer';
+import { ObserverSiteResponse, ObserverSiteInfo, ObserverAseResponse } from '../models/observer';
 import { DiagnosticApiService } from './diagnostic-api.service';
 
 @Injectable()
@@ -9,12 +9,17 @@ export class ObserverService {
   constructor(private _diagnosticApiService: DiagnosticApiService) { }
 
   public getSite(site: string): Observable<ObserverSiteResponse> {
-    return Observable.of(<ObserverSiteResponse>{"SiteName":"rteventservice","Details":[{"SiteName":"rteventservice","StampName":"waws-prod-bay-051","InternalStampName":"waws-prod-bay-051","Subscription":"1402be24-4f35-4ab7-a212-2cd496ebdf14","WebSpace":"rteventservice-WestUSwebspace","ResourceGroupName":"rteventservice","SlotName":""}],"HostNames":["rteventservice.azurewebsites.net","rteventservice.trafficmanager.net"]});
-    // return this._diagnosticApiService.get<ObserverSiteResponse>(`api/sites/${site}`)
-    //   .map(site => {
-    //     site.Details.map(info => this.getSiteInfoWithSlot(info))
-    //     return site;
-    //   });
+    //return Observable.of(<ObserverSiteResponse>{"SiteName":"rteventservice","Details":[{"SiteName":"rteventservice","StampName":"waws-prod-bay-051","InternalStampName":"waws-prod-bay-051","Subscription":"1402be24-4f35-4ab7-a212-2cd496ebdf14","WebSpace":"rteventservice-WestUSwebspace","ResourceGroupName":"rteventservice","SlotName":""}],"HostNames":["rteventservice.azurewebsites.net","rteventservice.trafficmanager.net"]});
+    return this._diagnosticApiService.get<ObserverSiteResponse>(`api/sites/${site}`)
+      .map(site => {
+        site.details.map(info => this.getSiteInfoWithSlot(info))
+        return site;
+      });
+  }
+
+  public getAse(ase: string): Observable<ObserverAseResponse> {
+    //return Observable.of(<ObserverSiteResponse>{"SiteName":"rteventservice","Details":[{"SiteName":"rteventservice","StampName":"waws-prod-bay-051","InternalStampName":"waws-prod-bay-051","Subscription":"1402be24-4f35-4ab7-a212-2cd496ebdf14","WebSpace":"rteventservice-WestUSwebspace","ResourceGroupName":"rteventservice","SlotName":""}],"HostNames":["rteventservice.azurewebsites.net","rteventservice.trafficmanager.net"]});
+    return this._diagnosticApiService.get<ObserverAseResponse>(`api/hostingEnvironments/${ase}`);
   }
 
   private getSiteInfoWithSlot(site: ObserverSiteInfo): ObserverSiteInfo {
@@ -32,5 +37,9 @@ export class ObserverService {
 
     return site;
   }
+
+}
+
+class ObserverCache {
 
 }

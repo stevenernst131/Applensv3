@@ -11,7 +11,7 @@ export const SiteModuleRoutes : ModuleWithProviders = RouterModule.forChild([
     path: '',
     component: SiteFinderComponent
   }
-])
+]);
 
 @NgModule({
   imports: [

@@ -22,12 +22,12 @@ export class SiteFinderComponent implements OnInit {
     this.site = this._route.snapshot.params['site'];
 
     this._observerService.getSite(this.site).subscribe(observerSiteResponse => {
-      if (observerSiteResponse.Details.length === 1) {
-        let matchingSite = observerSiteResponse.Details[0];
+      if (observerSiteResponse.details.length === 1) {
+        let matchingSite = observerSiteResponse.details[0];
         this.navigateToSite(matchingSite);
       }
-      else if (observerSiteResponse.Details.length > 1) {
-        this.matchingSites = observerSiteResponse.Details;
+      else if (observerSiteResponse.details.length > 1) {
+        this.matchingSites = observerSiteResponse.details;
       }
 
       this.loading = false;
