@@ -1,0 +1,10 @@
+<div *ngIf="signalResponse">
+  <div>
+    <h2>{{signalResponse.metadata.name}}</h2>
+    <p>{{signalResponse.metadata.description}}</p>
+  </div>
+  
+  <div *ngFor="let data of signalResponse.dataset">
+    <dynamic-data [diagnosticData]="data"></dynamic-data>
+  </div>
+</div>

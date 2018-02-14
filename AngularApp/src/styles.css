@@ -1,0 +1,22 @@
+@import "~bootstrap/dist/css/bootstrap.css";
+
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
+/* This is a bit of a hack to make the padding of the table smaller
+   This is not a good practice because it is not following the rule that
+   Diagnostic Data Module should be self contained */
+@import 'app/diagnostic-data/diagnostic-data.css';
+
+/* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0px;
+    /* padding-top:50px; */
+}
+
+#mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-second-level>li>a, #mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-third-level>li>a {
+    padding-top:2px;
+    padding-bottom: 2px;
+}
+
