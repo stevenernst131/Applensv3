@@ -23,6 +23,13 @@ namespace AppLensV3
             return await GetSiteInternal(null, siteName);
         }
 
+        [HttpGet]
+        [Route("api/stamps/{stamp}/sites/{siteName}")]
+        public async Task<IActionResult> GetSite(string stamp, string siteName)
+        {
+            return await GetSiteInternal(stamp, siteName);
+        }
+
         [HttpGet("api/hostingEnvironments/{hostingEnvironmentName}")]
         [HttpOptions("api/hostingEnvironments/{hostingEnvironmentName}")]
         public async Task<IActionResult> GetHostingEnvironmentDetails(string hostingEnvironmentName)

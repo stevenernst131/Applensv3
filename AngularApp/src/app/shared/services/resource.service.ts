@@ -10,11 +10,13 @@ export abstract class ResourceService {
   public abstract lensPrefix: string;
   public abstract imgSrc: string;
 
-  public abstract setResourcePath(path: string[]): void;
+  public abstract setResourcePath(path: string[]): Observable<boolean>;
 
   public abstract getResourceName(): string;
 
   public abstract getCurrentResourceId(): string;
 
   public abstract getCurrentResource(): Observable<any>;
+
+  public abstract getDiagnosticRoleQueryString(): string
 }

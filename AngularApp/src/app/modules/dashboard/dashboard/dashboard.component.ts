@@ -15,8 +15,7 @@ export class DashboardComponent implements OnInit {
   constructor(public resourceService: ResourceService, private _startupService: StartupService) { }
 
   ngOnInit() {
-    // This could also be done by just injecting route snapshot
-    this.resourceService.setResourcePath(this._startupService.getResourceRoute());
+
   }
 
 }

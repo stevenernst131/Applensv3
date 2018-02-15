@@ -21,6 +21,7 @@ export class SiteService extends ResourceService {
   private _siteName: string;
   private _slotName: string;
   private _isStagingSlot: boolean;
+  private _hostnames: string[];
 
   private _siteObject: ObserverSiteInfo;
 
@@ -28,13 +29,22 @@ export class SiteService extends ResourceService {
     super();
   }
 
-  public setResourcePath(path: string[]): void {
+  public setResourcePath(path: string[]): Observable<boolean> {
+    console.log("Set Site Resource Path");
     this.processResourcePath(path);
 
-    this._observerApiService.getSite(this._siteName)
-      .subscribe((observerResponse: ObserverSiteResponse) =>
-        this._currentResource.next(this.getSiteFromObserverResponse(observerResponse))
-      );
+    return this._observerApiService.getSite(this._siteName)
+      .map((observerResponse: ObserverSiteResponse) => {
+        this._siteObject = this.getSiteFromObserverResponse(observerResponse);
+        this._currentResource.next(this._siteObject);
+        console.log("finish get site");
+        console.log(this._siteObject);
+        return true;
+      });
+  }
+
+  public getDiagnosticRoleQueryString(): string {
+    return `stampName=${this._siteObject.StampName}${this._siteObject.Hostnames.map(hostname => `&hostnames=${hostname}`)}`;
   }
 
   public getResourceName(): string {

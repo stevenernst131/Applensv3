@@ -25,7 +25,7 @@ export class SignalContainerComponent implements OnInit {
     this._route.params.subscribe((params: Params) => {
       console.log(`updating from ${this.signal} to ${this._route.snapshot['signal']}`);
       this.signal = this._route.snapshot.params['signal'];
-      this._diagnosticApiService.getDetector(this.resourceId, this.signal).subscribe((response: SignalResponse) => {
+      this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: SignalResponse) => {
         this.signalResponse = response;
         console.log(response);
       });

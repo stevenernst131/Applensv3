@@ -20,11 +20,12 @@ export class AseService extends ResourceService {
     super();
   }
 
-  public setResourcePath(path: string[]): void {
+  public setResourcePath(path: string[]): Observable<boolean> {
     this.processResourcePath(path);
-    this._observerApiService.getAse(this._hostingEnvironment)
-      .subscribe((observerResponse: ObserverAseResponse) => {
+    return this._observerApiService.getAse(this._hostingEnvironment)
+      .map((observerResponse: ObserverAseResponse) => {
         this._currentResource.next(observerResponse.details);
+        return true;
       });
   }
 
@@ -34,6 +35,10 @@ export class AseService extends ResourceService {
 
   public getResourceName(): string {
     return this._hostingEnvironment;
+  }
+
+  public getDiagnosticRoleQueryString(): string {
+    return '';
   }
 
   public getCurrentResourceId(): string {

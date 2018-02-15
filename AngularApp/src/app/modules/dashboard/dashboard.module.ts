@@ -17,12 +17,12 @@ import { SignalContainerComponent } from './signal-container/signal-container.co
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
 
 @Injectable()
-export class InitResolver implements Resolve<any>{
-  constructor(private _startupService: StartupService) { }
+export class InitResolver implements Resolve<Observable<boolean>>{
+  constructor(private _startupService: StartupService, private _resourceService: ResourceService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    this._startupService.setResourceRoute(state.url.split('/'));
-    return true;
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    console.log("In resolve");
+    return this._resourceService.setResourcePath(state.url.split('/'));
   }
 }
 

@@ -8,21 +8,23 @@ export class ObserverService {
 
   constructor(private _diagnosticApiService: DiagnosticApiService) { }
 
+  // WARNING: This is broken logic because of bug in sites API
+  //          Hostnames will be incorrect if there is another
+  //          app with the same name. Pending fix from Hawk
   public getSite(site: string): Observable<ObserverSiteResponse> {
-    //return Observable.of(<ObserverSiteResponse>{"SiteName":"rteventservice","Details":[{"SiteName":"rteventservice","StampName":"waws-prod-bay-051","InternalStampName":"waws-prod-bay-051","Subscription":"1402be24-4f35-4ab7-a212-2cd496ebdf14","WebSpace":"rteventservice-WestUSwebspace","ResourceGroupName":"rteventservice","SlotName":""}],"HostNames":["rteventservice.azurewebsites.net","rteventservice.trafficmanager.net"]});
+
     return this._diagnosticApiService.get<ObserverSiteResponse>(`api/sites/${site}`)
-      .map(site => {
-        site.details.map(info => this.getSiteInfoWithSlot(info))
+      .map((site : ObserverSiteResponse) => {
+        site.details.map(info => this.getSiteInfoWithSlotAndHostnames(info, site.hostNames))
         return site;
       });
   }
 
   public getAse(ase: string): Observable<ObserverAseResponse> {
-    //return Observable.of(<ObserverSiteResponse>{"SiteName":"rteventservice","Details":[{"SiteName":"rteventservice","StampName":"waws-prod-bay-051","InternalStampName":"waws-prod-bay-051","Subscription":"1402be24-4f35-4ab7-a212-2cd496ebdf14","WebSpace":"rteventservice-WestUSwebspace","ResourceGroupName":"rteventservice","SlotName":""}],"HostNames":["rteventservice.azurewebsites.net","rteventservice.trafficmanager.net"]});
     return this._diagnosticApiService.get<ObserverAseResponse>(`api/hostingEnvironments/${ase}`);
   }
 
-  private getSiteInfoWithSlot(site: ObserverSiteInfo): ObserverSiteInfo {
+  private getSiteInfoWithSlotAndHostnames(site: ObserverSiteInfo, hostnames: string[]): ObserverSiteInfo {
     let siteName = site.SiteName;
     let slot = '';
 
@@ -34,6 +36,7 @@ export class ObserverService {
 
     site.SiteName = siteName;
     site.SlotName = slot;
+    site.Hostnames = hostnames;
 
     return site;
   }

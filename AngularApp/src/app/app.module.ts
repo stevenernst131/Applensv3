@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
+import { MainComponent } from './modules/main/main/main.component';
+import { MainModule } from './modules/main/main.module';
 
 export const Routes = RouterModule.forRoot([
   {
     path: '',
-    loadChildren: 'app/modules/main/main.module#MainModule'
+    component: MainComponent
   },
   {
     path: 'sites/:site',
@@ -34,6 +36,7 @@ export const Routes = RouterModule.forRoot([
   imports: [
     BrowserModule,
     Routes,
+    MainModule,
     SharedModule.forRoot()
   ],
   providers: [],

@@ -17,8 +17,9 @@ export class DiagnosticApiService {
     return environment.production ? '': this.localDiagnosticApi;
   }
 
-  public getDetector(resourceId: string, detector:string): Observable<SignalResponse> {
-    let path = `v4/${resourceId}/diagnostics/detectors/${detector}?stampName=waws-prod-bay-051&hostnames=rteventservice.azurewebsites.net`;
+  public getDetector(resourceId: string, detector:string, resourceSpecificQueryString: string): Observable<SignalResponse> {
+    console.log("get detector:" + detector);
+    let path = `v4/${resourceId}/diagnostics/detectors/${detector}?${resourceSpecificQueryString}`;
     return this.invoke<SignalResponse>(path);
   }
 
