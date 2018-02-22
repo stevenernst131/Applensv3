@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { DiagnosticData } from '../../models/signal';
+import { DiagnosticData } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { camelCase } from '@swimlane/ngx-datatable/release/utils';
 
@@ -17,8 +17,6 @@ export class DataTableComponent extends DataRenderBaseComponent {
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.createNgxDataTableObjects();
-    console.log(this.rows);
-    console.log(this.columns);
   }
 
   private createNgxDataTableObjects() {

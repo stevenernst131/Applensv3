@@ -3,6 +3,7 @@
 # Build Directories
 /bin
 /obj
+/wwwroot
 
 # Publishing Profiles
 /Properties/PublishProfiles

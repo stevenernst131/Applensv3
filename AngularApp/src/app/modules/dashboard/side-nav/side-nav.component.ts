@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
+import { ResourceService } from '../../../shared/services/resource.service';
 
 @Component({
   selector: 'side-nav',
@@ -8,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class SideNavComponent implements OnInit {
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute) { }
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService) { }
 
   sideNavItems: SideNavItem[] = [];
 
@@ -16,20 +18,28 @@ export class SideNavComponent implements OnInit {
     this.initializeSignals();
   }
 
-  navigate(item: string) {
-    this._router.navigate(['signals', item], { relativeTo: this._activatedRoute });
+  navigate(item: SideNavSubItem) {
+    this.sideNavItems[0].subItems.forEach(item => item.selected = false);
+    item.selected = true;
+    this._router.navigate(item.link.split('/'), { relativeTo: this._activatedRoute });
   }
 
-  initializeSignals(){
-    let signals = new SideNavItem();
-    signals.name = 'Signals';
-    signals.symbol = 'fa-signal';
-    signals.expanded = true;
+  initializeSignals() {
 
-    signals.addSubItem('runtimeavailability', 'Runtime Availability', 'signals/runtimeavailability ');
-    signals.addSubItem('sitelatency', 'Site Latency', 'signals/sitelatency ');
+    this._diagnosticApiService.getDetectors(this._resourceService.getCurrentResourceId()).subscribe(detectorList => {
+      let signals = new SideNavItem();
+      signals.name = 'Detectors';
+      signals.symbol = 'fa-signal';
+      signals.expanded = true;
 
-    this.sideNavItems.push(signals);
+      detectorList.forEach(element => {
+        signals.addSubItem(element.id, element.name, `signals/${element.id}`);
+      });
+
+      console.log(signals);
+
+      this.sideNavItems.push(signals);
+    });
   }
 
 }
@@ -50,7 +60,8 @@ export class SideNavItem {
       name: name,
       displayName: displayName,
       link: link,
-      show: this.expanded
+      show: this.expanded,
+      selected: false
     });
   }
 }
@@ -59,5 +70,6 @@ export interface SideNavSubItem {
   name: string;
   displayName: string;
   show: boolean;
+  selected: boolean;
   link: string;
 }

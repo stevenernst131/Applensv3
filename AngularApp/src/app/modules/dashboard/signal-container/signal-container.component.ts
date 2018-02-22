@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SignalResponse } from '../../../diagnostic-data/models/signal';
+import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
@@ -13,21 +13,21 @@ export class SignalContainerComponent implements OnInit {
 
   constructor(private _route: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService) { }
 
-  signalResponse:SignalResponse;
+  signalResponse:DetectorResponse;
 
   signal: string;
 
   resourceId: string
 
   ngOnInit() {
+    
     this.resourceId = this._resourceService.getCurrentResourceId();
     
     this._route.params.subscribe((params: Params) => {
-      console.log(`updating from ${this.signal} to ${this._route.snapshot['signal']}`);
+      this.signalResponse = null;
       this.signal = this._route.snapshot.params['signal'];
-      this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: SignalResponse) => {
+      this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: DetectorResponse) => {
         this.signalResponse = response;
-        console.log(response);
       });
     })
 

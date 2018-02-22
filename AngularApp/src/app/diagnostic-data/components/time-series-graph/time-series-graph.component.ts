@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SignalResponse, DataTableDataType, DiagnosticData } from '../../models/signal';
+import { DetectorResponse, DataTableDataType, DiagnosticData } from '../../models/detector';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
@@ -24,7 +24,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     if (data) {
       this._processDiagnosticData2(data);
-      console.log(this.allSeries);
       this.selectSeries();
     }
   }

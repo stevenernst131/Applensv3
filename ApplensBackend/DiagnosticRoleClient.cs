@@ -113,6 +113,11 @@ namespace AppLensV3
                 certStore.Close();
             }
 
+            if(cert == null)
+            {
+                throw new Exception(string.Format("Certificate with thumbprint {0} could not be found", AuthCertThumbprint));
+            }
+
             return cert;
         }
     }

@@ -5,9 +5,9 @@ export interface ArmObject {
     type: string;
 }
 
-export interface SignalResponse {
+export interface DetectorResponse {
     dataset: DiagnosticData[];
-    metadata: SignalMetaData;
+    metadata: DetectorMetaData;
 }
 
 export interface DiagnosticData {
@@ -31,7 +31,7 @@ export interface DataTableResponseColumn {
     columnType: string;
 }
 
-export interface SignalMetaData {
+export interface DetectorMetaData {
     id: string;
     name: string;
     description: string;

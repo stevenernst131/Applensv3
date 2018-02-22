@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { DiagnosticData } from '../../models/signal';
+import { DiagnosticData } from '../../models/detector';
 
 @Component({
   templateUrl: './data-render-base.component.html'
@@ -15,7 +15,11 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
 
   diagnosticData: DiagnosticData;
 
-  constructor() { }
+  constructor() {
+   }
+
+   ngOnChanges() {
+   }
 
   ngOnInit() {
     this._diagnosticDataSubject.subscribe((data: DiagnosticData) => {
