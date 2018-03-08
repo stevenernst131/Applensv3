@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DetectorResponse, DataTableDataType, DiagnosticData } from '../../models/detector';
+import { DetectorResponse, DataTableDataType, DiagnosticData, TimeSeriesRendering, DataTableResponseObject } from '../../models/detector';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
 import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
+import { TimeSeries } from '../../models/time-series';
+import { QueryParamsService } from '../../../shared/services/query-params.service';
 
 @Component({
   selector: 'time-series-graph',
@@ -14,28 +16,50 @@ import { time } from 'd3';
 })
 export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements OnInit, DataRenderer {
 
+  constructor(private _queryParamsService: QueryParamsService) {
+    super();
+  }
+
   allSeries: TimeSeries[] = [];
   allSeriesNames: string[] = [];
 
   selectedSeries: GraphSeries[];
 
+  renderingProperties: TimeSeriesRendering;
+  dataTable: DataTableResponseObject;
+  defaultValue: number = 0;
+
+  startTime: Date;
+  endTime: Date;
+  timeGrain: number = 300000;
+
   processData(data: DiagnosticData) {
     super.processData(data);
 
     if (data) {
-      this._processDiagnosticData2(data);
+
+      let start = new Date();
+      start.setUTCDate(new Date().getUTCDate() - 1);
+      let end = new Date();
+
+      this.startTime = new Date(Math.round(start.getTime() / this.timeGrain) * this.timeGrain + this.timeGrain);
+      this.endTime = new Date(Math.round(end.getTime() / this.timeGrain) * this.timeGrain);
+
+      this.renderingProperties = <TimeSeriesRendering>data.renderingProperties
+      this.dataTable = data.table;
+      this._processDiagnosticData(data);
       this.selectSeries();
     }
   }
 
   selectSeries() {
-      this.selectedSeries = this.allSeries.map(series => series.series);
+    this.selectedSeries = this.allSeries.map(series => series.series);
   }
 
-  private _processDiagnosticData2(data: DiagnosticData) {
-    let timestampColumn = data.table.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
-    let counterNameColumnIndex = data.table.columns.findIndex(column => column.dataType === DataTableDataType.String);
-    let numberValueColumns = data.table.columns.filter(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
+  private _processDiagnosticData(data: DiagnosticData) {
+    let timestampColumn = this._getTimeStampColumnIndex();
+    let counterNameColumnIndex = this._getCounterNameColumnIndex();
+    let numberValueColumns = this._getCounterValueColumns();
 
     let uniqueCounterNames: string[] = [];
     if (counterNameColumnIndex >= 0) {
@@ -58,92 +82,91 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       }
     });
 
-    data.table.rows.forEach(row => {
-      
-      numberValueColumns.forEach(column => {
-        let seriesName: string = column.columnName;
-        if (counterNameColumnIndex > 0) {
-          seriesName = this._getSeriesName(data.table.columns[counterNameColumnIndex].columnName, data.table.columns[counterNameColumnIndex].columnName);
-        }
+    let tablePoints: TablePoint[] = [];
 
+    data.table.rows.forEach(row => {
+
+      numberValueColumns.forEach(column => {
+        let columnIndex: number = data.table.columns.indexOf(column);
+        // let seriesName: string = column.columnName;
+        // if (counterNameColumnIndex >= 0) {
+        //   seriesName = this._getSeriesName(data.table.columns[counterNameColumnIndex].columnName, data.table.columns[counterNameColumnIndex].columnName);
+        // }
         let timestamp = new Date(row[timestampColumn]);
-        timeSeriesDictionary[seriesName].series.values.push(<GraphPoint>{ x: timestamp, y: parseFloat(row[data.table.columns.indexOf(column)]) })
-      })
-    })
+
+        let point: TablePoint = <TablePoint>{
+          timestamp: timestamp,
+          value: parseFloat(row[columnIndex]),
+          column: column.columnName,
+          counterName: counterNameColumnIndex >= 0 ? data.table.columns[counterNameColumnIndex].columnName : null
+        };
+
+        tablePoints.push(point);
+
+        //timeSeriesDictionary[seriesName].series.values.push(<GraphPoint>{ x: timestamp, y: parseFloat(row[data.table.columns.indexOf(column)]) })
+      });
+    });
 
     Object.keys(timeSeriesDictionary).forEach(key => {
+
+      let pointsForThisSeries =
+        tablePoints
+          .filter(point => this._getSeriesName(point.column, point.counterName) === key)
+          .sort((b, a) => { return a.timestamp.getTime() - b.timestamp.getTime() });
+
+      let pointToAdd = pointsForThisSeries.pop();
+
+      for (var d = new Date(this.startTime.getTime()); d < this.endTime; d.setTime(d.getTime() + this.timeGrain)) {
+        let value = this.defaultValue;
+
+        if (pointToAdd && d.getTime() === pointToAdd.timestamp.getTime()) {
+          value = pointToAdd.value;
+
+          pointToAdd = pointsForThisSeries.pop();
+        }
+
+        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: new Date(d), y: value });
+      }
+
+      console.log(timeSeriesDictionary[key]);
+
       this.allSeries.push(timeSeriesDictionary[key]);
     });
   }
 
   private _getSeriesName(column: string, countername: string) {
-    return `${countername}-${column}`;
+    return countername ? `${countername}-${column}`: column;
   }
 
-  private _processDiagnosticData(data: DiagnosticData) {
+  private _getTimeStampColumnIndex(): number {
+    let columnIndex = this.renderingProperties.timestampColumnName ?
+      this.dataTable.columns.findIndex(column => this.renderingProperties.timestampColumnName === column.columnName) :
+      this.dataTable.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
 
-    let timestampColumn = data.table.columns.findIndex(column => column.dataType === DataTableDataType.DateTime);
-    let valueColumn = data.table.columns.findIndex(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
-    let roleInstanceColumn = data.table.columns.findIndex(column => column.columnName.toLowerCase() === 'roleinstance');
-    let counterNameColumn = data.table.columns.findIndex(column => column.columnName.toLowerCase() === 'countername');
+    return columnIndex;
+  }
 
-    if (counterNameColumn < 0) {
-      counterNameColumn = data.table.columns.findIndex(column => column.dataType === DataTableDataType.String);
-    }
+  private _getCounterNameColumnIndex(): number {
+    let columnIndex = this.renderingProperties.counterColumnName ?
+      this.dataTable.columns.findIndex(column => this.renderingProperties.counterColumnName === column.columnName) :
+      this.dataTable.columns.findIndex(column => column.dataType == DataTableDataType.String);
 
-    let graphSeries: InstanceTimeSeries[] = [];
+    return columnIndex;
+  }
 
-    data.table.rows.forEach(row => {
-      let aggregateSeries = graphSeries.find(series => series.name === row[counterNameColumn]);
-      if (!aggregateSeries) {
-        aggregateSeries = <InstanceTimeSeries>{
-          name: row[counterNameColumn],
-          aggregated: true,
-          series: <GraphSeries>{ key: row[counterNameColumn], values: [] }
-        };
+  private _getCounterValueColumns() {
+    let columns = this.renderingProperties.seriesColumns ?
+      this.dataTable.columns.filter(column => this.renderingProperties.seriesColumns.indexOf(column.columnName) > 0) :
+      this.dataTable.columns.filter(column => DataTableDataType.NumberTypes.indexOf(column.dataType) >= 0);
 
-        graphSeries.push(aggregateSeries);
-        this.allSeriesNames.push(row[counterNameColumn]);
-      }
-
-      let date = new Date(row[timestampColumn]);
-      let aggregatePoint: GraphPoint = aggregateSeries.series.values.find(point => point.x.getTime() === date.getTime());
-      if (!aggregatePoint) {
-        aggregatePoint = <GraphPoint>{ x: date, y: 0 }
-        aggregateSeries.series.values.push(aggregatePoint);
-      }
-
-      aggregatePoint.y += parseFloat(row[valueColumn]);
-
-      if (roleInstanceColumn >= 0) {
-        let instanceSeries = graphSeries.find(series => series.name === row[counterNameColumn] && series.instance === row[roleInstanceColumn]);
-        if (!instanceSeries) {
-          instanceSeries = <InstanceTimeSeries>{
-            name: row[counterNameColumn],
-            aggregated: false,
-            instance: row[roleInstanceColumn],
-            series: <GraphSeries>{ key: `${row[roleInstanceColumn]}:${row[counterNameColumn]}`, values: [] }
-          };
-
-          graphSeries.push(instanceSeries);
-        }
-
-        instanceSeries.series.values.push(<GraphPoint>{ x: date, y: parseFloat(row[valueColumn]) });
-      }
-
-      this.allSeries = graphSeries;
-    });
+    return columns;
   }
 
 }
 
-export interface TimeSeries {
-  name: string;
-  series: GraphSeries
+interface TablePoint {
+  timestamp: Date;
+  value: number;
+  column: string;
+  counterName: string;
 }
-
-export interface InstanceTimeSeries extends TimeSeries {
-  aggregated: boolean;
-  instance: string;
-}
-

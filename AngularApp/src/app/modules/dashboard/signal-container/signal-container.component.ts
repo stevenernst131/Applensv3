@@ -17,7 +17,9 @@ export class SignalContainerComponent implements OnInit {
 
   signal: string;
 
-  resourceId: string
+  resourceId: string;
+
+  error: any;
 
   ngOnInit() {
     
@@ -28,6 +30,8 @@ export class SignalContainerComponent implements OnInit {
       this.signal = this._route.snapshot.params['signal'];
       this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: DetectorResponse) => {
         this.signalResponse = response;
+      }, (error: any) => {
+        this.error = error;
       });
     })
 

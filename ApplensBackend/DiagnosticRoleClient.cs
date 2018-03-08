@@ -76,6 +76,8 @@ namespace AppLensV3
                     var responseObject = JsonConvert.DeserializeObject(responseString);
                     return responseObject;
                 }
+
+                throw new HttpRequestException(response.StatusCode.ToString());
             }
             catch(Exception ex)
             {

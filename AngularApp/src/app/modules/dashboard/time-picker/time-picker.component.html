@@ -1,0 +1,11 @@
+<label>
+    Start Time:
+    <input [(ngModel)]="startTime" [owlDateTimeTrigger]="start" [owlDateTime]="start">
+    <owl-date-time #start></owl-date-time>
+</label>
+
+<label>
+    End Time:
+    <input [(ngModel)]="endTime" [owlDateTimeTrigger]="end" [owlDateTime]="end">
+    <owl-date-time #end></owl-date-time>
+</label>

@@ -12,15 +12,11 @@ export interface DetectorResponse {
 
 export interface DiagnosticData {
     table: DataTableResponseObject;
-    renderingProperties: RenderingProperties;
-}
-
-export interface RenderingProperties {
-    renderingType: RenderingType;
+    renderingProperties: any; // This is any so that we can correctly case it depending on rendering type
 }
 
 export interface DataTableResponseObject {
-    tableName: string;
+    //tableName: string;
     columns: DataTableResponseColumn[];
     rows: string[][];
 }
@@ -54,4 +50,32 @@ export class DataTableDataType {
     static String: string = "String";
 
     static NumberTypes: string[] = [ DataTableDataType.Double, DataTableDataType.Int64, DataTableDataType.Int32, DataTableDataType.Int16 ];
+}
+
+export interface Rendering {
+    renderingType: RenderingType;
+    title: string;
+    description: string;
+}
+
+export interface DataTableRendering {
+    groupByColumnName: string;
+    displayColumnNames: string[];
+}
+
+export interface TimeSeriesRendering {
+    defaultValue: number;
+    timestampColumnName: string;
+    counterColumnName: string;
+    seriesColumns: string[];
+}
+
+export interface TimeSeriesPerInstanceRendering {
+    timestampColumnName: string;
+    roleInstanceColumnName: string;
+    counterColumnName: string;
+    valueColumnName: string;
+    instanceFilter: string[];
+    counterNameFilter: string[];
+    selectedInstance: string;
 }

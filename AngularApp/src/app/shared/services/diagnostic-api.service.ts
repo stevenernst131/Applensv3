@@ -6,19 +6,21 @@ import 'rxjs/add/operator/map';
 import { environment } from '../../../environments/environment';
 import { DetectorResponse, DetectorMetaData } from '../../diagnostic-data/models/detector';
 import { CacheService } from './cache.service';
+import { QueryParamsService } from './query-params.service';
 
 @Injectable()
 export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:22533/";
 
-  constructor(private _http: Http, private _cacheService: CacheService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService) { }
 
   private getDiagnosticApi(): string {
     return environment.production ? '': this.localDiagnosticApi;
   }
 
   public getDetector(resourceId: string, detector:string, resourceSpecificQueryString: string): Observable<DetectorResponse> {
+    //let timeParameters = 
     let path = `v4/${resourceId}/diagnostics/detectors/${detector}?${resourceSpecificQueryString}`;
     return this.invoke<DetectorResponse>(path);
   }

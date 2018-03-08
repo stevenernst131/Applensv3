@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { MainComponent } from './modules/main/main/main.component';
 import { MainModule } from './modules/main/main.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 export const Routes = RouterModule.forRoot([
   {
@@ -35,6 +37,7 @@ export const Routes = RouterModule.forRoot([
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     Routes,
     MainModule,
     SharedModule.forRoot()

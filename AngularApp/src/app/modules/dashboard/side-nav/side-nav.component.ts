@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 
@@ -21,7 +21,14 @@ export class SideNavComponent implements OnInit {
   navigate(item: SideNavSubItem) {
     this.sideNavItems[0].subItems.forEach(item => item.selected = false);
     item.selected = true;
-    this._router.navigate(item.link.split('/'), { relativeTo: this._activatedRoute });
+
+    let navigationExtras: NavigationExtras = {
+      queryParamsHandling: 'preserve',
+      preserveFragment: true,
+      relativeTo: this._activatedRoute
+    };
+
+    this._router.navigate(item.link.split('/'), navigationExtras);
   }
 
   initializeSignals() {

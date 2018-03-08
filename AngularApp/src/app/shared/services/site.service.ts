@@ -44,7 +44,7 @@ export class SiteService extends ResourceService {
   }
 
   public getDiagnosticRoleQueryString(): string {
-    return `stampName=${this._siteObject.StampName}${this._siteObject.Hostnames.map(hostname => `&hostnames=${hostname}`)}`;
+    return `stampName=${this._siteObject.InternalStampName}${this._siteObject.Hostnames.map(hostname => `&hostnames=${hostname}`)}`;
   }
 
   public getResourceName(): string {

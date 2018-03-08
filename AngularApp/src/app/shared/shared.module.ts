@@ -11,6 +11,7 @@ import { StartupService } from './services/startup.service';
 import { ObserverService } from './services/observer.service';
 import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
+import { QueryParamsService } from './services/query-params.service';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ export class SharedModule {
         StartupService,
         ObserverService,
         AseService,
-        CacheService
+        CacheService,
+        QueryParamsService
       ]
     }
   }

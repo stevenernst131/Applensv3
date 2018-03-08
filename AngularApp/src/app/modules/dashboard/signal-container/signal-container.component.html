@@ -8,7 +8,11 @@
     <dynamic-data [diagnosticData]="data"></dynamic-data>
   </div>
 </div>
-<div *ngIf=!signalResponse>
+<div *ngIf="!signalResponse && !error">
   Loading...
 
 </div>
+
+<ng-container *ngIf="!signalResponse && error">
+    Error loading detector
+</ng-container>

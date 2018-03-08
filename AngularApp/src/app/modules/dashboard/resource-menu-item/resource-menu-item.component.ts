@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'resource-menu-item',
@@ -15,7 +15,14 @@ export class ResourceMenuItemComponent implements OnInit {
   }
 
   navigate() {
-    this._router.navigate(['./'], { relativeTo: this._activatedRoute });
+
+    let navigationExtras: NavigationExtras = {
+      queryParamsHandling: 'preserve',
+      preserveFragment: true,
+      relativeTo: this._activatedRoute
+    };
+
+    this._router.navigate(['./'], navigationExtras);
   }
 
 }

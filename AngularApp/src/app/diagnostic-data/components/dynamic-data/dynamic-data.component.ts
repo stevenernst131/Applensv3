@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ComponentFactoryResolver, ViewChild, ViewContainerRef, ComponentRef, Input } from '@angular/core';
 import { TimeSeriesGraphComponent } from '../time-series-graph/time-series-graph.component';
 import { DataTableComponent } from '../data-table/data-table.component';
-import { RenderingType, DiagnosticData } from '../../models/detector';
+import { RenderingType, DiagnosticData, Rendering } from '../../models/detector';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
 import { BehaviorSubject } from 'rxjs';
 
@@ -26,7 +26,7 @@ export class DynamicDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataBehaviorSubject.subscribe((diagnosticData: DiagnosticData) => {
-      let component = this._findInputComponent(diagnosticData.renderingProperties.renderingType);
+      let component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).renderingType);
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
 
       let viewContainerRef = this.dynamicDataContainer;

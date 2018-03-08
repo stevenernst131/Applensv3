@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { DiagnosticData } from '../../models/detector';
+import { DiagnosticData, DataTableRendering } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { camelCase } from '@swimlane/ngx-datatable/release/utils';
 
@@ -11,11 +11,18 @@ import { camelCase } from '@swimlane/ngx-datatable/release/utils';
 })
 export class DataTableComponent extends DataRenderBaseComponent {
 
+  @ViewChild('myTable') table: any;
+
   columns: any[];
   rows: any[];
 
+  grouped: boolean = true;
+
+  renderingProperties: DataTableRendering;
+
   protected processData(data: DiagnosticData) {
     super.processData(data);
+    this.renderingProperties = <DataTableRendering>data.renderingProperties;
     this.createNgxDataTableObjects();
   }
 
@@ -43,5 +50,14 @@ export class DataTableComponent extends DataRenderBaseComponent {
   private getKeyName(column: string) {
     return column.replace(' ', '').toLowerCase();
   }
+
+  private log(group: any) {
+    console.log(group);
+  }
+
+  toggleExpandGroup(group) {
+    console.log('Toggled Expand Group!', group);
+    this.table.groupHeader.toggleExpandGroup(group);
+  } 
 
 }
