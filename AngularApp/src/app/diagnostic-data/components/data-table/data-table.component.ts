@@ -51,12 +51,7 @@ export class DataTableComponent extends DataRenderBaseComponent {
     return column.replace(' ', '').toLowerCase();
   }
 
-  private log(group: any) {
-    console.log(group);
-  }
-
   toggleExpandGroup(group) {
-    console.log('Toggled Expand Group!', group);
     this.table.groupHeader.toggleExpandGroup(group);
   } 
 

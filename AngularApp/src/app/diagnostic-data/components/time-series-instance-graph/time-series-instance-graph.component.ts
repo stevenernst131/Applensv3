@@ -6,7 +6,10 @@ import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-
 import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
+import * as moment from 'moment';
+import 'moment-timezone';
 import { TimeSeries, InstanceTimeSeries } from '../../models/time-series';
+import { TimeZones } from '../../../shared/models/datetime';
 
 @Component({
   selector: 'time-series-instance-graph',
@@ -64,8 +67,8 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
         this.allSeriesNames.push(row[counterNameColumn]);
       }
 
-      let date = new Date(row[timestampColumn]);
-      let aggregatePoint: GraphPoint = aggregateSeries.series.values.find(point => point.x.getTime() === date.getTime());
+      let date = moment.tz(row[timestampColumn], TimeZones.UTC);
+      let aggregatePoint: GraphPoint = aggregateSeries.series.values.find(point => point.x.isSame(date));
       if (!aggregatePoint) {
         aggregatePoint = <GraphPoint>{ x: date, y: 0 }
         aggregateSeries.series.values.push(aggregatePoint);

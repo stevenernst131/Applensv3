@@ -30,21 +30,18 @@ export class SiteService extends ResourceService {
   }
 
   public setResourcePath(path: string[]): Observable<boolean> {
-    console.log("Set Site Resource Path");
     this.processResourcePath(path);
 
     return this._observerApiService.getSite(this._siteName)
       .map((observerResponse: ObserverSiteResponse) => {
         this._siteObject = this.getSiteFromObserverResponse(observerResponse);
         this._currentResource.next(this._siteObject);
-        console.log("finish get site");
-        console.log(this._siteObject);
         return true;
       });
   }
 
   public getDiagnosticRoleQueryString(): string {
-    return `stampName=${this._siteObject.InternalStampName}${this._siteObject.Hostnames.map(hostname => `&hostnames=${hostname}`)}`;
+    return `stampName=${this._siteObject.InternalStampName}${this._siteObject.Hostnames.map(hostname => `&hostnames=${hostname}`).join('')}`;
   }
 
   public getResourceName(): string {

@@ -8,8 +8,7 @@ import { AseService } from "../services/ase.service";
 
 export let ResourceServiceFactory = (startupService: StartupService, siteService: SiteService, aseService: AseService) => {
     let type: ResourceType = ResourceType.Site;
-    console.log("Determining Resource Service");
-    console.log(type);
+
     switch (type) {
         case ResourceType.Site:
         default:

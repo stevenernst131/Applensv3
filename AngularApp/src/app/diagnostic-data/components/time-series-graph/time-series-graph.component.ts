@@ -8,6 +8,11 @@ import { count } from 'rxjs/operators';
 import { time } from 'd3';
 import { TimeSeries } from '../../models/time-series';
 import { QueryParamsService } from '../../../shared/services/query-params.service';
+import * as moment from 'moment';
+import 'moment-timezone';
+import { DateTimeAdapter } from 'ng-pick-datetime';
+import { TimeZones } from '../../../shared/models/datetime';
+import { TimeUtilities } from '../../utilities/time-utilities';
 
 @Component({
   selector: 'time-series-graph',
@@ -29,21 +34,25 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   dataTable: DataTableResponseObject;
   defaultValue: number = 0;
 
-  startTime: Date;
-  endTime: Date;
-  timeGrain: number = 300000;
+  startTime: moment.Moment;
+  endTime: moment.Moment;
+  timeGrainInMinutes: number = 5;
 
   processData(data: DiagnosticData) {
     super.processData(data);
 
     if (data) {
 
-      let start = new Date();
-      start.setUTCDate(new Date().getUTCDate() - 1);
-      let end = new Date();
+      let start = this._queryParamsService.startTime;
+      let end = this._queryParamsService.endTime;
+      let timeGrain = this._queryParamsService.timeGrainInMinutes;
 
-      this.startTime = new Date(Math.round(start.getTime() / this.timeGrain) * this.timeGrain + this.timeGrain);
-      this.endTime = new Date(Math.round(end.getTime() / this.timeGrain) * this.timeGrain);
+      TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
+      TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
+      end.minute(end.minute() - end.minute() % timeGrain).second(0);
+      this.timeGrainInMinutes = timeGrain;
+      this.startTime = start;
+      this.endTime = end;
 
       this.renderingProperties = <TimeSeriesRendering>data.renderingProperties
       this.dataTable = data.table;
@@ -88,11 +97,8 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
       numberValueColumns.forEach(column => {
         let columnIndex: number = data.table.columns.indexOf(column);
-        // let seriesName: string = column.columnName;
-        // if (counterNameColumnIndex >= 0) {
-        //   seriesName = this._getSeriesName(data.table.columns[counterNameColumnIndex].columnName, data.table.columns[counterNameColumnIndex].columnName);
-        // }
-        let timestamp = new Date(row[timestampColumn]);
+
+        let timestamp = moment.tz(row[timestampColumn], TimeZones.UTC);
 
         let point: TablePoint = <TablePoint>{
           timestamp: timestamp,
@@ -102,8 +108,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
         };
 
         tablePoints.push(point);
-
-        //timeSeriesDictionary[seriesName].series.values.push(<GraphPoint>{ x: timestamp, y: parseFloat(row[data.table.columns.indexOf(column)]) })
       });
     });
 
@@ -112,23 +116,21 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       let pointsForThisSeries =
         tablePoints
           .filter(point => this._getSeriesName(point.column, point.counterName) === key)
-          .sort((b, a) => { return a.timestamp.getTime() - b.timestamp.getTime() });
+          .sort((b, a) => { return a.timestamp.diff(b.timestamp) });
 
       let pointToAdd = pointsForThisSeries.pop();
 
-      for (var d = new Date(this.startTime.getTime()); d < this.endTime; d.setTime(d.getTime() + this.timeGrain)) {
+      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
         let value = this.defaultValue;
 
-        if (pointToAdd && d.getTime() === pointToAdd.timestamp.getTime()) {
+        if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
           value = pointToAdd.value;
 
           pointToAdd = pointsForThisSeries.pop();
         }
 
-        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: new Date(d), y: value });
+        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
       }
-
-      console.log(timeSeriesDictionary[key]);
 
       this.allSeries.push(timeSeriesDictionary[key]);
     });
@@ -165,7 +167,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 }
 
 interface TablePoint {
-  timestamp: Date;
+  timestamp: moment.Moment;
   value: number;
   column: string;
   counterName: string;

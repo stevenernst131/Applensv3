@@ -43,8 +43,6 @@ export class SideNavComponent implements OnInit {
         signals.addSubItem(element.id, element.name, `signals/${element.id}`);
       });
 
-      console.log(signals);
-
       this.sideNavItems.push(signals);
     });
   }

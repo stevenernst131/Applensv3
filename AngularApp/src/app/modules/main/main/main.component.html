@@ -8,12 +8,12 @@
           <div class="form-row">
             <div class="col-md-6">
               <label>Resource Type</label>
-              <div class="dropdown" [ngClass]="{ 'show': showResourceTypeOptions }">
+              <div class="dropdown" [class.show]="showResourceTypeOptions">
                 <button class="btn btn-secondary dropdown-toggle" type="button" (click)="showResourceTypeOptions = !showResourceTypeOptions">
                   {{this.selectedResourceType.displayName}}
                 </button>
-                <div class="dropdown-menu" [ngClass]="{ 'show': showResourceTypeOptions }">
-                  <a class="dropdown-item" [ngClass]="{ 'disabled': !type.enabled }" *ngFor="let type of resourceTypes" (click)="selectedResourceType = type; showResourceTypeOptions = false">{{type.displayName}}</a>
+                <div class="dropdown-menu" [class.show]="showResourceTypeOptions">
+                  <a class="dropdown-item" [class.disabled]="!type.enabled" *ngFor="let type of resourceTypes" (click)="selectResourceType(type)">{{type.displayName}}</a>
                 </div>
               </div>
             </div>
@@ -22,9 +22,26 @@
               <input class="form-control" [(ngModel)]="resourceName" name="resourceName" type="text" aria-describedby="nameHelp" placeholder="Enter resource name">
             </div>
           </div>
+          <div class="form-row">
+            <div class="col-md-6">
+              <label>Start Time</label>
+              <input id="startTime" name="startTime" class="form-control input-sm" [(ngModel)]="startTime" [owlDateTimeTrigger]="start"
+                [owlDateTime]="start">
+              <owl-date-time #start></owl-date-time>
+            </div>
+            <div class="col-md-6">
+              <label>End Time</label>
+              <input id="endTime" name="endTime" class="form-control input-sm" [(ngModel)]="endTime" [owlDateTimeTrigger]="end"
+                [owlDateTime]="end">
+              <owl-date-time #end></owl-date-time>
+            </div>
+          </div>
         </div>
         <button class="btn btn-primary btn-block" [disabled]="!(resourceName && resourceName.length > 0)" type="Submit">Go</button>
       </form>
+    </div>
+    <div class="card-footer" style="text-align:center">
+      <span class="fa fa-info-circle"></span> Support for ASE and Functions coming soon
     </div>
   </div>
 </div>

@@ -2,6 +2,6 @@
 @import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
 @import '~@swimlane/ngx-datatable/release/assets/icons.css';
 
-/* .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
-    padding: 0.10rem 0.75rem
-} */
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row .datatable-body-cell {
+    padding-right: 15px;
+}

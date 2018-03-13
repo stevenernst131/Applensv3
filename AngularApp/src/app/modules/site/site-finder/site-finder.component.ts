@@ -45,7 +45,7 @@ export class SiteFinderComponent implements OnInit {
       resourceArray.push(matchingSite.SlotName);
     }
 
-    this._router.navigate(resourceArray);
+    this._router.navigate(resourceArray, { queryParamsHandling: 'preserve' });
   }
 
 }

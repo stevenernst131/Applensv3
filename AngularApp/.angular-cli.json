@@ -26,7 +26,9 @@
         "styles.css"
       ],
       "scripts": [
-        "../node_modules/moment/min/moment.min.js"
+        "../node_modules/moment/min/moment.min.js",
+        "../node_modules/moment-timezone/builds/moment-timezone.min.js",
+        "../node_modules/moment-timezone/builds/moment-timezone-with-data.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

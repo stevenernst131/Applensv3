@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import * as moment from 'moment';
+import 'moment-timezone';
 
 declare let d3: any;
 
@@ -38,14 +40,15 @@ export class Nvd3GraphComponent implements OnInit {
         stacked: true,
         clipEdge: false,
         showControls: false,
-        x: function (d: any) { return d.x; },
+        x: function (d: any) { return moment(d.x).valueOf(); },
         y: function (d: any) { return d.y; },
         xAxis: {
           showMaxMin: false,
           axisLabel: 'Time (UTC)',
           tickSize: 10,
           staggerLabels: false,
-          tickFormat: function (d: any) { return d3.time.format('%m/%d %H:%M')(new Date(d)); }
+          //tickFormat: function (d: any) { return d3.time.format('%m/%d %H:%M')(new Date(d)); }
+          tickFormat: function (d: any) { return moment(d).utc().format('MM/DD HH:mm'); }
         },
         yAxis: {
           showMaxMin: false,
@@ -60,7 +63,7 @@ export class Nvd3GraphComponent implements OnInit {
 }
 
 export interface GraphPoint {
-  x: any;
+  x: moment.Moment;
   y: number;
 }
 

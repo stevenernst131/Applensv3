@@ -20,8 +20,8 @@ export class DiagnosticApiService {
   }
 
   public getDetector(resourceId: string, detector:string, resourceSpecificQueryString: string): Observable<DetectorResponse> {
-    //let timeParameters = 
-    let path = `v4/${resourceId}/diagnostics/detectors/${detector}?${resourceSpecificQueryString}`;
+    let timeParameters = this._getTimeQueryParameters();
+    let path = `v4/${resourceId}/diagnostics/detectors/${detector}?${resourceSpecificQueryString}${timeParameters}`;
     return this.invoke<DetectorResponse>(path);
   }
 
@@ -63,6 +63,11 @@ export class DiagnosticApiService {
     }
     
     return headers;
+  }
+
+  private _getTimeQueryParameters() {
+    let format = 'YYYY-MM-DDTHH:mm'
+    return `&startTime=${this._queryParamsService.startTime.format(format)}&endTime=${this._queryParamsService.endTime.format(format)}`;
   }
 
 }

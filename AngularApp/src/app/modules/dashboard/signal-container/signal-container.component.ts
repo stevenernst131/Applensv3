@@ -26,16 +26,26 @@ export class SignalContainerComponent implements OnInit {
     this.resourceId = this._resourceService.getCurrentResourceId();
     
     this._route.params.subscribe((params: Params) => {
-      this.signalResponse = null;
+      this.getDetectorResponse();
+    });
+
+    this._route.queryParams.subscribe((queryParams: Params) => {
+      this.getDetectorResponse();
+    })
+  }
+
+  refresh() {
+    this.getDetectorResponse();
+  }
+
+  getDetectorResponse() {
+    this.signalResponse = null;
       this.signal = this._route.snapshot.params['signal'];
       this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: DetectorResponse) => {
         this.signalResponse = response;
       }, (error: any) => {
         this.error = error;
       });
-    })
-
-    
   }
 
 }

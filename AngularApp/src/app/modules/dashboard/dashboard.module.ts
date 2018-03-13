@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
-import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs/Observable';
 import { SideNavComponent } from './side-nav/side-nav.component';
@@ -19,13 +19,16 @@ import { SignalContainerComponent } from './signal-container/signal-container.co
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
 import { QueryParamsService } from '../../shared/services/query-params.service';
 import { TimePickerComponent } from './time-picker/time-picker.component';
+import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
+import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
-  constructor(private _startupService: StartupService, private _resourceService: ResourceService, private _queryParamService: QueryParamsService) { }
+  constructor(private _startupService: StartupService, private _resourceService: ResourceService, private _queryParamService: QueryParamsService, private _router: Router) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);    
+    this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
+    
     return this._resourceService.setResourcePath(state.url.split('?')[0].split('/'));
   }
 }
@@ -58,7 +61,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     DiagnosticDataModule,
     SharedModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    OwlMomentDateTimeModule 
   ],
   providers: [
     InitResolver,
@@ -66,6 +70,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       provide: ResourceService,
       useFactory: ResourceServiceFactory,
       deps: [StartupService, SiteService, AseService]
+    },
+    {
+      provide: OWL_DATE_TIME_FORMATS, 
+      useValue: CUSTOM_MOMENT_FORMATS
     }
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent]

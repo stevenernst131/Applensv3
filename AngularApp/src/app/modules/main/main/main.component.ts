@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceTypeState, ResourceType } from '../../../shared/models/resources';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import * as moment from 'moment';
+import { TimeZones } from '../../../shared/models/datetime';
 
 @Component({
   selector: 'app-main',
@@ -16,32 +18,56 @@ export class MainComponent implements OnInit {
     {
       resourceType: ResourceType.Site,
       routeName: 'sites',
-      displayName: 'Site',
-      enabled : true 
+      displayName: 'App',
+      enabled: true
     },
     {
       resourceType: ResourceType.Function,
       routeName: 'function',
       displayName: 'Function',
-      enabled : false 
+      enabled: false
     },
     {
       resourceType: ResourceType.AppServiceEnvironment,
       routeName: 'hostingEnvironments',
       displayName: 'App Service Environment',
-      enabled : true 
+      enabled: false
     }
   ];
 
-  constructor(private _router: Router) { }
+  startTime: moment.Moment;
+  endTime: moment.Moment;
+
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute) {
+    this.endTime = moment.tz(TimeZones.UTC);
+    this.startTime = this.endTime.clone().add(-1, 'days');
+  }
 
   ngOnInit() {
     this.selectedResourceType = this.resourceTypes[0];
   }
 
+  selectResourceType(type: ResourceTypeState) {
+    if (type.enabled) {
+      this.selectedResourceType = type; 
+      this.showResourceTypeOptions = false
+    }
+  }
+
   onSubmit(form: any) {
-    //TODO: handle different types
-    this._router.navigate([this.selectedResourceType.routeName, form.resourceName ]);
+    let startUtc = moment.tz(form.startTime.format('YYYY-MM-DD HH:mm'), TimeZones.UTC);
+    let endUtc = moment.tz(form.endTime.format('YYYY-MM-DD HH:mm'), TimeZones.UTC);
+
+    let timeParams = { 
+      startTime: startUtc.format('YYYY-MM-DDTHH:mm'),
+      endTime: endUtc.format('YYYY-MM-DDTHH:mm')
+    }
+
+    let navigationExtras: NavigationExtras = {
+      queryParams: timeParams
+    }
+
+    this._router.navigate([this.selectedResourceType.routeName, form.resourceName], navigationExtras);
   }
 
 }
