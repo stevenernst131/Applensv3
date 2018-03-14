@@ -1,0 +1,12 @@
+label {
+    color: white;
+    margin-bottom: 0px;
+}
+
+.input-sm {
+    padding: 3px;
+}
+
+.form-control, .control-label {
+    margin-right:3px;
+}
