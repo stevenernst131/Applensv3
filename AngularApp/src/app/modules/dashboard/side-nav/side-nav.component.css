@@ -1,0 +1,8 @@
+
+.sidenav-second-level > li > a {
+    cursor: pointer;
+}
+
+.sidenav-item-selected {
+    background-color: #1f1f1f;
+}

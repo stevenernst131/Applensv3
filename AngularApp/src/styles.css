@@ -1,0 +1,18 @@
+/* External Libraries */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+/* Must import diagnostic-data css */
+@import 'app/diagnostic-data/diagnostic-data.css';
+
+/* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0px;
+    /* padding-top:50px; */
+}
+
+#mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-second-level>li>a, #mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-third-level>li>a {
+    padding-top:2px;
+    padding-bottom: 2px;
+}
+
