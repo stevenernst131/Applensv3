@@ -5,6 +5,6 @@ namespace AppLensV3
 {
     public interface IDiagnosticClientService
     {
-         Task<dynamic> Get(string path);
+         Task<dynamic> Execute(string method, string path);
     }
 }
