@@ -16,8 +16,6 @@ namespace AppLensV3
     {
         private IConfiguration _configuration;
 
-        private Lazy<HttpClient> _lazyClient;
-
         private HttpClient _client { get; set; }
 
         public string AuthCertThumbprint
@@ -63,11 +61,22 @@ namespace AppLensV3
             return client;
         }
 
-        public async Task<dynamic> Get(string path)
+        public async Task<dynamic> Execute(string method, string path)
         {
             try
             {
-                var response = await _client.GetAsync(path);
+                HttpResponseMessage response;
+                switch(method)
+                {
+                    case "POST":
+                        response = await _client.PostAsync(path, null);
+                        break;
+                    case "GET":
+                    default:
+                        response = await _client.GetAsync(path);
+                        break;
+                    
+                }
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -79,12 +88,10 @@ namespace AppLensV3
 
                 throw new HttpRequestException(response.StatusCode.ToString());
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
-
-            return null;
         }
 
         private X509Certificate2 GetMyX509Certificate()
