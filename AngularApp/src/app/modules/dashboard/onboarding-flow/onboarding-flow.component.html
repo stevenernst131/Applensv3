@@ -1,0 +1,85 @@
+<div class="view-container">
+        <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
+
+        <div *ngIf="code" class="onboarding-container">
+            <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
+              
+                <split-area size="60">
+        
+                    <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
+                        <split-area size="85">
+                          <div style="background-color:#a0a0a0;height:25px;margin-bottom:10px">
+        
+                              <div style="
+                              float: left;
+                              background-color: grey;
+                              font-size: 12px;
+                              height: 100%;
+                              width: auto;
+                              padding: 2px;
+                              padding-left: 10px;
+                              padding-right: 10px;
+                              border-radius: 5px;
+                              border: 1px solid dimgrey;
+                              color:white;cursor:pointer">
+                              NewFile.csx
+                            </div>
+        
+                            <div style="
+                              float: left;
+                              margin-left:5px;
+                              font-size: 12px;
+                              height: 100%;
+                              width: auto;
+                              padding: 2px;
+                              padding-left: 10px;
+                              padding-right: 10px;
+                              border-radius: 5px;
+                              color:white;cursor:pointer">
+                              wiki.md
+                            </div>
+        
+                            <div style="cursor:not-allowed;margin-left:5px;float:right;background-color:grey;color:#c7c7c7;height:100%;padding:2px;padding-left:10px;padding-right:10px;font-size:12px">
+                                <i class="fa fa-cloud-upload" style="color:#00a6d4"></i> 
+                                <!--<i class="fa fa-cloud-upload" style="color:#00bef2"></i> -->
+                                Publish
+                            </div>
+        
+                            <div style="cursor:pointer;float:right;background-color:#424242;color:#e4e4e4;height:100%;padding:2px;padding-left:10px;padding-right:10px;font-size:12px">
+                                <i class="fa fa-play" style="color:#03dc03"></i> 
+                                Run
+                            </div>
+        
+        
+                          </div>
+                          <ngx-monaco-editor style="height:94%" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+                          
+                        </split-area>
+                        <split-area size="15">
+                            <p>Compilation Output here</p>
+                        </split-area>
+                    </split>
+        
+                </split-area>
+                <split-area size="40">
+                    <div style="background-color:#9a985e;height:25px;margin-bottom:10px;color:white;font-size:12px;">
+                        <div style="
+                        float: left;
+                        margin-left:5px;
+                        font-size: 12px;
+                        height: 100%;
+                        width: auto;
+                        padding: 2px;
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        border-radius: 5px;
+                        color:white;">
+                        Detector Output
+                      </div>
+                    </div>
+                </split-area>
+        
+            </split>
+        </div>
+</div>
+
