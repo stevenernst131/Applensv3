@@ -9,9 +9,12 @@ import { SiteService } from './services/site.service';
 import { FormsModule } from '@angular/forms';
 import { StartupService } from './services/startup.service';
 import { ObserverService } from './services/observer.service';
+import { GithubApiService } from './services/github-api.service';
 import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
 import { QueryParamsService } from './services/query-params.service';
+import { DetectorViewComponent } from './components/detector-view/detector-view.component';
+import { LoaderViewComponent } from './components/loader-view/loader-view.component';
 
 @NgModule({
   imports: [
@@ -20,8 +23,8 @@ import { QueryParamsService } from './services/query-params.service';
     HttpModule,
     FormsModule
   ],
-  declarations: [TreeViewComponent],
-  exports: [TreeViewComponent]
+  declarations: [TreeViewComponent, DetectorViewComponent, LoaderViewComponent],
+  exports: [TreeViewComponent, DetectorViewComponent, LoaderViewComponent]
 })
 export class SharedModule { 
   static forRoot(): ModuleWithProviders {
@@ -32,6 +35,7 @@ export class SharedModule {
         SiteService,
         StartupService,
         ObserverService,
+        GithubApiService,
         AseService,
         CacheService,
         QueryParamsService
