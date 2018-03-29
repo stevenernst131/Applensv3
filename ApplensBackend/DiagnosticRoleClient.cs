@@ -66,7 +66,7 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                switch(method)
+                switch(method.ToUpper())
                 {
                     case "POST":
                         response = await _client.PostAsync(path, null);
