@@ -5,8 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using AppLensV3.Models;
+using Microsoft.Extensions.Configuration;
+using Octokit;
 
 namespace AppLensV3
 {
@@ -14,11 +17,25 @@ namespace AppLensV3
     {
         private ConcurrentDictionary<string, Tuple<string, object>> _gitHubCache;
         private HttpClient _httpClient;
+        private GitHubClient _octokitClient;
+        private string _userName;
+        private string _repoName;
+        private string _branch;
+        private string _accessToken;
 
-        public GithubClientService()
+        public GithubClientService(IConfiguration configuration)
         {
-            _gitHubCache = new ConcurrentDictionary<string, Tuple<string, object>>();
             InitializeHttpClient();
+            _gitHubCache = new ConcurrentDictionary<string, Tuple<string, object>>();
+            _userName = configuration["Github:UserName"];
+            _repoName = configuration["Github:RepoName"];
+            _branch = configuration["Github:Branch"];
+            _accessToken = configuration["Github:AccessToken"];
+
+            _octokitClient = new GitHubClient(new Octokit.ProductHeaderValue(_userName))
+            {
+                Credentials = new Credentials(_accessToken)
+            };
         }
 
         public async Task<string> GetFileContent(string url)
@@ -121,6 +138,51 @@ namespace AppLensV3
             }
 
             return string.Empty;
+        }
+
+        public async Task Publish(Package pkg)
+        {
+            if (pkg == null || string.IsNullOrWhiteSpace(pkg.Id)) return;
+
+            string detectorFilePath = $"{pkg.Id.ToLower()}/{pkg.Id.ToLower()}";
+
+            string csxFilePath = $"{detectorFilePath}.csx";
+            string dllFilePath = $"{detectorFilePath}.dll";
+            string pdbFilePath = $"{detectorFilePath}.pdb";
+
+            string commitMessage = $@"Add\Update Detector with id : {pkg.Id.ToLower()}";
+            
+            await CreateOrUpdateFile(csxFilePath, pkg.CodeString, commitMessage);
+            await CreateOrUpdateFile(dllFilePath, pkg.DllBytes, commitMessage, false);
+            await CreateOrUpdateFile(pdbFilePath, pkg.PdbBytes, commitMessage, false);
+        }
+
+        private async Task CreateOrUpdateFile(string filePath, string content, string commitMessage, bool convertContentToBase64 = true)
+        {
+            try
+            {
+                // try to get the file (and with the file the last commit sha)
+                var existingFile = await _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, _branch);
+
+                // update the file
+                var updateChangeSet = await _octokitClient.Repository.Content.UpdateFile(_userName, _repoName, filePath,
+                   new UpdateFileRequest(commitMessage, content, existingFile.First().Sha, _branch, convertContentToBase64));
+            }
+            catch (Octokit.NotFoundException)
+            {
+                var createFileRequest = new CreateFileRequest(commitMessage, content, _branch, convertContentToBase64);
+                // if file is not found, create it
+                var createChangeSet = await _octokitClient.Repository.Content.CreateFile(_userName, _repoName, filePath,
+                    createFileRequest);
+            }
+        }
+
+        private string Base64Decode(string encodedString)
+        {
+            if (string.IsNullOrWhiteSpace(encodedString)) return string.Empty;
+
+            byte[] bytes = Convert.FromBase64String(encodedString);
+            return Encoding.UTF8.GetString(bytes);
         }
     }
 }

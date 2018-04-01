@@ -11,5 +11,7 @@ namespace AppLensV3
         Task<string> GetFileContent(string url);
 
         Task<GithubEntry> Get(string url);
+
+        Task Publish(Package pkg);
     }
 }
