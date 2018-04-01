@@ -9,3 +9,57 @@
     border:1px solid #e8e8e8;
     box-shadow: -2px -1px 2px 0px #dadada;
 }
+
+.code-container-header{
+    background-color:#a0a0a0;
+    height:25px;
+    margin-bottom:10px;
+}
+
+.file-tab{
+    float: left;
+    margin-left:5px;
+    font-size: 12px;
+    height: 100%;
+    width: auto;
+    padding: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    color:white;
+    cursor:pointer;
+}
+.file-tab.active{
+    background-color: grey;
+    border: 1px solid dimgrey;
+}
+
+.action-button{
+    cursor:pointer;
+    float:right;
+    background-color:#424242;
+    color:#e4e4e4;
+    height:100%;
+    padding:2px;
+    padding-left:10px;
+    padding-right:10px;
+    font-size:12px;
+    margin-left:5px;
+}
+.action-button.disabled{
+    cursor:not-allowed;
+    background-color:grey;
+    color:#c7c7c7;
+}
+.action-button.publish-button > i{
+    color:#00bef2;
+}
+.action-button.disabled.publish-button > i{
+    color:#00a6d4;
+}
+.action-button.run-button > i{
+    color:#03dc03;
+}
+.action-button.disabled.run-button > i{
+    color:#00bb00;
+}

@@ -33,8 +33,20 @@ namespace AppLensV3.Controllers
             string url = string.Format(GithubConstants.DetectorFilePathFormat, id, "Access_Token");
             GithubEntry githubEntry = await _githubService.Get(url);
             string content = await _githubService.GetFileContent(githubEntry.Download_url);
-
+            
             return Ok(content);
+        }
+
+        [HttpPost("publishdetector")]
+        public async Task<IActionResult> PublishPackage([FromBody]Package pkg)
+        {
+            if(pkg == null || string.IsNullOrWhiteSpace(pkg.Id) || string.IsNullOrWhiteSpace(pkg.DllBytes))
+            {
+                return BadRequest();
+            }
+
+            await _githubService.Publish(pkg);
+            return Accepted();
         }
     }
 }

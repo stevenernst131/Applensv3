@@ -27,15 +27,21 @@ namespace AppLensV3.Controllers
                 return BadRequest("Missing x-ms-path-query header");
             }
 
+            string path = Request.Headers["x-ms-path-query"];
+
             string method = HttpMethod.Get.Method;
             if (Request.Headers.ContainsKey("x-ms-method"))
             {
                 method = Request.Headers["x-ms-method"];
             }
 
-            string path = Request.Headers["x-ms-path-query"];
+            string body = string.Empty;
+            if (Request.Headers.ContainsKey("x-ms-body"))
+            {
+                body = Request.Headers["x-ms-body"];
+            }
 
-            var response = await this._diagnosticClient.Execute(method, path);
+            var response = await this._diagnosticClient.Execute(method, path, body);
             return Ok(response);
         }
     }
