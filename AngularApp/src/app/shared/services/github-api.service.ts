@@ -14,7 +14,7 @@ export class GithubApiService {
   }
 
   public getDetectorFile(id: string): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/${id}`);
+    return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`);
   }
 
   public publishPackage(packageToPublish: Package): Observable<any> {

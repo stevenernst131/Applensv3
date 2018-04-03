@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace AppLensV3.Controllers
 {
@@ -14,13 +15,14 @@ namespace AppLensV3.Controllers
     {
         IDiagnosticClientService _diagnosticClient;
 
-        public DiagnosticController(IDiagnosticClientService diagnosticClient) {
+        public DiagnosticController(IDiagnosticClientService diagnosticClient)
+        {
             this._diagnosticClient = diagnosticClient;
         }
 
-        [HttpGet("invoke")]
+        [HttpPost("invoke")]
         [HttpOptions("invoke")]
-        public async Task<IActionResult> Invoke()
+        public async Task<IActionResult> Invoke([FromBody]JToken body)
         {
             if (!Request.Headers.ContainsKey("x-ms-path-query"))
             {
@@ -35,13 +37,7 @@ namespace AppLensV3.Controllers
                 method = Request.Headers["x-ms-method"];
             }
 
-            string body = string.Empty;
-            if (Request.Headers.ContainsKey("x-ms-body"))
-            {
-                body = Request.Headers["x-ms-body"];
-            }
-
-            var response = await this._diagnosticClient.Execute(method, path, body);
+            var response = await this._diagnosticClient.Execute(method, path, body.ToString());
             return Ok(response);
         }
     }

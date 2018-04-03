@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using AppLensV3.Helpers;
 using AppLensV3.Models;
 using Microsoft.Extensions.Configuration;
 using Octokit;
@@ -38,10 +39,13 @@ namespace AppLensV3
             };
         }
 
-        public async Task<string> GetFileContent(string url)
+        public async Task<string> GetRawFile(string url)
         {
             TryGetETAGAndCacheValue(url, out string etag, out object cachedValue, out bool isEntryInCache);
-            HttpResponseMessage response = await GetInternal(url, etag);
+
+            List<KeyValuePair<string, string>> additionalHeaders = new List<KeyValuePair<string, string>>();
+            additionalHeaders.Add(new KeyValuePair<string, string>("Accept", GithubConstants.RawFileHeaderMediaType));
+            HttpResponseMessage response = await GetInternal(url, etag, additionalHeaders);
             if (response.StatusCode == HttpStatusCode.NotModified)
             {
                 if (isEntryInCache)
@@ -86,12 +90,52 @@ namespace AppLensV3
             return (GithubEntry)cachedValue;
         }
 
-        private async Task<HttpResponseMessage> GetInternal(string url, string etag)
+        public async Task Publish(Package pkg)
+        {
+            if (pkg == null || string.IsNullOrWhiteSpace(pkg.Id)) return;
+
+            string detectorFilePath = $"{pkg.Id.ToLower()}/{pkg.Id.ToLower()}";
+
+            string csxFilePath = $"{detectorFilePath}.csx";
+            string dllFilePath = $"{detectorFilePath}.dll";
+            string pdbFilePath = $"{detectorFilePath}.pdb";
+
+            string commitMessage = $@"Add\Update Detector with id : {pkg.Id.ToLower()}";
+
+            await CreateOrUpdateFile(csxFilePath, pkg.CodeString, commitMessage);
+            await CreateOrUpdateFile(dllFilePath, pkg.DllBytes, commitMessage, false);
+            await CreateOrUpdateFile(pdbFilePath, pkg.PdbBytes, commitMessage, false);
+        }
+
+        public async Task<string> GetDetectorFile(string detectorId)
+        {
+            if (string.IsNullOrWhiteSpace(detectorId))
+            {
+                throw new ArgumentNullException("detectorId");
+            }
+
+            string detectorFileUrl = string.Format(
+                GithubConstants.DetectorFilePathFormat,
+                _userName,
+                _repoName,
+                detectorId,
+                _branch,
+                _accessToken);
+
+            return await GetRawFile(detectorFileUrl);
+        }
+
+        private async Task<HttpResponseMessage> GetInternal(string url, string etag, List<KeyValuePair<string, string>> additionalHeaders = null)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
             if (!string.IsNullOrWhiteSpace(etag))
             {
                 request.Headers.Add("If-None-Match", etag);
+            }
+
+            if (additionalHeaders != null && additionalHeaders.Any())
+            {
+                additionalHeaders.ForEach(item => request.Headers.Add(item.Key, item.Value));
             }
 
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -139,24 +183,7 @@ namespace AppLensV3
 
             return string.Empty;
         }
-
-        public async Task Publish(Package pkg)
-        {
-            if (pkg == null || string.IsNullOrWhiteSpace(pkg.Id)) return;
-
-            string detectorFilePath = $"{pkg.Id.ToLower()}/{pkg.Id.ToLower()}";
-
-            string csxFilePath = $"{detectorFilePath}.csx";
-            string dllFilePath = $"{detectorFilePath}.dll";
-            string pdbFilePath = $"{detectorFilePath}.pdb";
-
-            string commitMessage = $@"Add\Update Detector with id : {pkg.Id.ToLower()}";
-            
-            await CreateOrUpdateFile(csxFilePath, pkg.CodeString, commitMessage);
-            await CreateOrUpdateFile(dllFilePath, pkg.DllBytes, commitMessage, false);
-            await CreateOrUpdateFile(pdbFilePath, pkg.PdbBytes, commitMessage, false);
-        }
-
+        
         private async Task CreateOrUpdateFile(string filePath, string content, string commitMessage, bool convertContentToBase64 = true)
         {
             try
@@ -175,14 +202,6 @@ namespace AppLensV3
                 var createChangeSet = await _octokitClient.Repository.Content.CreateFile(_userName, _repoName, filePath,
                     createFileRequest);
             }
-        }
-
-        private string Base64Decode(string encodedString)
-        {
-            if (string.IsNullOrWhiteSpace(encodedString)) return string.Empty;
-
-            byte[] bytes = Convert.FromBase64String(encodedString);
-            return Encoding.UTF8.GetString(bytes);
         }
     }
 }

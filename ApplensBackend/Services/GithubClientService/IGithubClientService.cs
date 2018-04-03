@@ -8,9 +8,11 @@ namespace AppLensV3
 {
     public interface IGithubClientService
     {
-        Task<string> GetFileContent(string url);
+        Task<string> GetRawFile(string url);
 
         Task<GithubEntry> Get(string url);
+
+        Task<string> GetDetectorFile(string detectorId);
 
         Task Publish(Package pkg);
     }

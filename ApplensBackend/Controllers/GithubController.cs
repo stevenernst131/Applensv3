@@ -23,24 +23,21 @@ namespace AppLensV3.Controllers
         [HttpGet("detectortemplate")]
         public async Task<IActionResult> GetTemplate()
         {
-                string content = await _githubService.GetFileContent(GithubConstants.DetectorTemplatePath);
-                return Ok(content);
+            string content = await _githubService.GetRawFile(GithubConstants.DetectorTemplatePath);
+            return Ok(content);
         }
 
         [HttpGet("detectors/{id}")]
         public async Task<IActionResult> GetDetectorFile(string id)
         {
-            string url = string.Format(GithubConstants.DetectorFilePathFormat, id, "Access_Token");
-            GithubEntry githubEntry = await _githubService.Get(url);
-            string content = await _githubService.GetFileContent(githubEntry.Download_url);
-            
+            string content = await _githubService.GetDetectorFile(id);
             return Ok(content);
         }
 
         [HttpPost("publishdetector")]
         public async Task<IActionResult> PublishPackage([FromBody]Package pkg)
         {
-            if(pkg == null || string.IsNullOrWhiteSpace(pkg.Id) || string.IsNullOrWhiteSpace(pkg.DllBytes))
+            if (pkg == null || string.IsNullOrWhiteSpace(pkg.Id) || string.IsNullOrWhiteSpace(pkg.DllBytes))
             {
                 return BadRequest();
             }

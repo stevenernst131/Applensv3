@@ -1,4 +1,7 @@
 <div class="view-container">
+        <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
+            {{alertMessage}}
+        </div>
         <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
 
         <div *ngIf="code" class="onboarding-container">
@@ -34,32 +37,23 @@
                           
                         </split-area>
                         <split-area size="15">
-                            <div style="padding:10px">
-                                <div *ngFor="let item of buildOutput" style="font-size:14px;color:#6b6b6b">{{item}}</div>
+                            <div class="compilation-output-container">
+                                <div *ngFor="let item of buildOutput" class="compilation-output">{{item}}</div>
                             </div>
                         </split-area>
                     </split>
         
                 </split-area>
                 <split-area size="40">
-                    <div style="background-color:#9a985e;height:25px;margin-bottom:10px;color:white;font-size:12px;">
-                        <div style="
-                        float: left;
-                        margin-left:5px;
-                        font-size: 12px;
-                        height: 100%;
-                        width: auto;
-                        padding: 2px;
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        border-radius: 5px;
-                        color:white;">
+                    <div class="invocation-output-title-container">
                         
-                      </div>
+                        <div class="invocation-title">
+                        Detector Output
+                        </div>
 
                     </div>
 
-                    <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [error]="errorState"></detector-view>
+                    <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [error]="errorState" [showEdit]="false"></detector-view>
 
                 </split-area>
         
