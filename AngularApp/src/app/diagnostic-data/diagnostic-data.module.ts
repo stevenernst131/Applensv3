@@ -16,6 +16,8 @@ import { TimeSeriesInstanceGraphComponent } from './components/time-series-insta
 import { DataSummaryComponent } from './components/data-summary/data-summary.component';
 import { EmailComponent } from './components/email/email.component';
 import { InsightsComponent } from './components/insights/insights.component';
+import { DetectorViewComponent } from './components/detector-view/detector-view.component';
+
 import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnostic-data-config';
 
 /**
@@ -34,7 +36,8 @@ import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnos
   providers: [
     { provide: DIAGNOSTIC_DATA_CONFIG, useValue: INTERNAL_CONFIGURATION }
   ],
-  declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent, DataContainerComponent, TimeSeriesInstanceGraphComponent, DataSummaryComponent, EmailComponent, InsightsComponent],
-  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent], 
+  declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent, 
+    DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent],
+  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent],
 })
 export class DiagnosticDataModule { }

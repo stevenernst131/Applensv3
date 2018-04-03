@@ -49,7 +49,6 @@ export class AseService extends ResourceService {
     this._subscription = path[path.indexOf('subscriptions') + 1];
     this._resourceGroup = path[path.indexOf('resourceGroups') + 1];
     this._hostingEnvironment = path[path.indexOf('hostingEnvironments') + 1];
-
   }
 
 }

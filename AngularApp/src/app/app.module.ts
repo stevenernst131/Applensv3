@@ -7,7 +7,6 @@ import { MainComponent } from './modules/main/main/main.component';
 import { MainModule } from './modules/main/main.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 export const Routes = RouterModule.forRoot([
   {
     path: '',
