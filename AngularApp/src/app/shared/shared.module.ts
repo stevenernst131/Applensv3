@@ -13,7 +13,6 @@ import { GithubApiService } from './services/github-api.service';
 import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
 import { QueryParamsService } from './services/query-params.service';
-import { DetectorViewComponent } from './components/detector-view/detector-view.component';
 import { LoaderViewComponent } from './components/loader-view/loader-view.component';
 
 @NgModule({
@@ -23,8 +22,8 @@ import { LoaderViewComponent } from './components/loader-view/loader-view.compon
     HttpModule,
     FormsModule
   ],
-  declarations: [TreeViewComponent, DetectorViewComponent, LoaderViewComponent],
-  exports: [TreeViewComponent, DetectorViewComponent, LoaderViewComponent]
+  declarations: [TreeViewComponent, LoaderViewComponent],
+  exports: [TreeViewComponent, LoaderViewComponent]
 })
 export class SharedModule { 
   static forRoot(): ModuleWithProviders {

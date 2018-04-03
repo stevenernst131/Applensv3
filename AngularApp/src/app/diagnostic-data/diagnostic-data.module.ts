@@ -13,7 +13,7 @@ import { DynamicDataComponent } from './components/dynamic-data/dynamic-data.com
 import { DataRenderBaseComponent } from './components/data-render-base/data-render-base.component';
 import { DataContainerComponent } from './components/data-container/data-container.component';
 import { TimeSeriesInstanceGraphComponent } from './components/time-series-instance-graph/time-series-instance-graph.component';
-
+import { DetectorViewComponent } from './components/detector-view/detector-view.component';
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
  * 
@@ -27,7 +27,7 @@ import { TimeSeriesInstanceGraphComponent } from './components/time-series-insta
     NvD3Module,
     NgxDatatableModule
   ],
-  declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent, DataContainerComponent, TimeSeriesInstanceGraphComponent],
-  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent], 
+  declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent, DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent],
+  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent], 
 })
 export class DiagnosticDataModule { }
