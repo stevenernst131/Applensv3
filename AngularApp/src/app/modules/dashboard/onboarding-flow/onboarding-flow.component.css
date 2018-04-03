@@ -9,7 +9,9 @@
     border:1px solid #e8e8e8;
     box-shadow: -2px -1px 2px 0px #dadada;
 }
-
+.alert-container{
+    font-size:14px;
+}
 .code-container-header{
     background-color:#a0a0a0;
     height:25px;
@@ -25,7 +27,7 @@
     padding: 2px;
     padding-left: 10px;
     padding-right: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     color:white;
     cursor:pointer;
 }
@@ -62,4 +64,30 @@
 }
 .action-button.disabled.run-button > i{
     color:#00bb00;
+}
+.compilation-output-container{
+    padding:10px;
+}
+.compilation-output{
+    font-size:14px;
+    color:#6b6b6b;
+}
+.invocation-output-title-container{
+    background-color:#2f6b87;
+    height:25px;
+    margin-bottom:10px;
+    color:white;
+    font-size:12px;
+}
+.invocation-title{
+    float: left;
+    margin-left:5px;
+    font-size: 12px;
+    height: 100%;
+    width: auto;
+    padding: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    color:white;
 }

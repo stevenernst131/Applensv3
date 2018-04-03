@@ -38,11 +38,11 @@ export class DiagnosticApiService {
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body?: any, invalidateCache: boolean = false): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, invalidateCache: boolean = false): Observable<T> {
     var url: string = `${this.getDiagnosticApi()}api/invoke`
 
-    let request = this._http.get(url, {
-      headers: this._getHeaders(path, method, body)
+    let request = this._http.post(url, body, {
+      headers: this._getHeaders(path, method)
     })
       .map((response: Response) => <T>(response.json()));
 
@@ -65,7 +65,7 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod, body?: any): Headers {
+  private _getHeaders(path?: string, method?: HttpMethod): Headers {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
@@ -76,10 +76,6 @@ export class DiagnosticApiService {
 
     if (method) {
       headers.append('x-ms-method', HttpMethod[method]);
-    }
-
-    if (body) {
-      headers.append('x-ms-body', JSON.stringify(body));
     }
 
     return headers;

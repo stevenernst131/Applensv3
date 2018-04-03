@@ -15,6 +15,7 @@ import { Package } from '../../../shared/models/package';
 export class OnboardingFlowComponent implements OnInit {
 
   fileName: string;
+  detectorId: string;
   editorOptions: any;
   code: string;
   resourceId: string;
@@ -26,9 +27,14 @@ export class OnboardingFlowComponent implements OnInit {
   runButtonText: string;
   runButtonIcon: string;
   publishButtonText: string;
+
+  alertClass: string;
+  alertMessage: string;
+  showAlert: boolean;
+
   private publishingPackage: Package;
 
-  constructor(private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService, private resourceService: ResourceService) {
+  constructor(private _route: ActivatedRoute, private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService, private resourceService: ResourceService) {
 
     this.editorOptions = {
       theme: 'vs',
@@ -48,15 +54,27 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Run";
     this.runButtonIcon = "fa fa-play";
     this.publishButtonText = "Publish";
-    this.fileName = "new.csx";
+    this.showAlert = false;
   }
 
   ngOnInit() {
     this.resourceId = this.resourceService.getCurrentResourceId();
 
-    this.githubService.getDetectorTemplate().subscribe(data => {
-      this.code = data;
-    });
+    if (this._route.snapshot.url[0].path.toLowerCase().indexOf('create') >= 0) {
+      // CREATE FLOW
+      this.githubService.getDetectorTemplate().subscribe(data => {
+        this.code = data;
+      });
+      this.fileName = "new.csx";
+    }
+    else {
+      // EDIT FLOW
+      this.detectorId = this._route.snapshot.params['signal'].toLowerCase();
+      this.fileName = `${this.detectorId}.csx`;
+      this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
+        this.code = data;
+      });
+    }
   }
 
   runCompilation() {
@@ -100,6 +118,8 @@ export class OnboardingFlowComponent implements OnInit {
         this.publishingPackage = null;
         this.runButtonText = "Run";
         this.runButtonIcon = "fa fa-play";
+        this.buildOutput.push("Something went wrong during detector invocation.");
+        this.buildOutput.push("========== Build: 0 succeeded, 1 failed ==========");
       }));
   }
 
@@ -116,10 +136,11 @@ export class OnboardingFlowComponent implements OnInit {
     this.githubService.publishPackage(this.publishingPackage).subscribe(data => {
       this.runButtonDisabled = false;
       this.publishButtonText = "Publish";
-      // TODO : add notification
+      this.showAlertBox('alert-success', 'Detector pulished successfully. It will be live in next 5-10 minutes.');
     }, err => {
       this.runButtonDisabled = false;
       this.publishButtonText = "Publish";
+      this.showAlertBox('alert-dander', 'Publishing failed. Please try again after some time.');
     });
   }
 
@@ -130,5 +151,17 @@ export class OnboardingFlowComponent implements OnInit {
       dllBytes: queryResponse.compilationOutput.assemblyBytes,
       pdbBytes: queryResponse.compilationOutput.pdbBytes
     };
+  }
+
+  private showAlertBox(alertClass: string, message: string) {
+    this.alertClass = alertClass;
+    this.alertMessage = message;
+    this.showAlert = true;
+  }
+
+  private hideAlertBox() {
+    this.showAlert = false;
+    this.alertClass = '';
+    this.alertMessage = '';
   }
 }

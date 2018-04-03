@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 
@@ -25,7 +25,14 @@ export class DetectorViewComponent implements OnInit {
     this.errorSubject.next(value);
   }
 
-  constructor() { }
+  @Input()
+  showEdit: boolean = true;
+
+  @Output() editClicked: EventEmitter<any>;
+
+  constructor() {
+    this.editClicked = new EventEmitter<any>();
+  }
 
   ngOnInit() {
     this.detectorResponseSubject.subscribe((data: DetectorResponse) => {
@@ -35,5 +42,9 @@ export class DetectorViewComponent implements OnInit {
     this.errorSubject.subscribe((data: any) => {
       this.errorState = data;
     });
+  }
+
+  edit(): void {
+    this.editClicked.emit();
   }
 }
