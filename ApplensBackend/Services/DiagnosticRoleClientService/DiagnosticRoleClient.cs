@@ -9,6 +9,7 @@ using System.Web;
 using Microsoft.Extensions.Configuration;
 using System.Security.Authentication;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace AppLensV3
 {
@@ -61,7 +62,7 @@ namespace AppLensV3
             return client;
         }
 
-        public async Task<dynamic> Execute(string method, string path)
+        public async Task<dynamic> Execute(string method, string path, string body = null)
         {
             try
             {
@@ -69,7 +70,8 @@ namespace AppLensV3
                 switch(method.ToUpper())
                 {
                     case "POST":
-                        response = await _client.PostAsync(path, null);
+                        var content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+                        response = await _client.PostAsync(path, content);
                         break;
                     case "GET":
                     default:
