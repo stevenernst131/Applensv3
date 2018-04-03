@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DetectorResponse, DataTableDataType, DiagnosticData, TimeSeriesRendering, DataTableResponseObject } from '../../models/detector';
+import { DetectorResponse, DataTableDataType, DiagnosticData, TimeSeriesRendering, DataTableResponseObject, RenderingType } from '../../models/detector';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
@@ -20,6 +20,8 @@ import { TimeUtilities } from '../../utilities/time-utilities';
   styleUrls: ['./time-series-graph.component.css']
 })
 export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements OnInit, DataRenderer {
+
+  DataRenderingType = RenderingType.TimeSeries;
 
   constructor(private _queryParamsService: QueryParamsService) {
     super();

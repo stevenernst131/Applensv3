@@ -1,12 +1,12 @@
-<data-container height="300px">
+<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
   <ng-container *ngIf="!renderingProperties.groupByColumnName && !(renderingProperties.groupByColumnName === ''); else groupedTable">
-    <ngx-datatable #myTable class="bootstrap" [rows]="rows" [columns]="columns" [columnMode]="'force'" [limit]="20" [headerHeight]="30"
-      [footerHeight]="40" [rowHeight]="'auto'">
+    <ngx-datatable #myTable class="bootstrap with-shadow" [rows]="rows" [columns]="columns" [columnMode]="'force'" [limit]="10" [headerHeight]="30"
+      [footerHeight]="30" [rowHeight]="'auto'">
     </ngx-datatable>
   </ng-container>
 
   <ng-template #groupedTable>
-    <ngx-datatable #myTable class="bootstrap" [rows]="rows" [columns]="columns" [columnMode]="'force'" [limit]="20" [headerHeight]="30"
+    <ngx-datatable #myTable class="bootstrap with-shadow" [rows]="rows" [columns]="columns" [columnMode]="'force'" [limit]="20" [headerHeight]="30"
       [footerHeight]="40" [rowHeight]="'auto'" [groupRowsBy]="renderingProperties.groupByColumnName" [groupExpansionDefault]="false">
       <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
         <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { DiagnosticData, DataTableRendering } from '../../models/detector';
+import { DiagnosticData, DataTableRendering, RenderingType } from '../../models/detector';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { camelCase } from '@swimlane/ngx-datatable/release/utils';
 
@@ -10,6 +10,8 @@ import { camelCase } from '@swimlane/ngx-datatable/release/utils';
   styleUrls: ['./data-table.component.css']
 })
 export class DataTableComponent extends DataRenderBaseComponent {
+
+  DataRenderingType = RenderingType.Table;
 
   @ViewChild('myTable') table: any;
 
