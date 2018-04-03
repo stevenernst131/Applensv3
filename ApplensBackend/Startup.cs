@@ -39,6 +39,7 @@ namespace AppLensV3 {
 
             services.AddSingleton<IObserverClientService, SupportObserverClientService>();
             services.AddSingleton<IDiagnosticClientService, DiagnosticRoleClient>();
+            services.AddSingleton<IGithubClientService, GithubClientService>();
 
             services.AddMvc ();
         }

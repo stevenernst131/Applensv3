@@ -1,18 +1,1 @@
-<div *ngIf="signalResponse">
-  <div>
-    <h2>{{signalResponse.metadata.name}}</h2>
-    <p>{{signalResponse.metadata.description}}</p>
-  </div>
-  
-  <div *ngFor="let data of signalResponse.dataset">
-    <dynamic-data [diagnosticData]="data"></dynamic-data>
-  </div>
-</div>
-<div *ngIf="!signalResponse && !error">
-  Loading...
-
-</div>
-
-<ng-container *ngIf="!signalResponse && error">
-    Error loading detector
-</ng-container>
+<detector-view [detectorResponse]="signalResponse" [error]="error" (editClicked)="onEditClicked($event)"></detector-view>

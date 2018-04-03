@@ -6,6 +6,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
+import { AngularSplitModule } from 'angular-split';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs/Observable';
 import { SideNavComponent } from './side-nav/side-nav.component';
@@ -21,6 +23,7 @@ import { QueryParamsService } from '../../shared/services/query-params.service';
 import { TimePickerComponent } from './time-picker/time-picker.component';
 import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
 import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
+import { OnboardingFlowComponent } from './onboarding-flow/onboarding-flow.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -45,8 +48,16 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         pathMatch: 'full'
       },
       {
+        path: 'create',
+        component: OnboardingFlowComponent
+      },
+      {
         path: 'signals/:signal',
         component: SignalContainerComponent
+      },
+      {
+        path: 'signals/:signal/edit',
+        component: OnboardingFlowComponent
       }
     ]
   },
@@ -62,7 +73,9 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     SharedModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    OwlMomentDateTimeModule 
+    OwlMomentDateTimeModule,
+    MonacoEditorModule.forRoot(),
+    AngularSplitModule
   ],
   providers: [
     InitResolver,
@@ -76,6 +89,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       useValue: CUSTOM_MOMENT_FORMATS
     }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent]
 })
 export class DashboardModule { }

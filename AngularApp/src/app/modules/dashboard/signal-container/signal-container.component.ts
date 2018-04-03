@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 
@@ -11,9 +11,9 @@ import { ResourceService } from '../../../shared/services/resource.service';
 })
 export class SignalContainerComponent implements OnInit {
 
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService) { }
+  constructor(private _router: Router, private _route: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService) { }
 
-  signalResponse:DetectorResponse;
+  signalResponse: DetectorResponse;
 
   signal: string;
 
@@ -22,9 +22,9 @@ export class SignalContainerComponent implements OnInit {
   error: any;
 
   ngOnInit() {
-    
+
     this.resourceId = this._resourceService.getCurrentResourceId();
-    
+
     this._route.params.subscribe((params: Params) => {
       this.getDetectorResponse();
     });
@@ -40,12 +40,23 @@ export class SignalContainerComponent implements OnInit {
 
   getDetectorResponse() {
     this.signalResponse = null;
-      this.signal = this._route.snapshot.params['signal'];
-      this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: DetectorResponse) => {
-        this.signalResponse = response;
-      }, (error: any) => {
-        this.error = error;
-      });
+    this.signal = this._route.snapshot.params['signal'];
+    this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: DetectorResponse) => {
+      this.signalResponse = response;
+    }, (error: any) => {
+      this.error = error;
+    });
+  }
+
+  onEditClicked(): void {
+    
+    let navigationExtras: NavigationExtras = {
+      queryParamsHandling: 'preserve',
+      preserveFragment: true,
+      relativeTo: this._route
+    };
+
+    this._router.navigate(['edit'], navigationExtras);
   }
 
 }
