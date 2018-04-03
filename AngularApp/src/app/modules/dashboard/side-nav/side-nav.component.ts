@@ -31,6 +31,17 @@ export class SideNavComponent implements OnInit {
     this._router.navigate(item.link.split('/'), navigationExtras);
   }
 
+  openOnboardingFlow() {
+
+    let navigationExtras: NavigationExtras = {
+      queryParamsHandling: 'preserve',
+      preserveFragment: true,
+      relativeTo: this._activatedRoute
+    };
+
+    this._router.navigate(['create'], navigationExtras);
+  }
+
   initializeSignals() {
 
     this._diagnosticApiService.getDetectors(this._resourceService.getCurrentResourceId()).subscribe(detectorList => {
@@ -61,7 +72,7 @@ export class SideNavItem {
   }
 
   addSubItem(name: string, displayName: string, link: string) {
-    this.subItems.push(<SideNavSubItem> {
+    this.subItems.push(<SideNavSubItem>{
       name: name,
       displayName: displayName,
       link: link,
