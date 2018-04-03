@@ -1,3 +1,19 @@
-<div id="data-container">
-  <ng-content></ng-content>
+<!-- This is the default template for the header, but you can pass in a custom header as well -->
+<ng-template #defaultHeader>
+  {{title}}
+</ng-template>
+
+<div class="card data-container-card">
+
+  <div *ngIf="title || headerTemplate" class="card-header data-container-header">
+    <ng-container *ngTemplateOutlet="headerTemplate ? headerTemplate : defaultHeader">
+    </ng-container>
+  </div>
+  <div *ngIf="description" class="card-header text-muted card-description" [class.with-top-border]="!title">
+    {{description}}
+  </div>
+  <div class="card-body data-container-body" [class.no-padding]="noBodyPadding" [class.with-top-border]="!title && !description">
+    <ng-content></ng-content>
+  </div>
+
 </div>

@@ -1,0 +1,46 @@
+.insight-container {
+    margin-bottom: 10px;
+}
+
+.insight-container:last-child {
+    margin-bottom: 0px;
+}
+
+
+.card-header {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.card-body {
+    font-size: 14px;
+}
+
+.table-key {
+    width: 20%;
+}
+
+table {
+    width: 100%;
+}
+
+.status-icon {
+    margin-right: 25px;
+}
+
+.fa-exclamation-circle {
+    color: #ff0000;
+}
+
+.fa-exclamation-triangle {
+    color: #ff9104;
+}
+
+.fa-check-circle {
+    color: #3da907;
+}
+
+.expand-icon {
+    float:right;
+    font-size: 20px;
+}

@@ -1,0 +1,25 @@
+<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
+  <div *ngFor="let insight of insights" class="insight-container">
+    <div class="card">
+      <h5 class="card-header" (click)="insight.showDetails = !insight.showDetails">
+        <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical" [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
+          [class.fa-check-circle]="insight.status === InsightStatus.Healthy"></span>
+        {{insight.title}}
+
+        <span class="fa expand-icon" [class.fa-angle-down]="!insight.showDetails" [class.fa-angle-up]="insight.showDetails"></span>
+      </h5>
+      <div class="card-body" *ngIf="insight.showDetails">
+        <table>
+          <tbody>
+            <tr *ngFor="let key of insight.getKeys()">
+              <td class="table-key">
+                <b>{{key}}</b>
+              </td>
+              <td class="table-value">{{insight.data[key]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</data-container>
