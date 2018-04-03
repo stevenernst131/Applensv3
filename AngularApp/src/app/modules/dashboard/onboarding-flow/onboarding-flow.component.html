@@ -53,7 +53,9 @@
 
                     </div>
 
-                    <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [error]="errorState" [showEdit]="false"></detector-view>
+                    <div style="padding:10px">
+                        <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [error]="errorState" [showEdit]="false"></detector-view>                        
+                    </div>
 
                 </split-area>
         
