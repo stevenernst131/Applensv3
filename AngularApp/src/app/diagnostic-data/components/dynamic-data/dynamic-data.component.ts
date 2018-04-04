@@ -4,17 +4,19 @@ import { DataTableComponent } from '../data-table/data-table.component';
 import { RenderingType, DiagnosticData, Rendering } from '../../models/detector';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
 import { BehaviorSubject } from 'rxjs';
+import { DataSummaryComponent } from '../data-summary/data-summary.component';
+import { EmailComponent } from '../email/email.component';
+import { InsightsComponent } from '../insights/insights.component';
 
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',
   styleUrls: ['./dynamic-data.component.css'],
-  entryComponents: [TimeSeriesGraphComponent, DataTableComponent]
+  entryComponents: [TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent, InsightsComponent]
 })
 export class DynamicDataComponent implements OnInit {
 
   private dataBehaviorSubject: BehaviorSubject<DiagnosticData> = new BehaviorSubject<DiagnosticData>(null);
-  //private diagnosticData: DiagnosticData;
 
   @Input() set diagnosticData(data: DiagnosticData) {
     this.dataBehaviorSubject.next(data);
@@ -26,7 +28,7 @@ export class DynamicDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataBehaviorSubject.subscribe((diagnosticData: DiagnosticData) => {
-      let component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).renderingType);
+      let component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).type);
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
 
       let viewContainerRef = this.dynamicDataContainer;
@@ -47,6 +49,12 @@ export class DynamicDataComponent implements OnInit {
         return TimeSeriesGraphComponent;
       case RenderingType.Table:
         return DataTableComponent;
+      case RenderingType.DataSummary:
+        return DataSummaryComponent;
+      case RenderingType.Email:
+        return EmailComponent;
+      case RenderingType.Insights: 
+        return InsightsComponent
       default:
         return null;
     }

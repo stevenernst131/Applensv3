@@ -1,0 +1,8 @@
+<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
+  <div *ngIf="summaryViewModels">
+    <div class="display-member" *ngFor="let viewModel of summaryViewModels">
+      <div class="hightlight-value">{{viewModel.value}}</div>
+      {{viewModel.name}}
+    </div>
+  </div>  
+</data-container> 

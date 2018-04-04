@@ -1,17 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'data-container',
   templateUrl: './data-container.component.html',
   styleUrls: ['./data-container.component.css']
 })
-export class DataContainerComponent implements OnInit {
+export class DataContainerComponent {
 
-  constructor() { }
+  @Input() headerTemplate: TemplateRef<any>;
 
-  @Input() height: string = '200px';
-
-  ngOnInit() {
-  }
-
+  @Input() title: string;
+  @Input() description: string;
+  @Input() noBodyPadding: boolean = false;
 }

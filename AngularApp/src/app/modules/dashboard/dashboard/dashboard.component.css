@@ -14,11 +14,6 @@
     overflow-y: scroll;
 }
 
-.content-wrapper {
-    background-color: #f3f3f3;
-}
-
-
 @media (min-width: 768px) {
     .main-content {
         padding-left: 250px;

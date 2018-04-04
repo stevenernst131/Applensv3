@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DetectorResponse } from '../../../diagnostic-data/models/detector';
+import { DetectorResponse, RenderingType } from '../../../diagnostic-data/models/detector';
 import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
@@ -41,14 +41,15 @@ export class SignalContainerComponent implements OnInit {
   getDetectorResponse() {
     this.signalResponse = null;
     this.signal = this._route.snapshot.params['signal'];
-    this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString()).subscribe((response: DetectorResponse) => {
+    this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString())
+    .subscribe((response: DetectorResponse) => {
       this.signalResponse = response;
     }, (error: any) => {
       this.error = error;
     });
   }
 
-  onEditClicked(): void {
+  onEditClicked(event: any): void {
     
     let navigationExtras: NavigationExtras = {
       queryParamsHandling: 'preserve',
@@ -58,5 +59,4 @@ export class SignalContainerComponent implements OnInit {
 
     this._router.navigate(['edit'], navigationExtras);
   }
-
 }

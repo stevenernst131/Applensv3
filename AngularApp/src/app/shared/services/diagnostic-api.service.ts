@@ -29,7 +29,7 @@ export class DiagnosticApiService {
 
   public getDetectors(resourceId: string): Observable<DetectorMetaData[]> {
     let path = `v4/${resourceId}/diagnostics/detectors`;
-    return this.invoke<DetectorMetaData[]>(path, HttpMethod.GET);
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.GET).map(response => response.map(detector => detector.metadata));
   }
 
   public getCompilerResponse(resourceId: string, resourceSpecificQueryString: string, body: any): Observable<QueryResponse<DetectorResponse>> {
