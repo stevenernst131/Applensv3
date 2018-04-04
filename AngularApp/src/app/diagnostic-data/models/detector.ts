@@ -36,7 +36,10 @@ export interface DetectorMetaData {
 export enum RenderingType {
     NoGraph = 0,
     Table,
-    TimeSeries
+    TimeSeries,
+    DataSummary,
+    Email,
+    Insights
 }
 
 export class DataTableDataType {
@@ -53,24 +56,24 @@ export class DataTableDataType {
 }
 
 export interface Rendering {
-    renderingType: RenderingType;
+    type: RenderingType;
     title: string;
     description: string;
 }
 
-export interface DataTableRendering {
+export interface DataTableRendering extends Rendering {
     groupByColumnName: string;
     displayColumnNames: string[];
 }
 
-export interface TimeSeriesRendering {
+export interface TimeSeriesRendering extends Rendering {
     defaultValue: number;
     timestampColumnName: string;
     counterColumnName: string;
     seriesColumns: string[];
 }
 
-export interface TimeSeriesPerInstanceRendering {
+export interface TimeSeriesPerInstanceRendering extends Rendering {
     timestampColumnName: string;
     roleInstanceColumnName: string;
     counterColumnName: string;
@@ -78,4 +81,12 @@ export interface TimeSeriesPerInstanceRendering {
     instanceFilter: string[];
     counterNameFilter: string[];
     selectedInstance: string;
+}
+
+export interface InsightsRendering extends Rendering {
+    insightColumnName: string;
+    statusColumnName: string;
+    nameColumnName: string;
+    valueColumnName: string;
+    typeColumnName: string;
 }

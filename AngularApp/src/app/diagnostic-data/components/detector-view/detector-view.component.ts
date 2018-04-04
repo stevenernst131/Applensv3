@@ -9,8 +9,8 @@ import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 })
 export class DetectorViewComponent implements OnInit {
 
-  private detectorDataLocalCopy: DetectorResponse;
-  private errorState: any;
+  detectorDataLocalCopy: DetectorResponse;
+  errorState: any;
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
