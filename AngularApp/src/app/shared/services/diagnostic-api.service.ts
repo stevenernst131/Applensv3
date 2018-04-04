@@ -23,13 +23,13 @@ export class DiagnosticApiService {
 
   public getDetector(resourceId: string, detector: string, resourceSpecificQueryString: string): Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters();
-    let path = `v4/${resourceId}/detectors/${detector}?${resourceSpecificQueryString}${timeParameters}`;
-    return this.invoke<DetectorResponse>(path, HttpMethod.POST);
+    let path = `v4/${resourceId}/diagnostics/detectors/${detector}?${resourceSpecificQueryString}${timeParameters}`;
+    return this.invoke<DetectorResponse>(path, HttpMethod.GET);
   }
 
   public getDetectors(resourceId: string): Observable<DetectorMetaData[]> {
-    let path = `v4/${resourceId}/detectors`;
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST).map(response => response.map(detector => detector.metadata);
+    let path = `v4/${resourceId}/diagnostics/detectors`;
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.GET).map(response => response.map(detector => detector.metadata));
   }
 
   public getCompilerResponse(resourceId: string, resourceSpecificQueryString: string, body: any): Observable<QueryResponse<DetectorResponse>> {

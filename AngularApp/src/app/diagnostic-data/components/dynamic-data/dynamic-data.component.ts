@@ -28,7 +28,7 @@ export class DynamicDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataBehaviorSubject.subscribe((diagnosticData: DiagnosticData) => {
-      let component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).renderingType);
+      let component = this._findInputComponent((<Rendering>diagnosticData.renderingProperties).type);
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
 
       let viewContainerRef = this.dynamicDataContainer;

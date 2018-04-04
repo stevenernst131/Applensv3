@@ -56,7 +56,7 @@ export class DataTableDataType {
 }
 
 export interface Rendering {
-    renderingType: RenderingType;
+    type: RenderingType;
     title: string;
     description: string;
 }
