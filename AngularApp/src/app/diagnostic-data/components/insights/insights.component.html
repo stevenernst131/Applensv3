@@ -6,7 +6,7 @@
     <div class="card">
       <h5 class="card-header" [class.clickable-header]="insight.hasData()" (click)="insight.showDetails = insight.hasData() && !insight.showDetails">
         <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical" [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
-          [class.fa-check-circle]="insight.status === InsightStatus.Healthy"></span>
+          [class.fa-check-circle]="insight.status === InsightStatus.Success" [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
         {{insight.title}}
 
         <span *ngIf="insight.hasData()" class="fa expand-icon" [class.fa-angle-down]="!insight.showDetails" [class.fa-angle-up]="insight.showDetails"></span>
