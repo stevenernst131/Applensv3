@@ -79,5 +79,6 @@ class Insight {
 enum InsightStatus {
   Critical,
   Warning,
-  Healthy
+  Info,
+  Success
 }
