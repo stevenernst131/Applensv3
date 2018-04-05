@@ -1,6 +1,8 @@
-<li class="nav-item" data-toggle="tooltip" data-placement="right" (click)="navigate()">
-  <a class="nav-link">
-      <img id="resourceImage" [src]="resourceService.imgSrc"/>
-      <span class="nav-link-text">{{resourceService.getResourceName()}}</span>
+<li class="nav-item" data-toggle="tooltip" data-placement="right" (click)="navigate()" [class.nav-item-selected]="selected">
+  <a class="nav-link" >
+      <div class="inline">
+          <img id="resourceImage" [src]="resourceService.imgSrc"/>
+      </div>
+      <div class="nav-link-text inline">{{resourceService.getResourceName()}}</div>
   </a>
 </li>
