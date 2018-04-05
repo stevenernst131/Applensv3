@@ -1,2 +1,2 @@
-<nvd3 [options]="options" [data]="chartData" *ngIf="chartData"></nvd3>
-<div *ngIf="!chartData">Loading Chart...</div>
+<nvd3 [options]="options" [data]="chartData" *ngIf="chartData && !loading"></nvd3>
+<div *ngIf="!chartData || loading">Loading Chart...</div>

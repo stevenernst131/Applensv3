@@ -37,9 +37,18 @@ export enum RenderingType {
     NoGraph = 0,
     Table,
     TimeSeries,
+    TimeSeriesPerInstance,
+    PieChart,
     DataSummary,
     Email,
     Insights
+}
+
+export enum TimeSeriesType {
+    LineGraph = 0,
+    BarGraph,
+    StackedAreaGraph,
+    StackedBarGraph
 }
 
 export class DataTableDataType {
@@ -68,12 +77,14 @@ export interface DataTableRendering extends Rendering {
 
 export interface TimeSeriesRendering extends Rendering {
     defaultValue: number;
+    graphType: TimeSeriesType;
     timestampColumnName: string;
     counterColumnName: string;
     seriesColumns: string[];
 }
 
 export interface TimeSeriesPerInstanceRendering extends Rendering {
+    graphType: TimeSeriesType;
     timestampColumnName: string;
     roleInstanceColumnName: string;
     counterColumnName: string;
