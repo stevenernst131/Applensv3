@@ -9,6 +9,9 @@
 
 .card-header {
     font-size: 16px;
+}
+
+.clickable-header {
     cursor: pointer;
 }
 
