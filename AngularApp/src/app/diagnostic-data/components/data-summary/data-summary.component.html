@@ -11,10 +11,13 @@
 </ng-template>
 
 <!-- If there is title wrap it in container -->
-<data-container *ngIf="renderingProperties.title else noContainer" [title]="renderingProperties.title" [description]="renderingProperties.description">
+<data-container *ngIf="renderingProperties.title; else noContainer" [title]="renderingProperties.title" [description]="renderingProperties.description">
   <ng-container *ngTemplateOutlet="summaries"></ng-container>
 </data-container> 
 
 <!-- If there is no title, do not use container. Note this is called from the else statement in the *ngIf above -->
-<ng-container #noContainer *ngTemplateOutlet="summaries"></ng-container>
+<ng-template #noContainer>
+    <ng-container *ngTemplateOutlet="summaries"></ng-container>
+</ng-template>
+
 
