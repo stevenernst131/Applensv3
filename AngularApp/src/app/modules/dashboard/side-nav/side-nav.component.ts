@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'side-nav',
@@ -14,8 +15,27 @@ export class SideNavComponent implements OnInit {
 
   sideNavItems: SideNavItem[] = [];
 
+  currentRoutePath: string[]
+
   ngOnInit() {
-    this.initializeSignals();
+    this.initializeDetectors();
+
+    this.getCurrentRoutePath();
+
+    this._router.events.filter(event => event instanceof NavigationEnd).subscribe(event => {
+      this.getCurrentRoutePath();
+    });
+  }
+
+  private getCurrentRoutePath() {
+    this.currentRoutePath = this._getLastNestedRoute(this._activatedRoute).snapshot.url.map(urlSegment => urlSegment.path);
+  }
+
+  private _getLastNestedRoute(activatedRoute: ActivatedRoute) {
+      while (activatedRoute.firstChild) {
+        activatedRoute = activatedRoute.firstChild;
+      }
+      return activatedRoute;
   }
 
   navigate(item: SideNavSubItem) {
@@ -42,20 +62,27 @@ export class SideNavComponent implements OnInit {
     this._router.navigate(['create'], navigationExtras);
   }
 
-  initializeSignals() {
+  initializeDetectors() {
 
     this._diagnosticApiService.getDetectors(this._resourceService.getCurrentResourceId()).subscribe(detectorList => {
-      let signals = new SideNavItem();
-      signals.name = 'Detectors';
-      signals.symbol = 'fa-signal';
-      signals.expanded = true;
+      let detectors = new SideNavItem();
+      detectors.name = 'Detectors';
+      detectors.symbol = 'fa-signal';
+      detectors.expanded = true;
 
+      let childUrl = this._activatedRoute.firstChild ? this._activatedRoute.firstChild.snapshot.url : this._activatedRoute.snapshot.url;
+      
       detectorList.forEach(element => {
-        signals.addSubItem(element.id, element.name, `signals/${element.id}`);
+        let detectorIsActive = childUrl && childUrl.length > 1 && childUrl[0].path === 'detectors' && childUrl[1].path === element.id;
+        detectors.addSubItem(element.id, element.name, `detectors/${element.id}`, detectorIsActive);
       });
 
-      this.sideNavItems.push(signals);
+      this.sideNavItems.push(detectors);
     });
+  }
+
+  doesMatchCurrentRoute(expectedRoute: string) {
+    return this.currentRoutePath && this.currentRoutePath.join('/') === expectedRoute;
   }
 
 }
@@ -71,13 +98,13 @@ export class SideNavItem {
     this.subItems.forEach(item => item.show = !item.show);
   }
 
-  addSubItem(name: string, displayName: string, link: string) {
+  addSubItem(name: string, displayName: string, link: string, isActive: boolean) {
     this.subItems.push(<SideNavSubItem>{
       name: name,
       displayName: displayName,
       link: link,
       show: this.expanded,
-      selected: false
+      selected: isActive
     });
   }
 }

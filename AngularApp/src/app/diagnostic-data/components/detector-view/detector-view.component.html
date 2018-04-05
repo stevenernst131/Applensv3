@@ -14,9 +14,8 @@
       <dynamic-data [diagnosticData]="data"></dynamic-data>
     </div>
   </div>
-  <div *ngIf="!detectorDataLocalCopy && !errorState">
-    Loading...
-  </div>
+
+  <loader-view *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>
   
   <ng-container *ngIf="!detectorDataLocalCopy && errorState">
       Error loading detector

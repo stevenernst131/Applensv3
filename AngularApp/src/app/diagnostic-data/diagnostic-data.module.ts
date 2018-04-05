@@ -19,6 +19,7 @@ import { InsightsComponent } from './components/insights/insights.component';
 import { DetectorViewComponent } from './components/detector-view/detector-view.component';
 
 import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnostic-data-config';
+import { LoaderViewComponent } from './components/loader-view/loader-view.component';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -37,7 +38,9 @@ import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnos
     { provide: DIAGNOSTIC_DATA_CONFIG, useValue: INTERNAL_CONFIGURATION }
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent, 
-    DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent],
-  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent],
+    DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
+    LoaderViewComponent],
+  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
+    LoaderViewComponent],
 })
 export class DiagnosticDataModule { }
