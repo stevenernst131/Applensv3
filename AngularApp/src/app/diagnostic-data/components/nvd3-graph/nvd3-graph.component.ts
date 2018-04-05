@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
 import 'moment-timezone';
+import { TimeSeriesType } from '../../models/detector';
+import { nvd3Utilities } from '../../utilities/nvd3-utilities';
 
 declare let d3: any;
 
@@ -13,13 +15,25 @@ export class Nvd3GraphComponent implements OnInit {
 
   options: any;
 
-  @Input() chartData: GraphSeries[]
+  @Input() chartData: GraphSeries[];
+
+  @Input() chartType: TimeSeriesType;
+
+  loading: boolean;
 
   constructor() {
     this._setOptions();
   }
 
   ngOnInit() {
+    this._setChartType();
+    this.loading = false;
+  }
+
+  private _setChartType() {
+    if (this.chartType) {
+      this.options.chart.type = nvd3Utilities.getChartType(this.chartType);
+    }
   }
 
   private _setOptions() {
