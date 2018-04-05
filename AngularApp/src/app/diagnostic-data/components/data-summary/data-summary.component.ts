@@ -13,7 +13,7 @@ export class DataSummaryComponent extends DataRenderBaseComponent {
 
   renderingProperties: Rendering;
 
-  summaryViewModels: DataSummaryViewModel[];
+  summaryViewModels: DataSummaryViewModel[] = [];
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -24,14 +24,14 @@ export class DataSummaryComponent extends DataRenderBaseComponent {
 
   private createViewModel() {
     if (this.diagnosticData.table.rows.length > 0) {
-      let viewModels: DataSummaryViewModel[] = [];
-      let firstRow = this.diagnosticData.table.rows[0];
-      let columns = this.diagnosticData.table.columns;
-      for (let i: number = 0; i < columns.length; i++) {
-        viewModels.push(<DataSummaryViewModel>{ name: columns[i].columnName, value: firstRow[i] });
-      }
+      let rows = this.diagnosticData.table.rows;
 
-      this.summaryViewModels = viewModels;
+      let labelColumn = 0;
+      let valueColumn = 1;
+      let colorColumn = 2;
+      rows.forEach(row => {
+        this.summaryViewModels.push(<DataSummaryViewModel>{ name: row[labelColumn], value: row[valueColumn], color: row[colorColumn] });
+      })
     }
   }
 }
@@ -39,4 +39,5 @@ export class DataSummaryComponent extends DataRenderBaseComponent {
 class DataSummaryViewModel {
   value: string;
   name: string;
+  color: string;
 }

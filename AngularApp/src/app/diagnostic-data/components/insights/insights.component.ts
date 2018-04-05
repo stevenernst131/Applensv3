@@ -44,7 +44,10 @@ export class InsightsComponent extends DataRenderBaseComponent {
         insights.push(insight);
       }
 
-      insight.data[row[nameColumnIndex]] = row[valueColumnIndex];
+      let nameColumnValue = row[nameColumnIndex];
+      if(nameColumnValue && nameColumnValue.length > 0) {
+        insight.data[nameColumnValue] = row[valueColumnIndex];
+      }
     }
 
     this.insights = insights;
@@ -66,6 +69,10 @@ class Insight {
 
   getKeys(): string[] {
     return Object.keys(this.data);
+  }
+
+  hasData(): boolean {
+    return Object.keys(this.data).length > 0;
   }
 }
 
