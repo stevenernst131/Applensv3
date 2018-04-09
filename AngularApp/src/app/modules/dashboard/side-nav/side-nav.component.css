@@ -6,3 +6,8 @@
 .sidenav-item-selected {
     background-color: #1f1f1f;
 }
+
+.secondary-icon{
+    font-size:12px;
+    margin-left:5px;
+}

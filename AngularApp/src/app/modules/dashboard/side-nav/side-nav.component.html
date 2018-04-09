@@ -10,9 +10,20 @@
 
     <li class="nav-item" data-toggle="tooltip" data-placement="right">
             <a class="nav-link" (click)="openOnboardingFlow()">
-                    <i class="fa fa-fw fa-plus"></i>
-                    <span class="nav-link-text">Create Detector</span>
+                <i class="fa fa-fw fa-plus navItem.symbol"></i>
+                <span class="nav-link-text">Create Detector</span>
             </a>
+
+            <ul class="sidenav-second-level">
+                <li>
+                    <a href="https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods" target="_blank">
+                        Online Documentation <i class="fa fa-external-link secondary-icon"></i>
+                    </a>
+                    <a href="https://github.com/Azure/Azure-AppServices-Diagnostics/tree/master/data/samples/Diagnostics.Samples" target="_blank">
+                        Code Samples <i class="fa fa-external-link secondary-icon"></i>
+                    </a>
+                </li>
+            </ul>
     </li>
 
     <li class="nav-item" data-toggle="tooltip" data-placement="right" *ngFor="let navItem of sideNavItems">
