@@ -9,14 +9,14 @@
     <resource-menu-item [currentRoutePath]="currentRoutePath"></resource-menu-item>
 
     <li class="nav-item" data-toggle="tooltip" data-placement="right" [class.sidenav-item-selected]="currentRoutePath && currentRoutePath.length === 1 && currentRoutePath[0] === 'create'">
-        <a class="nav-link" (click)="openOnboardingFlow()">
+        <a class="nav-link applens-menu-item" (click)="openOnboardingFlow()">
             <i class="fa fa-fw fa-plus"></i>
             <span class="nav-link-text">Create Detector</span>
         </a>
     </li>
 
     <li class="nav-item" data-toggle="tooltip" data-placement="right" *ngFor="let navItem of sideNavItems">
-        <a class="nav-link nav-link-collapse" (click)="navItem.toggleExpanded()" [ngClass]="{'collapsed': !navItem.expanded }">
+        <a class="nav-link nav-link-collapse applens-menu-item" (click)="navItem.toggleExpanded()" [ngClass]="{'collapsed': !navItem.expanded }">
             <i class="fa fa-fw" [ngClass]="navItem.symbol"></i>
             <span class="nav-link-text">{{navItem.name}}</span>
         </a>
@@ -24,7 +24,7 @@
 
             <li *ngFor="let subItem of navItem.subItems" 
                 [class.sidenav-item-selected]="doesMatchCurrentRoute('detectors/' + subItem.name) || doesMatchCurrentRoute('detectors/' + subItem.name + '/edit')">
-                <a (click)="navigate(subItem)">{{subItem.displayName}}</a>
+                <a class="applens-menu-item" (click)="navigate(subItem)">{{subItem.displayName}}</a>
             </li>
         </ul>
     </li>
