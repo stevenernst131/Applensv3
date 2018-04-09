@@ -20,6 +20,8 @@ export class DataTableComponent extends DataRenderBaseComponent {
 
   grouped: boolean = true;
 
+  rowLimit: 25;
+
   renderingProperties: DataTableRendering;
 
   protected processData(data: DiagnosticData) {

@@ -6,3 +6,11 @@
 .sidenav-item-selected {
     background-color: #1f1f1f;
 }
+
+.applens-menu-item {
+    color: #eeeeee;
+}
+
+.applens-menu-item:hover {
+    color: #ffffff;
+}

@@ -42,7 +42,7 @@ export class Nvd3GraphComponent implements OnInit {
         type: 'lineChart',
         height: 200,
         margin: {
-          top: 20,
+          top: 30,
           right: 40,
           bottom: 50,
           left: 50
