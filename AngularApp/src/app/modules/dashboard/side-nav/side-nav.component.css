@@ -7,6 +7,14 @@
     background-color: #1f1f1f;
 }
 
+.applens-menu-item {
+    color: #eeeeee;
+}
+
+.applens-menu-item:hover {
+    color: #ffffff;
+}
+
 .secondary-icon{
     font-size:12px;
     margin-left:5px;

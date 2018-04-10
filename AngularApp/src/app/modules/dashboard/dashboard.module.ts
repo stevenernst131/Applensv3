@@ -43,7 +43,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     resolve: { info: InitResolver },
     children: [
       {
-        path: '',
+        path: 'home',
         component: ResourceHomeComponent,
         pathMatch: 'full'
       },
@@ -52,11 +52,11 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         component: OnboardingFlowComponent
       },
       {
-        path: 'signals/:signal',
+        path: 'detectors/:signal',
         component: SignalContainerComponent
       },
       {
-        path: 'signals/:signal/edit',
+        path: 'detectors/:signal/edit',
         component: OnboardingFlowComponent
       }
     ]
