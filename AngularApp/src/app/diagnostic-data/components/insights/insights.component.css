@@ -43,6 +43,10 @@ table {
     color: #3da907;
 }
 
+.fa-info-circle {
+    color: #3a9bc7;
+}
+
 .expand-icon {
     float:right;
     font-size: 20px;

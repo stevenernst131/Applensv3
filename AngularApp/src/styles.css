@@ -2,6 +2,8 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
 
+@import "~startbootstrap-sb-admin/css/sb-admin.min.css";
+
 /* Must import diagnostic-data css */
 @import 'app/diagnostic-data/diagnostic-data.css';
 
@@ -14,5 +16,5 @@ body {
 #mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-second-level>li>a, #mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-third-level>li>a {
     padding-top:2px;
     padding-bottom: 2px;
+    color: #e0e0e0;
 }
-
