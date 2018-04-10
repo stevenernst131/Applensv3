@@ -14,3 +14,8 @@
 .applens-menu-item:hover {
     color: #ffffff;
 }
+
+.secondary-icon{
+    font-size:12px;
+    margin-left:5px;
+}

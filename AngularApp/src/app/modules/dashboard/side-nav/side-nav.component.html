@@ -8,11 +8,25 @@
 <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
     <resource-menu-item [currentRoutePath]="currentRoutePath"></resource-menu-item>
 
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" [class.sidenav-item-selected]="currentRoutePath && currentRoutePath.length === 1 && currentRoutePath[0] === 'create'">
-        <a class="nav-link applens-menu-item" (click)="openOnboardingFlow()">
-            <i class="fa fa-fw fa-plus"></i>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right">
+        <a class="nav-link" (click)="openOnboardingFlow()">
+            <i class="fa fa-fw fa-plus navItem.symbol"></i>
             <span class="nav-link-text">Create Detector</span>
         </a>
+
+        <ul class="sidenav-second-level">
+            <li>
+                <a href="https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods"
+                    target="_blank">
+                    Online Documentation
+                    <i class="fa fa-external-link secondary-icon"></i>
+                </a>
+                <a href="https://github.com/Azure/Azure-AppServices-Diagnostics/tree/master/data/samples/Diagnostics.Samples" target="_blank">
+                    Code Samples
+                    <i class="fa fa-external-link secondary-icon"></i>
+                </a>
+            </li>
+        </ul>
     </li>
 
     <li class="nav-item" data-toggle="tooltip" data-placement="right" *ngFor="let navItem of sideNavItems">
@@ -22,8 +36,7 @@
         </a>
         <ul class="sidenav-second-level collapse" [ngClass]="{'show': navItem.expanded }" id="collapseComponents">
 
-            <li *ngFor="let subItem of navItem.subItems" 
-                [class.sidenav-item-selected]="doesMatchCurrentRoute('detectors/' + subItem.name) || doesMatchCurrentRoute('detectors/' + subItem.name + '/edit')">
+            <li *ngFor="let subItem of navItem.subItems" [class.sidenav-item-selected]="doesMatchCurrentRoute('detectors/' + subItem.name) || doesMatchCurrentRoute('detectors/' + subItem.name + '/edit')">
                 <a class="applens-menu-item" (click)="navigate(subItem)">{{subItem.displayName}}</a>
             </li>
         </ul>
