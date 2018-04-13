@@ -1,4 +1,0 @@
-<data-container [title]="renderingProperties.title" [description]="renderingProperties.description">
-        <nvd3-graph [chartData]="selectedSeries" [chartType]="renderingProperties.graphType" *ngIf="selectedSeries"></nvd3-graph>
-        <div *ngIf="!selectedSeries">Loading Data...</div>
-</data-container>
