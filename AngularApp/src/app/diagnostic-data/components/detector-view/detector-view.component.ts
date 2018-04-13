@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
+import * as moment from 'moment';
 
 @Component({
   selector: 'detector-view',
@@ -24,6 +25,9 @@ export class DetectorViewComponent implements OnInit {
   set error(value: any) {
     this.errorSubject.next(value);
   }
+
+  @Input() startTime: moment.Moment;
+  @Input() endTime: moment.Moment;
 
   @Input()
   showEdit: boolean = true;

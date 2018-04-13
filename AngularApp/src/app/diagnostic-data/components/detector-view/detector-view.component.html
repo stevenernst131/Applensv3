@@ -11,7 +11,7 @@
     </div>
     
     <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
-      <dynamic-data [diagnosticData]="data"></dynamic-data>
+      <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
     </div>
   </div>
 
