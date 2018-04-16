@@ -17,8 +17,12 @@ export class DashboardComponent implements OnInit {
   startTime: moment.Moment;
   endTime: moment.Moment;
 
+  contentHeight: string;
+
   constructor(public resourceService: ResourceService, private _startupService: StartupService, private _queryParamsService: QueryParamsService, 
     private _router: Router, private _activatedRoute: ActivatedRoute) {
+      this.contentHeight = (window.innerHeight -50) + 'px';
+
       // Add time params to route if not already present
       if(!this._activatedRoute.queryParams['startTime'] || !this._activatedRoute.queryParams['endTime']) {
         let timeParams = { 

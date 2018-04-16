@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ObserverSiteResponse, ObserverSiteInfo, ObserverAseResponse } from '../models/observer';
 import { DiagnosticApiService } from './diagnostic-api.service';
+import { isArray } from 'util';
 
 @Injectable()
 export class ObserverService {
@@ -15,7 +16,10 @@ export class ObserverService {
 
     return this._diagnosticApiService.get<ObserverSiteResponse>(`api/sites/${site}`)
       .map((site : ObserverSiteResponse) => {
-        site.details.map(info => this.getSiteInfoWithSlotAndHostnames(info, site.hostNames))
+        if (site && site.details && isArray(site.details)) {
+          site.details.map(info => this.getSiteInfoWithSlotAndHostnames(info, site.hostNames))
+        }
+       
         return site;
       });
   }

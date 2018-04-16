@@ -32,7 +32,9 @@
       "scripts": [
         "../node_modules/moment/min/moment.min.js",
         "../node_modules/moment-timezone/builds/moment-timezone.min.js",
-        "../node_modules/moment-timezone/builds/moment-timezone-with-data.js"
+        "../node_modules/moment-timezone/builds/moment-timezone-with-data.js",
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/admin-lte/dist/js/adminlte.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
