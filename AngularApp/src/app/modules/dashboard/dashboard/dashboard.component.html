@@ -1,20 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-  <a class="navbar-brand" [routerLink]="['/']"><span style="color:#ffb353">{{resourceService.lensPrefix}}</span>Lens</a>
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarResponsive">
-    <side-nav></side-nav>
-    <ul class="navbar-nav ml-auto">
-      <time-picker></time-picker>
-    </ul>
-  </div>
-</nav>
+<header routerLink="/" class="main-header">
+  <a class="logo">
+    <span class="logo-lg">
+        <span style="color:#ffb353">{{resourceService.lensPrefix}}</span>Lens
+    </span>
+  </a>
 
-<div class="content-wrapper">
-    <div class="container-fluid">
-        <router-outlet></router-outlet>
-    </div>
+  <nav class="navbar navbar-static-top" role="navigation">
+    <time-picker></time-picker>
+  </nav>
+</header>
+
+<side-nav></side-nav>
+
+<div class="content-wrapper" [style.min-height]="contentHeight">
+    <router-outlet></router-outlet>
 </div>
-

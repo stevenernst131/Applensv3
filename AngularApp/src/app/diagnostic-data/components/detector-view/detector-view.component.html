@@ -1,23 +1,20 @@
 <div *ngIf="detectorDataLocalCopy">
-    <div class="row">
-      <div class="col">
-          <h2>{{detectorDataLocalCopy.metadata.name}}</h2>
-          <p>{{detectorDataLocalCopy.metadata.description}}</p>
-      </div>
-      <div class="col-md-2" *ngIf="showEdit">
-          <button (click)="edit()" type="button" class="btn btn-info edit-button">Edit</button>
-      </div>
-      
-    </div>
-    
-    <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
-      <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
-    </div>
+  <div style="margin-bottom: 15px">
+    <section class="content-header">
+      <h1>
+        {{detectorDataLocalCopy.metadata.name}}
+        <small>{{detectorDataLocalCopy.metadata.description}}</small>
+      </h1>
+    </section>
   </div>
 
-  <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>
-  
-  <ng-container *ngIf="!detectorDataLocalCopy && errorState">
-      Error loading detector
-  </ng-container>
-  
+  <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
+    <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+  </div>
+</div>
+
+<loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>
+
+<ng-container *ngIf="!detectorDataLocalCopy && errorState">
+  Error loading detector
+</ng-container>

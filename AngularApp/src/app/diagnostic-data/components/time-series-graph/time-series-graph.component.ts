@@ -38,9 +38,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     if (data) {
 
-      console.log(this.startTime);
-      console.log(this.endTime);
-
       let start = this.startTime;
       let end = this.endTime;
       let timeGrain = this.timeGrainInMinutes;

@@ -38,9 +38,13 @@ export class MainComponent implements OnInit {
   startTime: moment.Moment;
   endTime: moment.Moment;
 
+  contentHeight: string;
+
   constructor(private _router: Router, private _activatedRoute: ActivatedRoute) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
+
+    this.contentHeight = window.innerHeight + 'px';
   }
 
   ngOnInit() {

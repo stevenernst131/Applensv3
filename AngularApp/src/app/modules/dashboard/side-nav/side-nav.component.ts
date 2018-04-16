@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PipeTransform, Pipe } from '@angular/core';
 import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
@@ -11,9 +11,11 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SideNavComponent implements OnInit {
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService) { }
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, public resourceService: ResourceService) { }
 
   sideNavItems: SideNavItem[] = [];
+
+  detectors: SideNavSubItem[] = [];
 
   currentRoutePath: string[]
 
@@ -51,6 +53,16 @@ export class SideNavComponent implements OnInit {
     this._router.navigate(item.link.split('/'), navigationExtras);
   }
 
+  navigateTo(path: string) {
+    let navigationExtras: NavigationExtras = {
+      queryParamsHandling: 'preserve',
+      preserveFragment: true,
+      relativeTo: this._activatedRoute
+    };
+
+    this._router.navigate(path.split('/'), navigationExtras);
+  }
+
   openOnboardingFlow() {
 
     let navigationExtras: NavigationExtras = {
@@ -64,20 +76,28 @@ export class SideNavComponent implements OnInit {
 
   initializeDetectors() {
 
-    this._diagnosticApiService.getDetectors(this._resourceService.getCurrentResourceId()).subscribe(detectorList => {
-      let detectors = new SideNavItem();
-      detectors.name = 'Detectors';
-      detectors.symbol = 'fa-signal';
-      detectors.expanded = true;
+    let detectors = new SideNavItem();
+    detectors.name = 'Detectors';
+    detectors.symbol = 'fa-signal';
+    detectors.expanded = true;
+
+    this.sideNavItems.push(detectors);
+
+    this._diagnosticApiService.getDetectors(this.resourceService.getCurrentResourceId()).subscribe(detectorList => {
 
       let childUrl = this._activatedRoute.firstChild ? this._activatedRoute.firstChild.snapshot.url : this._activatedRoute.snapshot.url;
       
       detectorList.forEach(element => {
         let detectorIsActive = childUrl && childUrl.length > 1 && childUrl[0].path === 'detectors' && childUrl[1].path === element.id;
         detectors.addSubItem(element.id, element.name, `detectors/${element.id}`, detectorIsActive);
-      });
 
-      this.sideNavItems.push(detectors);
+        this.detectors.push(<SideNavSubItem>{ 
+          name: element.id,
+          selected: detectorIsActive,
+          displayName: element.name,
+          link: `detectors/${element.id}`
+        });
+      });
     });
   }
 
@@ -92,6 +112,7 @@ export class SideNavItem {
   symbol: string;
   expanded: boolean;
   subItems: SideNavSubItem[] = [];
+  searchValue: string = '';
 
   toggleExpanded() {
     this.expanded = !this.expanded;
@@ -115,4 +136,14 @@ export interface SideNavSubItem {
   show: boolean;
   selected: boolean;
   link: string;
+}
+
+@Pipe({
+  name:'detectorSearch',
+  pure: false
+})
+export class SearchPipe implements PipeTransform {
+  transform(items: SideNavSubItem[], searchString: string) {
+    return searchString && items ? items.filter(item => item.name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
+  }
 }
