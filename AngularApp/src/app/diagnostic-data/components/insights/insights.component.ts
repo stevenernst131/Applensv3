@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { Rendering, RenderingType, DiagnosticData, InsightsRendering } from '../../models/detector';
-import { Dictionary } from '../../../shared/models/extensions';
+import { Dictionary } from '../../utilities/extensions';
 
 @Component({
   selector: 'insights',
@@ -14,9 +14,9 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   renderingProperties: InsightsRendering;
 
-  insights: Insight[];
+  private insights: Insight[];
 
-  InsightStatus = InsightStatus;
+  private InsightStatus = InsightStatus;
 
   protected processData(data: DiagnosticData) {
     super.processData(data);

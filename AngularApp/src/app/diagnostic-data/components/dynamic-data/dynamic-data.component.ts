@@ -7,6 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 import { DataSummaryComponent } from '../data-summary/data-summary.component';
 import { EmailComponent } from '../email/email.component';
 import { InsightsComponent } from '../insights/insights.component';
+import * as momentNs from 'moment-timezone';
+const moment = momentNs;
 
 @Component({
   selector: 'dynamic-data',
@@ -22,6 +24,9 @@ export class DynamicDataComponent implements OnInit {
     this.dataBehaviorSubject.next(data);
   };
 
+  @Input() startTime: momentNs.Moment;
+  @Input() endTime: momentNs.Moment;
+
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
@@ -35,9 +40,11 @@ export class DynamicDataComponent implements OnInit {
       viewContainerRef.clear();
 
       let componentRef = viewContainerRef.createComponent(componentFactory);
-      (<DataRenderBaseComponent>componentRef.instance).diagnosticDataInput = diagnosticData;
+      let instance = <DataRenderBaseComponent>(componentRef.instance);
+      instance.diagnosticDataInput = diagnosticData;
+      instance.startTime = this.startTime;
+      instance.endTime = this.endTime;
     });
-    
   }
 
   ngAfterViewInit(): void {

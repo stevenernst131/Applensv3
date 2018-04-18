@@ -7,12 +7,9 @@ import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
 import { TimeSeries } from '../../models/time-series';
-import { QueryParamsService } from '../../../shared/services/query-params.service';
-import * as moment from 'moment';
-import 'moment-timezone';
-import { DateTimeAdapter } from 'ng-pick-datetime';
-import { TimeZones } from '../../../shared/models/datetime';
-import { TimeUtilities } from '../../utilities/time-utilities';
+import * as momentNs from 'moment-timezone';
+import { TimeUtilities, TimeZones } from '../../utilities/time-utilities';
+const moment = momentNs;
 
 @Component({
   selector: 'time-series-graph',
@@ -23,7 +20,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
   DataRenderingType = RenderingType.TimeSeries;
 
-  constructor(private _queryParamsService: QueryParamsService) {
+  constructor() {
     super();
   }
 
@@ -36,18 +33,14 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   dataTable: DataTableResponseObject;
   defaultValue: number = 0;
 
-  startTime: moment.Moment;
-  endTime: moment.Moment;
-  timeGrainInMinutes: number = 5;
-
   processData(data: DiagnosticData) {
     super.processData(data);
 
     if (data) {
 
-      let start = this._queryParamsService.startTime;
-      let end = this._queryParamsService.endTime;
-      let timeGrain = this._queryParamsService.timeGrainInMinutes;
+      let start = this.startTime;
+      let end = this.endTime;
+      let timeGrain = this.timeGrainInMinutes;
 
       TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
       TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
@@ -169,7 +162,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 }
 
 interface TablePoint {
-  timestamp: moment.Moment;
+  timestamp: momentNs.Moment;
   value: number;
   column: string;
   counterName: string;

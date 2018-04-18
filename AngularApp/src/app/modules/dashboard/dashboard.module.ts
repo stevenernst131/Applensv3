@@ -10,7 +10,7 @@ import { AngularSplitModule } from 'angular-split';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs/Observable';
-import { SideNavComponent } from './side-nav/side-nav.component';
+import { SideNavComponent, SearchPipe } from './side-nav/side-nav.component';
 import { ResourceMenuItemComponent } from './resource-menu-item/resource-menu-item.component';
 import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
@@ -31,8 +31,9 @@ export class InitResolver implements Resolve<Observable<boolean>>{
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
-    
-    return this._resourceService.setResourcePath(state.url.split('?')[0].split('/'));
+    let resourceRoute: string[] = state.url.split('?')[0].split('/');
+    //this._startupService.setResourceRoute(resourceRoute);
+    return this._resourceService.setResourcePath(resourceRoute);
   }
 }
 
@@ -89,6 +90,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       useValue: CUSTOM_MOMENT_FORMATS
     }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchPipe]
 })
 export class DashboardModule { }

@@ -13,7 +13,7 @@ export class DataSummaryComponent extends DataRenderBaseComponent {
 
   renderingProperties: Rendering;
 
-  summaryViewModels: DataSummaryViewModel[] = [];
+  private summaryViewModels: DataSummaryViewModel[] = [];
 
   protected processData(data: DiagnosticData) {
     super.processData(data);

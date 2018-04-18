@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import * as moment from 'moment';
-import 'moment-timezone';
+import * as momentNs from 'moment-timezone';
+const moment = momentNs;
 import { TimeSeriesType } from '../../models/detector';
 import { nvd3Utilities } from '../../utilities/nvd3-utilities';
 
@@ -77,7 +77,7 @@ export class Nvd3GraphComponent implements OnInit {
 }
 
 export interface GraphPoint {
-  x: moment.Moment;
+  x: momentNs.Moment;
   y: number;
 }
 

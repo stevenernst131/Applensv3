@@ -7,9 +7,11 @@ import { startTimeRange } from "@angular/core/src/profile/wtf_impl";
 import { AseService } from "../services/ase.service";
 
 export let ResourceServiceFactory = (startupService: StartupService, siteService: SiteService, aseService: AseService) => {
-    let type: ResourceType = ResourceType.Site;
+    let type: ResourceType = startupService.getResourceType();
 
     switch (type) {
+        case ResourceType.AppServiceEnvironment:
+            return aseService;
         case ResourceType.Site:
         default:
             return siteService;
