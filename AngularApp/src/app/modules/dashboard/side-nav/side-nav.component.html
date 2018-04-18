@@ -1,44 +1,56 @@
-<!-- <div class="side-nav">
-    <ul style="list-style:none">
-        <li (click)="navigate('frontends')"><a>Front Ends</a></li>
-        <li (click)="navigate('cpu')"><a>CPU</a></li>
-    </ul>
-</div> -->
+<aside class="main-sidebar">
 
-<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-    <resource-menu-item [currentRoutePath]="currentRoutePath"></resource-menu-item>
+    <section class="sidebar">
 
-    <li class="nav-item" data-toggle="tooltip" data-placement="right">
-        <a class="nav-link" (click)="openOnboardingFlow()">
-            <i class="fa fa-fw fa-plus navItem.symbol"></i>
-            <span class="nav-link-text">Create Detector</span>
-        </a>
+        <div class="user-panel" [class.active]="doesMatchCurrentRoute('home')" (click)="navigateTo('home')">
+            <div class="pull-left image">
+                <img [src]="resourceService.imgSrc" class="resource-logo" style="max-width:25px">
+            </div>
+            <div class="info">
+                <p>{{resourceService.getResourceName()}}</p>
+            </div>
+        </div>
 
-        <ul class="sidenav-second-level">
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">CREATE</li>
+            <li (click)="navigateTo('create')" [class.active]="doesMatchCurrentRoute('create')">
+                <a>
+                    <i class="fa fa-fw fa-plus"></i>
+                    <span>New Detector</span>
+                </a>
+            </li>
+
+            <li class="header">DOCUMENTATION</li>
             <li>
-                <a href="https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods"
-                    target="_blank">
-                    Online Documentation
-                    <i class="fa fa-external-link secondary-icon"></i>
+                <a target="_blank" href="https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods">
+                    <i class="fa fa-link"></i>
+                    <span>Online Documentation</span>
                 </a>
-                <a href="https://github.com/Azure/Azure-AppServices-Diagnostics/tree/master/data/samples/Diagnostics.Samples" target="_blank">
-                    Code Samples
-                    <i class="fa fa-external-link secondary-icon"></i>
+            </li>
+            <li>
+                <a target="_blank" href="https://github.com/Azure/Azure-AppServices-Diagnostics/tree/master/data/samples/Diagnostics.Samples">
+                    <i class="fa fa-link"></i>
+                    <span>Code Samples</span>
+                </a>
+            </li>
+
+
+            <li class="header">DETECTORS</li>
+            <form class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search Detectors..." [(ngModel)]="searchValue">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </form>
+            <li *ngFor="let detector of detectors | detectorSearch:searchValue" [class.active]="doesMatchCurrentRoute('detectors/' + detector.name) || doesMatchCurrentRoute('detectors/' + detector.name + '/edit')">
+                <a (click)="navigateTo(detector.link)">
+                    <span>{{detector.displayName}}</span>
                 </a>
             </li>
         </ul>
-    </li>
-
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" *ngFor="let navItem of sideNavItems">
-        <a class="nav-link nav-link-collapse applens-menu-item" (click)="navItem.toggleExpanded()" [ngClass]="{'collapsed': !navItem.expanded }">
-            <i class="fa fa-fw" [ngClass]="navItem.symbol"></i>
-            <span class="nav-link-text">{{navItem.name}}</span>
-        </a>
-        <ul class="sidenav-second-level collapse" [ngClass]="{'show': navItem.expanded }" id="collapseComponents">
-
-            <li *ngFor="let subItem of navItem.subItems" [class.sidenav-item-selected]="doesMatchCurrentRoute('detectors/' + subItem.name) || doesMatchCurrentRoute('detectors/' + subItem.name + '/edit')">
-                <a class="applens-menu-item" (click)="navigate(subItem)">{{subItem.displayName}}</a>
-            </li>
-        </ul>
-    </li>
-</ul>
+    </section>
+</aside>

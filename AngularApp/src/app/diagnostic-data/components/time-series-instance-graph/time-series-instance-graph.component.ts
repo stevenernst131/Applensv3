@@ -6,10 +6,10 @@ import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-
 import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
-import * as moment from 'moment';
-import 'moment-timezone';
 import { TimeSeries, InstanceTimeSeries } from '../../models/time-series';
-import { TimeZones } from '../../../shared/models/datetime';
+import { TimeZones } from '../../utilities/time-utilities';
+import * as momentNs from 'moment-timezone';
+const moment = momentNs;
 
 @Component({
   selector: 'time-series-instance-graph',

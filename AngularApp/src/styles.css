@@ -2,7 +2,11 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
 
-@import "~startbootstrap-sb-admin/css/sb-admin.min.css";
+/* @import "~startbootstrap-sb-admin/css/sb-admin.min.css"; */
+
+@import "~admin-lte/dist/css/AdminLTE.min.css";
+@import "~admin-lte/dist/css/skins/skin-blue-light.css";
+@import "~admin-lte/dist/css/skins/skin-purple-light.css";
 
 /* Must import diagnostic-data css */
 @import 'app/diagnostic-data/diagnostic-data.css';
@@ -13,8 +17,6 @@ body {
     /* padding-top:50px; */
 }
 
-#mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-second-level>li>a, #mainNav .navbar-collapse .navbar-sidenav>.nav-item .sidenav-third-level>li>a {
-    padding-top:2px;
-    padding-bottom: 2px;
-    color: #e0e0e0;
+.skin-purple-light .sidebar-menu > li:hover > a, .skin-purple-light .sidebar-menu > li.active > a {
+    background: #ececec;
 }

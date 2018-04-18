@@ -6,6 +6,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
+import { QueryParamsService } from '../../../shared/services/query-params.service';
 
 @Component({
   selector: 'onboarding-flow',
@@ -34,7 +35,8 @@ export class OnboardingFlowComponent implements OnInit {
 
   private publishingPackage: Package;
 
-  constructor(private _route: ActivatedRoute, private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService, private resourceService: ResourceService) {
+  constructor(private _route: ActivatedRoute, private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService,
+    private resourceService: ResourceService, public queryParamsService: QueryParamsService) {
 
     this.editorOptions = {
       theme: 'vs',

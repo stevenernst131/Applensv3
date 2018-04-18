@@ -10,3 +10,8 @@ label {
 .form-control, .control-label {
     margin-right:3px;
 }
+
+.time-picker-container {
+    text-align: right;
+    padding: 10px;
+}
