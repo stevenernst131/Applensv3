@@ -3,8 +3,6 @@
     cursor: pointer;
 }
 
-
-
 .sidenav-item-selected {
     background-color: #1f1f1f;
 }
@@ -38,4 +36,9 @@
 
 .user-panel {
     cursor: pointer;
+}
+
+.user-panel.active,
+.user-panel:hover {
+    background: #ececec;
 }

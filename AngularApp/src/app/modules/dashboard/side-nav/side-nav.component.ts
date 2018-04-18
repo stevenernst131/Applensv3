@@ -40,18 +40,18 @@ export class SideNavComponent implements OnInit {
       return activatedRoute;
   }
 
-  navigate(item: SideNavSubItem) {
-    this.sideNavItems[0].subItems.forEach(item => item.selected = false);
-    item.selected = true;
+  // navigate(item: SideNavSubItem) {
+  //   this.sideNavItems[0].subItems.forEach(item => item.selected = false);
+  //   item.selected = true;
 
-    let navigationExtras: NavigationExtras = {
-      queryParamsHandling: 'preserve',
-      preserveFragment: true,
-      relativeTo: this._activatedRoute
-    };
+  //   let navigationExtras: NavigationExtras = {
+  //     queryParamsHandling: 'preserve',
+  //     preserveFragment: true,
+  //     relativeTo: this._activatedRoute
+  //   };
 
-    this._router.navigate(item.link.split('/'), navigationExtras);
-  }
+  //   this._router.navigate(item.link.split('/'), navigationExtras);
+  // }
 
   navigateTo(path: string) {
     let navigationExtras: NavigationExtras = {
@@ -63,16 +63,16 @@ export class SideNavComponent implements OnInit {
     this._router.navigate(path.split('/'), navigationExtras);
   }
 
-  openOnboardingFlow() {
+  // openOnboardingFlow() {
 
-    let navigationExtras: NavigationExtras = {
-      queryParamsHandling: 'preserve',
-      preserveFragment: true,
-      relativeTo: this._activatedRoute
-    };
+  //   let navigationExtras: NavigationExtras = {
+  //     queryParamsHandling: 'preserve',
+  //     preserveFragment: true,
+  //     relativeTo: this._activatedRoute
+  //   };
 
-    this._router.navigate(['create'], navigationExtras);
-  }
+  //   this._router.navigate(['create'], navigationExtras);
+  // }
 
   initializeDetectors() {
 
