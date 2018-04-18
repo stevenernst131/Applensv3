@@ -21,7 +21,7 @@
               <td class="table-key">
                 <b>{{key}}</b>
               </td>
-              <td class="table-value">{{insight.data[key]}}</td>
+              <td class="table-value" [innerHtml]="insight.data[key]"></td>
             </tr>
           </tbody>
         </table>
