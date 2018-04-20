@@ -32,6 +32,12 @@ export class MainComponent implements OnInit {
       routeName: 'hostingEnvironments',
       displayName: 'App Service Environment',
       enabled: false
+    },
+    {
+      resourceType: ResourceType.HDInsight,
+      routeName: 'hdinsight',
+      displayName: 'HDInsight',
+      enabled: false
     }
   ];
 

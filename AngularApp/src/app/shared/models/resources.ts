@@ -3,7 +3,8 @@ import { Dictionary } from "./extensions";
 export enum ResourceType {
     Site,
     Function,
-    AppServiceEnvironment
+    AppServiceEnvironment,
+    HDInsight
 }
 
 export interface ResourceTypeState {
