@@ -1,65 +1,65 @@
-<div class="view-container">
-        <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
-            {{alertMessage}}
-        </div>
-        <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
+<div class="view-container" [style.height]="containerHeight">
+    <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
+        {{alertMessage}}
+    </div>
+    <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
 
-        <div *ngIf="code" class="onboarding-container">
-            <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
-              
-                <split-area size="60">
-        
-                    <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
-                        <split-area size="85">
-                          <div class="code-container-header">
-        
+    <div *ngIf="code" class="onboarding-container">
+        <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
+
+            <split-area size="60">
+
+                <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
+                    <split-area size="85">
+                        <div class="code-container-header">
+
                             <div class="file-tab active">
                                 {{fileName}}
                             </div>
-        
+
                             <div class="file-tab">
                                 wiki.md (coming soon)
                             </div>
-        
-                            <div (click)="publish()" class="action-button publish-button" [ngClass]="{'disabled': publishButtonDisabled }">
+
+                            <div (click)="publish()" class="action-button publish-button" [class.disabled]="publishButtonDisabled">
                                 <i class="fa fa-cloud-upload"></i>
                                 {{publishButtonText}}
                             </div>
-        
+
                             <div (click)="runCompilation()" class="action-button run-button" [ngClass]="{'disabled': runButtonDisabled }">
-                                <i [ngClass]="runButtonIcon"></i> 
+                                <i [ngClass]="runButtonIcon"></i>
                                 {{runButtonText}}
                             </div>
-        
-                          </div>
 
-                          <ngx-monaco-editor style="height:94%" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
-                          
-                        </split-area>
-                        <split-area size="15">
-                            <div class="compilation-output-container">
-                                <div *ngFor="let item of buildOutput" class="compilation-output">{{item}}</div>
-                            </div>
-                        </split-area>
-                    </split>
-        
-                </split-area>
-                <split-area size="40">
-                    <div class="invocation-output-title-container">
-                        
-                        <div class="invocation-title">
-                        Detector Output
                         </div>
 
+                        <ngx-monaco-editor style="height:calc(100% - 50px)" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+
+                    </split-area>
+                    <split-area size="15">
+                        <div class="compilation-output-container">
+                            <div *ngFor="let item of buildOutput" class="compilation-output">{{item}}</div>
+                        </div>
+                    </split-area>
+                </split>
+
+            </split-area>
+            <split-area size="40">
+                <div class="invocation-output-title-container">
+
+                    <div class="invocation-title">
+                        Detector Output
                     </div>
 
-                    <div style="padding:10px">
-                        <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [startTime]="queryParamsService.startTime" [endTime]="queryParamsService.endTime" [error]="errorState" [showEdit]="false"></detector-view>                        
-                    </div>
+                </div>
 
-                </split-area>
-        
-            </split>
-        </div>
+                <div style="padding:10px">
+                    <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [startTime]="queryParamsService.startTime"
+                        [endTime]="queryParamsService.endTime" [error]="errorState" [showEdit]="false"></detector-view>
+                </div>
+
+            </split-area>
+
+        </split>
+    </div>
 </div>
-

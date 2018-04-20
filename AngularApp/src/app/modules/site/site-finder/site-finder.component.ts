@@ -13,17 +13,20 @@ export class SiteFinderComponent implements OnInit {
 
   site: string;
   loading: boolean = true;
+  error: string;
 
   matchingSites: ObserverSiteInfo[] = [];
 
-  constructor(private _route: ActivatedRoute, private _router: Router, private _observerService: ObserverService, private _startupService: StartupService) { }
+  contentHeight: string;
+
+  constructor(private _route: ActivatedRoute, private _router: Router, private _observerService: ObserverService, private _startupService: StartupService) {
+    this.contentHeight = window.innerHeight + 'px';
+  }
 
   ngOnInit() {
     this.site = this._route.snapshot.params['site'];
 
     this._observerService.getSite(this.site).subscribe(observerSiteResponse => {
-
-
       if (observerSiteResponse.details.length === 1) {
         let matchingSites = observerSiteResponse.details;
         let matchingSite = observerSiteResponse.details[0];
@@ -34,14 +37,21 @@ export class SiteFinderComponent implements OnInit {
       }
 
       this.loading = false;
+    }, (error: Response) => {
+      this.error = error.status == 404 ? `App ${this.site} was not found` : `There was an error trying to find app ${this.site}`;
+      this.loading = false;
     });
+  }
+
+  populateRequestBody() {
+
   }
 
   navigateToSite(matchingSite: ObserverSiteInfo) {
     let resourceArray: string[] = [
       'subscriptions', matchingSite.Subscription,
       'resourceGroups', matchingSite.ResourceGroupName,
-      'sites', matchingSite.SiteName ];
+      'sites', matchingSite.SiteName];
 
     if (matchingSite.SlotName && matchingSite.SlotName.length > 0) {
       resourceArray.push('slots');

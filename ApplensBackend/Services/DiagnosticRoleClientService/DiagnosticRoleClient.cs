@@ -57,6 +57,7 @@ namespace AppLensV3
             client.BaseAddress = new Uri(DiagnosticRoleEndpoint);
             client.Timeout = TimeSpan.FromSeconds(5 * 60);
             client.MaxResponseContentBufferSize = Int32.MaxValue;
+            client.DefaultRequestHeaders.Add("internal-applens", "true");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;

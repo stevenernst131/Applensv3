@@ -1,13 +1,10 @@
 .view-container{
-    height:92vh;
     width: 100%;
 }
 
 .onboarding-container{
-    height: 100%;
+    height:100%;
     background-color: white;
-    border:1px solid #e8e8e8;
-    box-shadow: -2px -1px 2px 0px #dadada;
 }
 .alert-container{
     font-size:14px;

@@ -15,26 +15,29 @@ export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
+  public requestBody: any;
+
   constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService) { }
 
   public getDiagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
   }
 
-  public getDetector(resourceId: string, detector: string, resourceSpecificQueryString: string): Observable<DetectorResponse> {
+  public getDetector(version: string, resourceId: string, detector: string, resourceSpecificQueryString: string): Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters();
-    let path = `v4/${resourceId}/detectors/${detector}?${resourceSpecificQueryString}${timeParameters}`;
-    return this.invoke<DetectorResponse>(path, HttpMethod.POST);
+    let path = `${version}/${resourceId}/detectors/${detector}?${resourceSpecificQueryString}${timeParameters}`;
+    return this.invoke<DetectorResponse>(path, HttpMethod.POST, this.requestBody);
   }
 
-  public getDetectors(resourceId: string): Observable<DetectorMetaData[]> {
-    let path = `v4/${resourceId}/detectors`;
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST).map(response => response.map(detector => detector.metadata));
+  public getDetectors(version: string, resourceId: string): Observable<DetectorMetaData[]> {
+    let path = `${version}/${resourceId}/detectors`;
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, this.requestBody).map(response => response.map(detector => detector.metadata));
   }
 
-  public getCompilerResponse(resourceId: string, resourceSpecificQueryString: string, body: any): Observable<QueryResponse<DetectorResponse>> {
+  public getCompilerResponse(version: string, resourceId: string, resourceSpecificQueryString: string, body: any): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters();
-    let path = `v4/${resourceId}/diagnostics/query?${resourceSpecificQueryString}${timeParameters}`;
+    body.resource = this.requestBody;
+    let path = `${version}/${resourceId}/diagnostics/query?${resourceSpecificQueryString}${timeParameters}`;
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
 
@@ -69,7 +72,6 @@ export class DiagnosticApiService {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-
     if (path) {
       headers.append('x-ms-path-query', path);
     }

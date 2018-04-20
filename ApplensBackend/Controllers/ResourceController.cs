@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppLensV3
 {
-    public class SitesController : Controller
+    public class ResourceController : Controller
     {
         IObserverClientService _observerService;
 
-        public SitesController(IObserverClientService observerService) {
+        public ResourceController(IObserverClientService observerService) {
             _observerService = observerService;
         }
 
@@ -30,18 +30,38 @@ namespace AppLensV3
             return await GetSiteInternal(stamp, siteName);
         }
 
+        [HttpGet]
+        [Route("api/stamps/{stamp}/sites/{siteName}/postBody")]
+        public async Task<IActionResult> GetSiteRequestBody(string stamp, string siteName)
+        {
+            var sitePostBody = await _observerService.GetSitePostBody(stamp, siteName);
+
+            return Ok(new { Details = sitePostBody.Content });
+        }
+
+        [HttpGet]
+        [Route("api/hostingEnvironments/{hostingEnvironmentName}/postBody")]
+        public async Task<IActionResult> GetHostingEnvironmentRequestBody(string hostingEnvironmentName)
+        {
+            var hostingEnvironmentPostBody = await _observerService.GetHostingEnvironmentPostBody(hostingEnvironmentName);
+
+            return Ok(new { Details = hostingEnvironmentPostBody.Content });
+        }
+
         [HttpGet("api/hostingEnvironments/{hostingEnvironmentName}")]
         [HttpOptions("api/hostingEnvironments/{hostingEnvironmentName}")]
         public async Task<IActionResult> GetHostingEnvironmentDetails(string hostingEnvironmentName)
         {
             var hostingEnvironmentDetails = await _observerService.GetHostingEnvironmentDetails(hostingEnvironmentName);
 
-            if (hostingEnvironmentDetails.StatusCode != HttpStatusCode.OK)
+            var details = new { Details = hostingEnvironmentDetails.Content };
+
+            if (hostingEnvironmentDetails.StatusCode == HttpStatusCode.NotFound)
             {
-                //return ResponseMessage(Request.CreateErrorResponse(hostingEnvironmentDetails.StatusCode, (string)hostingEnvironmentDetails.Content));
+                return NotFound(details);
             }
 
-            return Ok(new { Details = hostingEnvironmentDetails.Content });
+            return Ok(details);
         }
 
         private async Task<IActionResult> GetSiteInternal(string stamp, string siteName)
@@ -52,22 +72,19 @@ namespace AppLensV3
             var hostNameResponse = await hostnamesTask;
             var siteDetailsResponse = await siteDetailsTask;
 
-            if (siteDetailsResponse.StatusCode != HttpStatusCode.OK)
-            {
-                //return ResponseMessage(Request.CreateErrorResponse(siteDetailsResponse.StatusCode, (string)siteDetailsResponse.Content));
-            }
-
-            if (hostNameResponse.StatusCode != HttpStatusCode.OK)
-            {
-                //return ResponseMessage(Request.CreateErrorResponse(hostNameResponse.StatusCode, (string)hostNameResponse.Content));
-            }
-
-            return Ok(new
+            var details = new
             {
                 SiteName = siteName,
                 Details = siteDetailsResponse.Content,
                 HostNames = hostNameResponse.Content
-            });
+            };
+
+            if (siteDetailsResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                return NotFound(details);
+            }
+            
+            return Ok(details);
         }
     }
 }

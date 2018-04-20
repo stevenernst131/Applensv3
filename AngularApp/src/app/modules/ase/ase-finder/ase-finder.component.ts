@@ -16,7 +16,13 @@ export class AseFinderComponent implements OnInit {
 
   matchingAse: ObserverAseInfo;
 
-  constructor(private _route: ActivatedRoute, private _router: Router, private _observerService: ObserverService, private _startupService: StartupService) { }
+  error: string;
+
+  contentHeight: string;
+
+  constructor(private _route: ActivatedRoute, private _router: Router, private _observerService: ObserverService, private _startupService: StartupService) {
+    this.contentHeight = window.innerHeight + 'px';
+  }
 
   ngOnInit() {
     this.hostingEnvironment = this._route.snapshot.params['hostingEnvironment'];
@@ -28,6 +34,9 @@ export class AseFinderComponent implements OnInit {
       }
 
       this.loading = false;
+    }, (error: Response) => {
+      this.error = error.status === 404 ? `ASE ${this.hostingEnvironment} not found` : `Error trying to retrieve ASE ${this.hostingEnvironment}. Please try again`;
+      this.loading = false;
     });
   }
 
@@ -35,7 +44,7 @@ export class AseFinderComponent implements OnInit {
     let resourceArray: string[] = [
       'subscriptions', matchingAse.Subscription,
       'resourceGroups', matchingAse.ResourceGroupName,
-      'hostingEnvironments', matchingAse.Name ];
+      'hostingEnvironments', matchingAse.Name];
 
     this._router.navigate(resourceArray);
   }

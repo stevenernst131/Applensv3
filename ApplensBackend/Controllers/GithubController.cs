@@ -20,10 +20,10 @@ namespace AppLensV3.Controllers
             _githubService = githubService;
         }
 
-        [HttpGet("detectortemplate")]
-        public async Task<IActionResult> GetTemplate()
+        [HttpGet("detectortemplate/{name}")]
+        public async Task<IActionResult> GetTemplate(string name)
         {
-            string content = await _githubService.GetRawFile(GithubConstants.DetectorTemplatePath);
+            string content = await _githubService.GetRawFile(GithubConstants.DetectorTemplatePath.Replace("{filename}", name));
             return Ok(content);
         }
 
