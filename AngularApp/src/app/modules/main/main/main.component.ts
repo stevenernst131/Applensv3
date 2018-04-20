@@ -31,7 +31,7 @@ export class MainComponent implements OnInit {
       resourceType: ResourceType.AppServiceEnvironment,
       routeName: 'hostingEnvironments',
       displayName: 'App Service Environment',
-      enabled: false
+      enabled: true
     }
   ];
 

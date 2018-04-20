@@ -28,6 +28,14 @@ export class ObserverService {
     return this._diagnosticApiService.get<ObserverAseResponse>(`api/hostingEnvironments/${ase}`);
   }
 
+  public getSiteRequestBody(site: string, stamp: string) {
+    return this._diagnosticApiService.get<ObserverSiteResponse>(`api/stamps/${stamp}/sites/${site}/postBody`);
+  }
+
+  public getAseRequestBody(name: string) {
+    return this._diagnosticApiService.get<ObserverSiteResponse>(`api/hostingEnvironments/${name}/postBody`);
+  }
+
   private getSiteInfoWithSlotAndHostnames(site: ObserverSiteInfo, hostnames: string[]): ObserverSiteInfo {
     let siteName = site.SiteName;
     let slot = '';

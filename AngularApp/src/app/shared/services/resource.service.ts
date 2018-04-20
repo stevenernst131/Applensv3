@@ -10,6 +10,8 @@ export abstract class ResourceService {
   public abstract lensPrefix: string;
   public abstract imgSrc: string;
 
+  public abstract templateFileName: string;
+
   public abstract setResourcePath(path: string[]): Observable<boolean>;
 
   public abstract getResourceName(): string;
@@ -18,5 +20,7 @@ export abstract class ResourceService {
 
   public abstract getCurrentResource(): Observable<any>;
 
-  public abstract getDiagnosticRoleQueryString(): string
+  public abstract getDiagnosticRoleQueryString(): string;
+
+  public abstract getVersion(): string;
 }

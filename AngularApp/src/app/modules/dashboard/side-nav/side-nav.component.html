@@ -46,11 +46,16 @@
                     </span>
                 </div>
             </form>
-            <li *ngFor="let detector of detectors | detectorSearch:searchValue" [class.active]="doesMatchCurrentRoute('detectors/' + detector.name) || doesMatchCurrentRoute('detectors/' + detector.name + '/edit')">
-                <a (click)="navigateTo(detector.link)">
-                    <span>{{detector.displayName}}</span>
-                </a>
+            <li *ngIf="detectorsLoading" style="text-align: center;color: #b8c7ce;">
+                <i class="fa fa-circle-o-notch fa-spin"></i>
             </li>
+            <ng-container *ngIf="!detectorsLoading">
+                    <li *ngFor="let detector of detectors | detectorSearch:searchValue" [class.active]="doesMatchCurrentRoute('detectors/' + detector.name) || doesMatchCurrentRoute('detectors/' + detector.name + '/edit')">
+                        <a (click)="navigateTo(detector.link)">
+                            <span>{{detector.displayName}}</span>
+                        </a>
+                    </li>
+            </ng-container>
         </ul>
     </section>
 </aside>

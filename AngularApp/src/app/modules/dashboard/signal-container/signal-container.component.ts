@@ -43,7 +43,7 @@ export class SignalContainerComponent implements OnInit {
   getDetectorResponse() {
     this.signalResponse = null;
     this.signal = this._route.snapshot.params['signal'];
-    this._diagnosticApiService.getDetector(this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString())
+    this._diagnosticApiService.getDetector(this._resourceService.getVersion(), this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString())
     .subscribe((response: DetectorResponse) => {
       this.signalResponse = response;
     }, (error: any) => {

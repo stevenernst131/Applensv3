@@ -33,10 +33,14 @@ export class OnboardingFlowComponent implements OnInit {
   alertMessage: string;
   showAlert: boolean;
 
+  containerHeight: string;
+
   private publishingPackage: Package;
 
   constructor(private _route: ActivatedRoute, private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService,
     private resourceService: ResourceService, public queryParamsService: QueryParamsService) {
+
+    this.containerHeight = (window.innerHeight - 50) + 'px';
 
     this.editorOptions = {
       theme: 'vs',
@@ -64,7 +68,7 @@ export class OnboardingFlowComponent implements OnInit {
 
     if (this._route.snapshot.url[0].path.toLowerCase().indexOf('create') >= 0) {
       // CREATE FLOW
-      this.githubService.getDetectorTemplate().subscribe(data => {
+      this.githubService.getDetectorTemplate(this.resourceService.templateFileName).subscribe(data => {
         this.code = data;
       });
       this.fileName = "new.csx";
@@ -94,7 +98,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Running";
     this.runButtonIcon = "fa fa-circle-o-notch fa-spin";
 
-    this.diagnosticApiService.getCompilerResponse(this.resourceId, this.resourceService.getDiagnosticRoleQueryString(), body)
+    this.diagnosticApiService.getCompilerResponse(this.resourceService.getVersion(), this.resourceId, this.resourceService.getDiagnosticRoleQueryString(), body)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;

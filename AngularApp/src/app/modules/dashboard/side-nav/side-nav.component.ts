@@ -16,8 +16,11 @@ export class SideNavComponent implements OnInit {
   sideNavItems: SideNavItem[] = [];
 
   detectors: SideNavSubItem[] = [];
+  detectorsLoading: boolean = true;
 
   currentRoutePath: string[]
+
+  searchValue: string;
 
   ngOnInit() {
     this.initializeDetectors();
@@ -40,19 +43,6 @@ export class SideNavComponent implements OnInit {
       return activatedRoute;
   }
 
-  // navigate(item: SideNavSubItem) {
-  //   this.sideNavItems[0].subItems.forEach(item => item.selected = false);
-  //   item.selected = true;
-
-  //   let navigationExtras: NavigationExtras = {
-  //     queryParamsHandling: 'preserve',
-  //     preserveFragment: true,
-  //     relativeTo: this._activatedRoute
-  //   };
-
-  //   this._router.navigate(item.link.split('/'), navigationExtras);
-  // }
-
   navigateTo(path: string) {
     let navigationExtras: NavigationExtras = {
       queryParamsHandling: 'preserve',
@@ -63,17 +53,6 @@ export class SideNavComponent implements OnInit {
     this._router.navigate(path.split('/'), navigationExtras);
   }
 
-  // openOnboardingFlow() {
-
-  //   let navigationExtras: NavigationExtras = {
-  //     queryParamsHandling: 'preserve',
-  //     preserveFragment: true,
-  //     relativeTo: this._activatedRoute
-  //   };
-
-  //   this._router.navigate(['create'], navigationExtras);
-  // }
-
   initializeDetectors() {
 
     let detectors = new SideNavItem();
@@ -83,7 +62,7 @@ export class SideNavComponent implements OnInit {
 
     this.sideNavItems.push(detectors);
 
-    this._diagnosticApiService.getDetectors(this.resourceService.getCurrentResourceId()).subscribe(detectorList => {
+    this._diagnosticApiService.getDetectors(this.resourceService.getVersion(), this.resourceService.getCurrentResourceId()).subscribe(detectorList => {
 
       let childUrl = this._activatedRoute.firstChild ? this._activatedRoute.firstChild.snapshot.url : this._activatedRoute.snapshot.url;
       
@@ -98,6 +77,8 @@ export class SideNavComponent implements OnInit {
           link: `detectors/${element.id}`
         });
       });
+
+      this.detectorsLoading = false;
     });
   }
 
