@@ -41,7 +41,7 @@ export class SiteService extends ResourceService {
         return this._observerApiService.getSiteRequestBody(this._siteObject.SiteName, this._siteObject.StampName);
       }).map((requestBody: any) => {
         if (!requestBody.details.hostnames) {
-          requestBody.details.hostnames = this._siteObject.Hostnames.map(hostname => <any>{
+          requestBody.details.HostNames = this._siteObject.Hostnames.map(hostname => <any>{
             name: hostname,
             type: 0
           });
