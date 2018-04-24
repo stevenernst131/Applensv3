@@ -11,11 +11,11 @@ export class GithubApiService {
   constructor(private _http: Http, private _diagnosticApiService: DiagnosticApiService) { }
 
   public getDetectorTemplate(name): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/detectortemplate/${name}`);
+    return this._diagnosticApiService.get<string>(`api/github/detectortemplate/${name}`, true);
   }
 
   public getDetectorFile(id: string): Observable<string> {
-    return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`);
+    return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`, true);
   }
 
   public publishPackage(packageToPublish: Package): Observable<any> {
