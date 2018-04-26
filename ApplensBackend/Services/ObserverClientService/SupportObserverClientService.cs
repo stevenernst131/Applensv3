@@ -241,10 +241,9 @@ namespace AppLensV3
 
         public async Task<ObserverResponse> GetSitePostBody(string stamp, string site)
         {
-            var endpoint = SupportObserverApiEndpoint.Replace("support-bay-api", "support-bay-api-stage");
             var request = new HttpRequestMessage()
             {
-                RequestUri = new Uri($"{endpoint}stamps/{stamp}/sites/{site}/postbody"),
+                RequestUri = new Uri($"{SupportObserverApiEndpoint}stamps/{stamp}/sites/{site}/postbody"),
                 Method = HttpMethod.Get
             };
 
@@ -257,10 +256,9 @@ namespace AppLensV3
 
         public async Task<ObserverResponse> GetHostingEnvironmentPostBody(string name)
         {
-            var endpoint = SupportObserverApiEndpoint.Replace("support-bay-api", "support-bay-api-stage");
             var request = new HttpRequestMessage()
             {
-                RequestUri = new Uri($"{endpoint}hostingEnvironments/{name}/postbody"),
+                RequestUri = new Uri($"{SupportObserverApiEndpoint}hostingEnvironments/{name}/postbody"),
                 Method = HttpMethod.Get
             };
 

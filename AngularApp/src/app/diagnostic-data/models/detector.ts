@@ -1,3 +1,4 @@
+import { InsightStatus } from "./insight";
 
 export interface ArmObject {
     id: string;
@@ -41,7 +42,8 @@ export enum RenderingType {
     PieChart,
     DataSummary,
     Email,
-    Insights
+    Insights,
+    DynamicInsight
 }
 
 export enum TimeSeriesType {
@@ -100,4 +102,10 @@ export interface InsightsRendering extends Rendering {
     nameColumnName: string;
     valueColumnName: string;
     typeColumnName: string;
+}
+
+export interface DynamicInsightRendering extends Rendering {
+    status: InsightStatus,
+    innerRendering: Rendering,
+    expanded: boolean
 }

@@ -6,7 +6,7 @@ import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-
 import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
-import { TimeSeries } from '../../models/time-series';
+import { TimeSeries, TablePoint } from '../../models/time-series';
 import * as momentNs from 'moment-timezone';
 import { TimeUtilities, TimeZones } from '../../utilities/time-utilities';
 const moment = momentNs;
@@ -68,7 +68,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     let uniqueCounterNames: string[] = [];
     if (counterNameColumnIndex >= 0) {
       // This gets unique values in counter name row
-      data.table.rows.map(row => row[counterNameColumnIndex]).filter((item, index, array) => array.indexOf(item) === index);
+      uniqueCounterNames = data.table.rows.map(row => row[counterNameColumnIndex]).filter((item, index, array) => array.indexOf(item) === index);
     }
 
     let timeSeriesDictionary = {};
@@ -99,7 +99,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           timestamp: timestamp,
           value: parseFloat(row[columnIndex]),
           column: column.columnName,
-          counterName: counterNameColumnIndex >= 0 ? data.table.columns[counterNameColumnIndex].columnName : null
+          counterName: counterNameColumnIndex >= 0 ? row[counterNameColumnIndex] : null
         };
 
         tablePoints.push(point);
@@ -159,11 +159,4 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     return columns;
   }
 
-}
-
-interface TablePoint {
-  timestamp: momentNs.Moment;
-  value: number;
-  column: string;
-  counterName: string;
 }
