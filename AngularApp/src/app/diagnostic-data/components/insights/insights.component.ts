@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { Rendering, RenderingType, DiagnosticData, InsightsRendering } from '../../models/detector';
 import { Dictionary } from '../../utilities/extensions';
+import { Insight, InsightStatus } from '../../models/insight';
 
 @Component({
   selector: 'insights',
@@ -16,7 +17,7 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   private insights: Insight[];
 
-  private InsightStatus = InsightStatus;
+  InsightStatus = InsightStatus;
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -54,31 +55,3 @@ export class InsightsComponent extends DataRenderBaseComponent {
   }
 }
 
-class Insight {
-  status: InsightStatus;
-  title: string;
-  data: Dictionary<string>;
-
-  showDetails: boolean = false;
-
-  constructor(status: string, title: string) {
-    this.title = title;
-    this.status = InsightStatus[status];
-    this.data = {};
-  }
-
-  getKeys(): string[] {
-    return Object.keys(this.data);
-  }
-
-  hasData(): boolean {
-    return Object.keys(this.data).length > 0;
-  }
-}
-
-enum InsightStatus {
-  Critical,
-  Warning,
-  Info,
-  Success
-}

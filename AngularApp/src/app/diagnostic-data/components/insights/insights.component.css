@@ -51,3 +51,7 @@ table {
     float:right;
     font-size: 20px;
 }
+
+td {
+    vertical-align: text-top;
+}

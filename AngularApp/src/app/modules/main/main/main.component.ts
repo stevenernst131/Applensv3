@@ -71,7 +71,7 @@ export class MainComponent implements OnInit {
       queryParams: timeParams
     }
 
-    this._router.navigate([this.selectedResourceType.routeName, form.resourceName], navigationExtras);
+    this._router.navigate([this.selectedResourceType.routeName, form.resourceName.trim()], navigationExtras);
   }
 
 }

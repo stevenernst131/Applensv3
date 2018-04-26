@@ -69,7 +69,8 @@ export class Nvd3GraphComponent implements OnInit {
           tickFormat: d3.format('.2f'),
           axisLabel: '',
           axisLabelDistance: -10
-        }
+        },
+        forceY: [0,1]
       }
     }
   }

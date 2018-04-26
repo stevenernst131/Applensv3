@@ -8,13 +8,15 @@ import { DataSummaryComponent } from '../data-summary/data-summary.component';
 import { EmailComponent } from '../email/email.component';
 import { InsightsComponent } from '../insights/insights.component';
 import * as momentNs from 'moment-timezone';
+import { TimeSeriesInstanceGraphComponent } from '../time-series-instance-graph/time-series-instance-graph.component';
+import { DynamicInsightComponent } from '../dynamic-insight/dynamic-insight.component';
 const moment = momentNs;
 
 @Component({
   selector: 'dynamic-data',
   templateUrl: './dynamic-data.component.html',
   styleUrls: ['./dynamic-data.component.css'],
-  entryComponents: [TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent, InsightsComponent]
+  entryComponents: [TimeSeriesGraphComponent, DataTableComponent, DataSummaryComponent, EmailComponent, InsightsComponent, TimeSeriesInstanceGraphComponent, DynamicInsightComponent]
 })
 export class DynamicDataComponent implements OnInit {
 
@@ -61,7 +63,11 @@ export class DynamicDataComponent implements OnInit {
       case RenderingType.Email:
         return EmailComponent;
       case RenderingType.Insights: 
-        return InsightsComponent
+        return InsightsComponent;
+      case RenderingType.TimeSeriesPerInstance:
+        return TimeSeriesInstanceGraphComponent;
+      case RenderingType.DynamicInsight:
+        return DynamicInsightComponent;
       default:
         return null;
     }

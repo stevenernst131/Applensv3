@@ -3,7 +3,11 @@
   {{title}}
 </ng-template>
 
-<div class="panel panel-default data-container-card">
+<ng-template #content>
+    <ng-content></ng-content>
+</ng-template>
+
+<div *ngIf="title || headerTemplate else nobox" class="panel panel-default data-container-card">
 
   <div *ngIf="title || headerTemplate" class="panel-heading data-container-header">
     <ng-container *ngTemplateOutlet="headerTemplate ? headerTemplate : defaultHeader">
@@ -13,7 +17,11 @@
     {{description}}
   </div>
   <div class="panel-body data-container-body" [class.no-padding]="noBodyPadding" [class.with-top-border]="!title && !description">
-    <ng-content></ng-content>
+      <ng-container *ngTemplateOutlet="content"></ng-container>
   </div>
 
 </div>
+
+<ng-template #nobox>
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+</ng-template>
