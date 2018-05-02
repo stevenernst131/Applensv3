@@ -27,6 +27,7 @@
         "../node_modules/nvd3/build/nv.d3.css",
         "../node_modules/font-awesome/css/font-awesome.css",
         "../node_modules/@swimlane/ngx-datatable/release/index.css",
+        "../node_modules/prismjs/themes/prism-okaidia.css",
         "styles.css"
       ],
       "scripts": [

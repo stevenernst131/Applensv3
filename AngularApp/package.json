@@ -25,6 +25,7 @@
     "@swimlane/ngx-datatable": "^11.1.7",
     "admin-lte": "^2.4.3",
     "angular-split": "^1.0.0-rc.3",
+    "angular2-markdown": "^2.2.3",
     "bootstrap": "^3.3.6",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",

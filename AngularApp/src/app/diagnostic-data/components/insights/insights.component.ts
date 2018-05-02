@@ -3,6 +3,7 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
 import { Rendering, RenderingType, DiagnosticData, InsightsRendering } from '../../models/detector';
 import { Dictionary } from '../../utilities/extensions';
 import { Insight, InsightStatus } from '../../models/insight';
+import { DiagnosticService } from '../../services/diagnostic.service';
 
 @Component({
   selector: 'insights',
@@ -19,12 +20,17 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   InsightStatus = InsightStatus;
 
+  constructor(private diagnosticService: DiagnosticService) {
+    super();
+  }
+
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <InsightsRendering>data.renderingProperties;
 
     this.parseInsights();
 
+    this.diagnosticService.getDetector('sample');
   }
 
   private parseInsights() {
@@ -52,6 +58,14 @@ export class InsightsComponent extends DataRenderBaseComponent {
     }
 
     this.insights = insights;
+  }
+
+  isMarkdown(str: string) {
+    return str.trim().startsWith('<markdown>') && str.endsWith('</markdown>');
+  }
+
+  getMarkdown(str: string) {
+    return str.trim().replace('<markdown>','').replace('</markdown>','');
   }
 }
 

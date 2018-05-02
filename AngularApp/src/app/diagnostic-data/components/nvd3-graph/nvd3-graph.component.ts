@@ -19,21 +19,46 @@ export class Nvd3GraphComponent implements OnInit {
 
   @Input() chartType: TimeSeriesType;
 
-  loading: boolean;
+  @Input() chartOptions: any;
+
+  loading: boolean = true;
 
   constructor() {
     this._setOptions();
   }
 
   ngOnInit() {
-    this._setChartType();
-    this.loading = false;
+    this._updateOptions();
+
+    setTimeout(() => {
+      this.loading = false;
+    }, 100)
   }
 
-  private _setChartType() {
+  private _updateOptions() {
     if (this.chartType) {
       this.options.chart.type = nvd3Utilities.getChartType(this.chartType);
     }
+
+    if (this.chartOptions) {
+      this._updateObject(this.options.chart, this.chartOptions);
+    }
+  }
+
+  private _updateObject(obj: Object, replacement: any): Object {
+    Object.keys(replacement).forEach(key => {
+      let subItem = obj[key];
+      let replace = replacement[key];
+      // Below returns true if subItem is an object
+      if (subItem === Object(subItem)) {
+        obj[key] = this._updateObject(subItem, replace);
+      }
+      else {
+        obj[key] = replace;
+      }
+    });
+
+    return obj;
   }
 
   private _setOptions() {
@@ -61,7 +86,6 @@ export class Nvd3GraphComponent implements OnInit {
           axisLabel: 'Time (UTC)',
           tickSize: 10,
           staggerLabels: false,
-          //tickFormat: function (d: any) { return d3.time.format('%m/%d %H:%M')(new Date(d)); }
           tickFormat: function (d: any) { return moment(d).utc().format('MM/DD HH:mm'); }
         },
         yAxis: {

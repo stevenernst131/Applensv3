@@ -32,6 +32,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   renderingProperties: TimeSeriesRendering;
   dataTable: DataTableResponseObject;
   defaultValue: number = 0;
+  graphOptions: any;
 
   processData(data: DiagnosticData) {
     super.processData(data);
@@ -49,7 +50,8 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       this.startTime = start;
       this.endTime = end;
 
-      this.renderingProperties = <TimeSeriesRendering>data.renderingProperties
+      this.renderingProperties = <TimeSeriesRendering>data.renderingProperties;
+      this.graphOptions = this.renderingProperties.graphOptions;
       this.dataTable = data.table;
       this._processDiagnosticData(data);
       this.selectSeries();
