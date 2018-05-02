@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TreeViewComponent } from './components/tree-view/tree-view.component';
-import { DiagnosticDataModule } from '../diagnostic-data/diagnostic-data.module';
 import { DiagnosticApiService } from './services/diagnostic-api.service';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { HttpModule } from '@angular/http';
@@ -13,11 +12,11 @@ import { GithubApiService } from './services/github-api.service';
 import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
 import { QueryParamsService } from './services/query-params.service';
+import { ResourceService } from './services/resource.service';
 
 @NgModule({
   imports: [
     CommonModule,
-    DiagnosticDataModule,
     HttpModule,
     FormsModule
   ],
@@ -34,11 +33,11 @@ export class SharedModule {
         StartupService,
         ObserverService,
         GithubApiService,
+        ResourceService,
         AseService,
         CacheService,
         QueryParamsService
       ]
     }
   }
-
 }

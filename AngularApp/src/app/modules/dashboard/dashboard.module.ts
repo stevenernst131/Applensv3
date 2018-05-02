@@ -24,6 +24,8 @@ import { TimePickerComponent } from './time-picker/time-picker.component';
 import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
 import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
 import { OnboardingFlowComponent } from './onboarding-flow/onboarding-flow.component';
+import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
+import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -79,6 +81,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     AngularSplitModule
   ],
   providers: [
+    ApplensDiagnosticService,
     InitResolver,
     {
       provide: ResourceService,
@@ -88,7 +91,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     {
       provide: OWL_DATE_TIME_FORMATS, 
       useValue: CUSTOM_MOMENT_FORMATS
-    }
+    },
+    { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
   declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchPipe]
 })
