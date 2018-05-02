@@ -32,18 +32,6 @@ export class DetectorListComponent extends DataRenderBaseComponent {
     this.renderingProperties.detectorIds.forEach(detector => {
       this._diagnosticService.getDetector(detector).subscribe(res => this.detectorResponses.push(this.getDetectorViewModel(res)));
     });
-
-    // let detectorTasks = this.renderingProperties.detectorIds.map(detectorId => {
-    //   return this._diagnosticService.getDetector(detectorId).map(response => { 
-    //     console.log(response);
-    //     return response;
-    //   });
-    // });
-
-    // Observable.forkJoin(detectorTasks).subscribe((responses: DetectorResponse[]) => {
-    //   console.log(responses);
-    //   this.detectorResponses = responses;
-    // });
   }
 
   private getDetectorViewModel(res: DetectorResponse) {
