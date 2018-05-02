@@ -12,4 +12,6 @@ export class DataContainerComponent {
   @Input() title: string;
   @Input() description: string;
   @Input() noBodyPadding: boolean = false;
+
+  @Input() hideIfNoTitle: boolean = true;
 }

@@ -28,6 +28,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
 
   renderingProperties: TimeSeriesPerInstanceRendering;
   dataTable: DataTableResponseObject;
+  graphOptions: any;
 
   defaultValue: number = 0;
 
@@ -42,6 +43,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
     if (data) {
       this.renderingProperties = <TimeSeriesPerInstanceRendering>data.renderingProperties;
       this.dataTable = data.table;
+      this.graphOptions = data.renderingProperties.graphOptions;
       this._processDiagnosticData(data);
       this.selectSeries();
     }

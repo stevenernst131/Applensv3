@@ -9,6 +9,15 @@ export interface ArmObject {
 export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
+    status: DetectorStatus;
+}
+
+export enum DetectorStatus {
+    None,
+    Critical,
+    Warning,
+    Info,
+    Success
 }
 
 export interface DiagnosticData {
@@ -43,7 +52,9 @@ export enum RenderingType {
     DataSummary,
     Email,
     Insights,
-    DynamicInsight
+    DynamicInsight,
+    Markdown,
+    DetectorList
 }
 
 export enum TimeSeriesType {
@@ -80,13 +91,16 @@ export interface DataTableRendering extends Rendering {
 export interface TimeSeriesRendering extends Rendering {
     defaultValue: number;
     graphType: TimeSeriesType;
+    graphOptions: any;
     timestampColumnName: string;
     counterColumnName: string;
     seriesColumns: string[];
 }
 
 export interface TimeSeriesPerInstanceRendering extends Rendering {
+    defaultValue: number;
     graphType: TimeSeriesType;
+    graphOptions: any;
     timestampColumnName: string;
     roleInstanceColumnName: string;
     counterColumnName: string;
@@ -108,4 +122,8 @@ export interface DynamicInsightRendering extends Rendering {
     status: InsightStatus,
     innerRendering: Rendering,
     expanded: boolean
+}
+
+export interface DetectorListRendering extends Rendering {
+    detectorIds: string[]
 }

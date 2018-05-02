@@ -1,0 +1,10 @@
+<div>
+  <div class="detector-container" *ngFor="let response of detectorResponses">
+      <div class="detector-header" [class.critical]="response.status === DetectorStatus.Critical" (click)="response.expanded = !response.expanded">
+        {{response.title}}
+      </div>
+      <div class="detector-body" *ngIf="response.expanded">
+        <detector-view [detectorResponse]="response.response" [startTime]="startTime" [endTime]="endTime"></detector-view>
+      </div>
+  </div>
+</div>

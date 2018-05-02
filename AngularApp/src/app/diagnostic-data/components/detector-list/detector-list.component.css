@@ -1,0 +1,36 @@
+.detector-container {
+    background-color: #ffffff;
+    width: 100%;
+    
+    border-radius: 5px;
+}
+
+.detector-header {
+    font-size: 18px;
+    padding: 15px;
+    cursor: pointer;
+    border-left: 10px solid #eeeeee;
+    /* border-top: 1px solid; */
+   
+}
+
+.detector-body {
+    padding: 30px;
+    border-top: 1px solid #cccccc;
+}
+
+.critical {
+    border-color: #ff0000;
+}
+
+.warning {
+    border-color: #ff9104;
+}
+
+.healthy {
+    border-color: #3da907;
+}
+
+.info {
+    border-color: #3a9bc7;
+}

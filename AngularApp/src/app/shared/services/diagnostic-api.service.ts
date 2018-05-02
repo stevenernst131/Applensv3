@@ -9,6 +9,7 @@ import { CacheService } from './cache.service';
 import { QueryParamsService } from './query-params.service';
 import { HttpMethod } from '../models/http';
 import { QueryResponse } from '../../diagnostic-data/models/compiler-response';
+import { ResourceService } from './resource.service';
 
 @Injectable()
 export class DiagnosticApiService {
@@ -17,7 +18,7 @@ export class DiagnosticApiService {
 
   public requestBody: any;
 
-  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService, private _resourceService: ResourceService) { }
 
   public getDiagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
