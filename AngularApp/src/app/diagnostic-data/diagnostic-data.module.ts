@@ -5,6 +5,7 @@ import { TimeSeriesGraphComponent } from './components/time-series-graph/time-se
 import { SignalComponent } from './components/signal/signal.component';
 import { NvD3Component, NvD3Module } from 'ng2-nvd3';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { MarkdownModule } from 'angular2-markdown';
 
 import 'd3';
 import 'nvd3';
@@ -21,6 +22,9 @@ import { DetectorViewComponent } from './components/detector-view/detector-view.
 import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnostic-data-config';
 import { LoaderViewComponent } from './components/loader-view/loader-view.component';
 import { DynamicInsightComponent } from './components/dynamic-insight/dynamic-insight.component';
+import { MarkdownComponent } from './components/markdown/markdown.component';
+import { DetectorListComponent } from './components/detector-list/detector-list.component';
+import { DiagnosticApiService } from '../shared/services/diagnostic-api.service';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -33,14 +37,15 @@ import { DynamicInsightComponent } from './components/dynamic-insight/dynamic-in
   imports: [
     CommonModule,
     NvD3Module,
-    NgxDatatableModule
+    NgxDatatableModule,
+    MarkdownModule.forRoot()
   ],
   providers: [
     { provide: DIAGNOSTIC_DATA_CONFIG, useValue: INTERNAL_CONFIGURATION }
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent],
   exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
