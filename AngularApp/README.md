@@ -24,7 +24,8 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## Packaging
 
-Run `npm run packagr` to build the package for diagnostic-data that will be published to npm and shared with App Services Support Center.n
+Run `npm run packagr` to build the package for diagnostic-data that will be published to npm and shared with App Services Support Center
+From App Service Diagnostics Portal, test by installing the local `dist.tgz` directly instead of npm package. Example: `npm install --save D:/Applensv3/AngularApp/dist.tgz`
 
 ## Further help
 

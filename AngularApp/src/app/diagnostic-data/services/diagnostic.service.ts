@@ -4,6 +4,13 @@ import { ResourceService } from "../../shared/services/resource.service";
 import { DetectorResponse } from "../models/detector";
 
 @Injectable()
-export abstract class DiagnosticService {
-    public abstract getDetector(detector: string): Observable<DetectorResponse>;
+export class DiagnosticService {
+    public getDetector(detector: string): Observable<DetectorResponse> {
+        //TODO: Figure out if this can be done with an abstract class
+        // Ran into difficulties in Support Center when this was abstract
+        // This class is never supposed to be used directly
+        // In applens we provide this withValue: applens-diagnostics.service
+        // In Support Center we provide this withValue: generic-api.service
+        return null;
+    }
 }
