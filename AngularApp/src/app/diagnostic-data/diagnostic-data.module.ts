@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Nvd3GraphComponent } from './components/nvd3-graph/nvd3-graph.component';
 import { TimeSeriesGraphComponent } from './components/time-series-graph/time-series-graph.component';
@@ -25,6 +25,7 @@ import { DynamicInsightComponent } from './components/dynamic-insight/dynamic-in
 import { MarkdownComponent } from './components/markdown/markdown.component';
 import { DetectorListComponent } from './components/detector-list/detector-list.component';
 import { DiagnosticApiService } from '../shared/services/diagnostic-api.service';
+import { DiagnosticService } from './services/diagnostic.service';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -49,4 +50,13 @@ import { DiagnosticApiService } from '../shared/services/diagnostic-api.service'
   exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
-export class DiagnosticDataModule { }
+export class DiagnosticDataModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: DiagnosticDataModule,
+      providers: [
+        DiagnosticService
+      ]
+    }
+  }
+ }

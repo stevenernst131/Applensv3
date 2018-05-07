@@ -20,17 +20,11 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   InsightStatus = InsightStatus;
 
-  constructor(private diagnosticService: DiagnosticService) {
-    super();
-  }
-
   protected processData(data: DiagnosticData) {
     super.processData(data);
     this.renderingProperties = <InsightsRendering>data.renderingProperties;
 
     this.parseInsights();
-
-    this.diagnosticService.getDetector('sample');
   }
 
   private parseInsights() {
