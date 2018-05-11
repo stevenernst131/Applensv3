@@ -1,10 +1,21 @@
 <div>
-  <div class="detector-container" *ngFor="let response of detectorResponses">
-      <div class="detector-header" [class.critical]="response.status === DetectorStatus.Critical" (click)="response.expanded = !response.expanded">
-        {{response.title}}
+  <div class="detector-container" *ngFor="let viewModel of detectorViewModels">
+    <div class="detector-header" [style.background-color]="viewModel.statusColor + '0f'" (click)="viewModel.expanded = viewModel.loadingStatus == LoadingStatus.Success && !viewModel.expanded">
+      <div class="status-icon">
+          <i class="fa fa-circle-o-notch fa-spin" *ngIf="viewModel.loadingStatus == LoadingStatus.Loading"></i>
+        <i class="fa"  *ngIf="viewModel.loadingStatus == LoadingStatus.Success" [ngClass]="viewModel.statusIcon" [style.color]="viewModel.statusColor"></i>
       </div>
-      <div class="detector-body" *ngIf="response.expanded">
-        <detector-view [detectorResponse]="response.response" [startTime]="startTime" [endTime]="endTime"></detector-view>
+      <div class="detector-title">
+        {{viewModel.title}} <span style="margin-left: 20px;font-size: 16px" *ngIf="viewModel.loadingStatus == LoadingStatus.Failed">Error: Click to retry</span>
       </div>
+      <div class="expand-icon">
+        <span class="fa" [class.fa-angle-down]="!viewModel.expanded" [class.fa-angle-up]="viewModel.expanded"></span>
+      </div>
+    </div>
+    <div style="overflow-y: hidden;height:0px" [@expand]="viewModel.expanded ? 'shown' : 'hidden'">
+      <div class="detector-body">
+        <detector-view [insideDetectorList]="true" [detectorResponse]="viewModel.response" [startTime]="startTime" [endTime]="endTime"></detector-view>
+      </div>
+    </div>
   </div>
 </div>

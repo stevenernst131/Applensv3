@@ -1,25 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DetectorListRendering, DiagnosticData, DetectorResponse, DetectorStatus } from '../../models/detector';
+import { DetectorListRendering, DiagnosticData, DetectorResponse, DetectorStatus, DetectorMetaData } from '../../models/detector';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { Observable } from 'rxjs/Observable';
+import { StatusStyles } from '../../models/styles';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { LoadingStatus } from '../../models/loading';
 
 @Component({
   selector: 'detector-list',
   templateUrl: './detector-list.component.html',
-  styleUrls: ['./detector-list.component.css']
+  styleUrls: ['./detector-list.component.css'],
+  animations: [
+    trigger('expand', [
+      state('shown' , style({ height: '*' })),
+      state('hidden', style({ height: '0px' })),
+      transition('* => *', animate('.25s'))
+    ])
+  ]
 })
 export class DetectorListComponent extends DataRenderBaseComponent {
+
+  LoadingStatus = LoadingStatus;
+
+  renderingProperties: DetectorListRendering;
+
+  detectorMetaData: DetectorMetaData[];
+  detectorViewModels: any[];
+
+  DetectorStatus = DetectorStatus;
+
+  errorDetectors: any[] = [];
 
   constructor(private _diagnosticService: DiagnosticService) {
     super();
   }
-
-  renderingProperties: DetectorListRendering;
-
-  detectorResponses: any[] = [];
-
-  DetectorStatus = DetectorStatus;
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -29,18 +44,67 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   private getDetectorResponses() {
 
-    this.renderingProperties.detectorIds.forEach(detector => {
-      this._diagnosticService.getDetector(detector).subscribe(res => this.detectorResponses.push(this.getDetectorViewModel(res)));
+    this._diagnosticService.getDetectors().subscribe(detectors => {
+      this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >=0);
+
+      this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
+
+      this.detectorViewModels.forEach((metaData, index) => {
+        metaData.request.subscribe((response: DetectorResponse) => {
+          this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
+        },
+        (error) => {
+          this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
+        });
+      });      
+    })
+  }
+
+  private retryRequest(metaData: any) {
+    metaData.loadingStatus = LoadingStatus.Loading;
+    metaData.request.subscribe((response: DetectorResponse) => {
+      metaData = this.updateDetectorViewModelSuccess(metaData, response);
+    },
+    (error) => {
+      metaData.loadingStatus = LoadingStatus.Failed;
     });
   }
 
-  private getDetectorViewModel(res: DetectorResponse) {
+  private getDetectorViewModel(detector: DetectorMetaData) {
     return {
-      title: res.metadata.name,
-      status: res.status ? res.status : DetectorStatus.Critical,
+      title: detector.name,
+      metadata: detector,
+      loadingStatus: LoadingStatus.Loading,
+      status: null,
+      statusColor: null,
+      statusIcon: null,
       expanded: false,
-      response: res
+      response: null,
+      request: this._diagnosticService.getDetector(detector.id)
     }
   }
 
+  private updateDetectorViewModelSuccess(viewModel: any, res: DetectorResponse) {
+    let status = res.status.statusId;
+
+    viewModel.loadingStatus = LoadingStatus.Success,
+    viewModel.status = status;
+    viewModel.statusColor = StatusStyles.getColorByStatus(status),
+    viewModel.statusIcon = StatusStyles.getIconByStatus(status),
+    viewModel.response = res;
+    return viewModel;
+  }
+
+}
+
+@Pipe({
+  name:'detectorOrder',
+  pure: false
+})
+export class DetectorOrderPipe implements PipeTransform {
+  transform(items: any[]) {
+    return items.sort((a,b) => {     
+      return a.status > b.status ? 1 : -1;
+    });
+  }
 }

@@ -40,6 +40,7 @@ export class DynamicInsight extends InsightBase {
 export enum InsightStatus {
     Critical,
     Warning,
+    Success,
     Info,
-    Success
+    None
 }
