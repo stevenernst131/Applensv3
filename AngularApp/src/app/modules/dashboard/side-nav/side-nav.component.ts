@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angula
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { BehaviorSubject } from 'rxjs';
+import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
 
 @Component({
   selector: 'side-nav',
@@ -18,9 +19,22 @@ export class SideNavComponent implements OnInit {
   detectors: SideNavSubItem[] = [];
   detectorsLoading: boolean = true;
 
-  currentRoutePath: string[]
+  currentRoutePath: string[];
+
+  category: CollapsibleMenuItem;
+  category2: CollapsibleMenuItem;
 
   searchValue: string;
+
+  documentation: CollapsibleMenuItem[] = [
+    {
+      label: 'Online Documentation',
+      onClick: () => { window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank') },
+      expanded: false,
+      subItems: null,
+      isSelected: null
+    }
+  ]
 
   ngOnInit() {
     this.initializeDetectors();
@@ -60,6 +74,9 @@ export class SideNavComponent implements OnInit {
     detectors.symbol = 'fa-signal';
     detectors.expanded = true;
 
+    this.category = new CollapsibleMenuItem("Availability and Performance", null, null, true);
+    this.category2 = new CollapsibleMenuItem("Management and Configuration", null, null, true);
+
     this.sideNavItems.push(detectors);
 
     this._diagnosticApiService.getDetectors(this.resourceService.getVersion(), this.resourceService.getCurrentResourceId()).subscribe(detectorList => {
@@ -70,6 +87,20 @@ export class SideNavComponent implements OnInit {
         let detectorIsActive = childUrl && childUrl.length > 1 && childUrl[0].path === 'detectors' && childUrl[1].path === element.id;
         detectors.addSubItem(element.id, element.name, `detectors/${element.id}`, detectorIsActive);
 
+        let onClick = () => {
+          this.navigateTo(`detectors/${element.id}`);
+        };
+
+        let isSelected = () => {
+          return this.currentRoutePath && this.currentRoutePath.join('/') === `detectors/${element.id}`;
+        };
+
+        let menuItem = new CollapsibleMenuItem(element.name, onClick, isSelected);
+        let menuItem2 = new CollapsibleMenuItem(element.name, onClick, () => false);
+
+        this.category.subItems.push(menuItem);
+        this.category2.subItems.push(menuItem2);
+
         this.detectors.push(<SideNavSubItem>{ 
           name: element.id,
           selected: detectorIsActive,
@@ -77,7 +108,7 @@ export class SideNavComponent implements OnInit {
           link: `detectors/${element.id}`
         });
       });
-
+      
       this.detectorsLoading = false;
     });
   }

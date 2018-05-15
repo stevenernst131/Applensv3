@@ -1,0 +1,16 @@
+.not-expandable {
+    cursor: auto;
+    padding-left: 28px;
+}
+
+.section-expand-icon {
+    min-width: 10px;
+}
+
+.expandable-content {
+    overflow-y: hidden;
+}
+
+.section-divider {
+    cursor: pointer;
+}

@@ -12,10 +12,12 @@
 /* Must import diagnostic-data css */
 @import 'app/diagnostic-data/diagnostic-data.css';
 
+@import 'app/collapsible-menu/collapsible-menu.css';
+@import 'app/collapsible-menu/themes/dark-theme.css';
+
 /* You can add global styles to this file, and also import other style files */
 body {
     margin: 0px;
-    /* padding-top:50px; */
 }
 
 .skin-purple-light .sidebar-menu > li:hover > a, .skin-purple-light .sidebar-menu > li.active > a {

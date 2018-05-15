@@ -1,0 +1,15 @@
+.menu-item-children {
+    overflow-y: hidden;
+}
+
+.menu-item {
+    cursor: pointer;
+    font-family: az_ea_font,"Segoe UI",wf_segoe-ui_normal,"Segoe WP",Tahoma,Arial,sans-serif;
+    
+}
+
+.expand-icon {
+    /* float: right; */
+    min-width: 10px;
+    font-size: 12px;
+}

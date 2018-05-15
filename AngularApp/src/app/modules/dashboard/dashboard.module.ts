@@ -26,6 +26,7 @@ import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
 import { OnboardingFlowComponent } from './onboarding-flow/onboarding-flow.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
+import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -34,7 +35,6 @@ export class InitResolver implements Resolve<Observable<boolean>>{
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
     let resourceRoute: string[] = state.url.split('?')[0].split('/');
-    //this._startupService.setResourceRoute(resourceRoute);
     return this._resourceService.setResourcePath(resourceRoute);
   }
 }
@@ -78,7 +78,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     OwlNativeDateTimeModule,
     OwlMomentDateTimeModule,
     MonacoEditorModule.forRoot(),
-    AngularSplitModule
+    AngularSplitModule,
+    CollapsibleMenuModule
   ],
   providers: [
     ApplensDiagnosticService,

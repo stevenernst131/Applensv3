@@ -1,0 +1,28 @@
+.menu-item {
+    color:#1d1d1d;
+    font-size: 12px;
+    padding: 10px 5px 9px 15px;
+}
+
+.menu-item,
+.section-divider {
+    border-bottom: 1px solid #ccc;
+}
+
+.menu-item:hover,
+.menu-item.selected {
+    background-color: rgba(0,137,250,.1);
+}
+
+.section-divider {
+    color: #252525;
+    background-color: #ffffff;
+    font-weight: 600;
+    font-size: 10px;
+    padding: 20px 25px 7px 15px;
+}
+
+.menu,
+.main-sidebar {
+    background-color: #ffffff
+}

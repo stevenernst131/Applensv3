@@ -11,7 +11,18 @@
             </div>
         </div>
 
-        <ul class="sidebar-menu" data-widget="tree">
+        <collapsible-menu>
+            <section-divider label="Documentation"> 
+                <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
+            </section-divider>
+            <section-divider label="Detectors" [collapsible]="false">
+                <collapsible-menu-item [menuItem]="this.category"></collapsible-menu-item>
+                <collapsible-menu-item [menuItem]="this.category2"></collapsible-menu-item>
+            </section-divider>
+            
+        </collapsible-menu>
+
+        <!-- <ul class="sidebar-menu" data-widget="tree">
             <li class="header">CREATE</li>
             <li (click)="navigateTo('create')" [class.active]="doesMatchCurrentRoute('create')">
                 <a>
@@ -56,6 +67,6 @@
                         </a>
                     </li>
             </ng-container>
-        </ul>
+        </ul> -->
     </section>
 </aside>
