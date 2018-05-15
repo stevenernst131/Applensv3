@@ -32,7 +32,8 @@ export class SideNavComponent implements OnInit {
       onClick: () => { window.open('https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods', '_blank') },
       expanded: false,
       subItems: null,
-      isSelected: null
+      isSelected: null,
+      icon: null
     }
   ]
 
@@ -74,8 +75,8 @@ export class SideNavComponent implements OnInit {
     detectors.symbol = 'fa-signal';
     detectors.expanded = true;
 
-    this.category = new CollapsibleMenuItem("Availability and Performance", null, null, true);
-    this.category2 = new CollapsibleMenuItem("Management and Configuration", null, null, true);
+    this.category = new CollapsibleMenuItem("Availability and Performance", null, null, 'fa-area-chart', true);
+    this.category2 = new CollapsibleMenuItem("Configuration", null, null, 'fa-sliders', true);
 
     this.sideNavItems.push(detectors);
 

@@ -8,6 +8,8 @@ import { CollapsibleMenuItem } from '../collapsible-menu-item/collapsible-menu-i
 })
 export class CollapsibleMenuComponent implements OnInit {
 
+  @Input() theme: string = 'dark';
+
   constructor() { }
 
   ngOnInit() {

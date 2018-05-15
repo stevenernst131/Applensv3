@@ -1,6 +1,7 @@
 <div class="menu-item" (click)="handleClick()" [class.selected]="isSelected()" [style.padding-left]="getPadding()">
     <i class="fa expand-icon" *ngIf=" menuItem.subItems && menuItem.subItems.length > 1" [class.fa-caret-right]="!menuItem.expanded" [class.fa-caret-down]="menuItem.expanded"></i>
-  {{menuItem.label}}
+    <i class="fa" *ngIf="menuItem.icon" [ngClass]="menuItem.icon"></i>
+    {{menuItem.label}}
   <!-- <i class="fa expand-icon" [class.fa-plus]="subMenuItemsIncludingParent.length > 1 && !menuItem.expanded" [class.fa-minus]="subMenuItemsIncludingParent.length > 1 && menuItem.expanded"></i> -->
 </div>
 <div class="menu-item-children" [@expand]="menuItem.expanded ? 'shown' : 'hidden'">

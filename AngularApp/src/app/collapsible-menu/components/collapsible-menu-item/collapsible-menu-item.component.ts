@@ -1,6 +1,5 @@
 import { Component, OnInit, ContentChildren, Input, AfterViewInit, QueryList, AfterContentInit, ElementRef } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { METHODS } from 'http';
 
 @Component({
   selector: 'collapsible-menu-item',
@@ -45,7 +44,7 @@ export class CollapsibleMenuItemComponent implements OnInit {
   }
 
   getPadding() {
-    return (15 + this.level * 15) + 'px';
+    return (15 + this.level * 12) + 'px';
   }
 
 }
@@ -56,12 +55,14 @@ export class CollapsibleMenuItem {
   expanded: boolean = false;
   subItems: CollapsibleMenuItem[];
   isSelected: Function;
+  icon: string;
 
-  constructor(label: string, onClick: Function, isSelected: Function, expanded: boolean = false, subItems: CollapsibleMenuItem[] = []) {
+  constructor(label: string, onClick: Function, isSelected: Function, icon: string = null, expanded: boolean = false, subItems: CollapsibleMenuItem[] = []) {
     this.label = label;
     this.onClick = onClick;
     this.expanded = expanded; 
     this.subItems = subItems;
     this.isSelected = isSelected;
+    this.icon = icon;
   }
 }
