@@ -23,9 +23,7 @@
               </td>
               <td class="table-value" >
                 <div *ngIf="!isMarkdown(insight.data[key])" [innerHtml]="insight.data[key]"></div>
-                <markdown *ngIf="isMarkdown(insight.data[key])">
-                  {{getMarkdown(insight.data[key])}}
-                </markdown>
+                <markdown [data]="getMarkdown(insight.data[key])" *ngIf="isMarkdown(insight.data[key])"></markdown>
               </td>
             </tr>
           </tbody>
