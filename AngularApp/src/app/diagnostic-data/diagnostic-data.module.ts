@@ -23,7 +23,7 @@ import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnos
 import { LoaderViewComponent } from './components/loader-view/loader-view.component';
 import { DynamicInsightComponent } from './components/dynamic-insight/dynamic-insight.component';
 import { MarkdownComponent } from './components/markdown/markdown.component';
-import { DetectorListComponent } from './components/detector-list/detector-list.component';
+import { DetectorListComponent, DetectorOrderPipe } from './components/detector-list/detector-list.component';
 import { DiagnosticApiService } from '../shared/services/diagnostic-api.service';
 import { DiagnosticService } from './services/diagnostic.service';
 
@@ -46,7 +46,7 @@ import { DiagnosticService } from './services/diagnostic.service';
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe],
   exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })

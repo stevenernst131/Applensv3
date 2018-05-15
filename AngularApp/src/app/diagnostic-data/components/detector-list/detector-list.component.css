@@ -1,36 +1,43 @@
 .detector-container {
-    background-color: #ffffff;
     width: 100%;
-    
-    border-radius: 5px;
+    margin-bottom: 15px;
 }
 
 .detector-header {
     font-size: 18px;
-    padding: 15px;
     cursor: pointer;
-    border-left: 10px solid #eeeeee;
-    /* border-top: 1px solid; */
-   
+    display: flex;
+    align-items: baseline;
+    border-bottom: 1px solid #b5b5b5;
+    height: 40px;
 }
 
 .detector-body {
-    padding: 30px;
-    border-top: 1px solid #cccccc;
+    padding: 15px;
 }
 
-.critical {
-    border-color: #ff0000;
+.expand-icon {
+    padding: 0px 30px;
 }
 
-.warning {
-    border-color: #ff9104;
+.detector-title {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
 }
 
-.healthy {
-    border-color: #3da907;
+.status-icon {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    width: 70px;
+    height:100%;
+    
 }
 
-.info {
-    border-color: #3a9bc7;
+.fa-circle-o-notch {
+    color: #828282;
+    font-size: 16px;
 }

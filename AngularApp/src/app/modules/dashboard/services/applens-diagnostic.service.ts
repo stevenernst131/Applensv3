@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
-import { DetectorResponse } from '../../../diagnostic-data/models/detector';
+import { DetectorResponse, DetectorMetaData } from '../../../diagnostic-data/models/detector';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
@@ -16,6 +16,12 @@ export class ApplensDiagnosticService {
       this._resourceService.getCurrentResourceId(), 
       detector, 
       this._resourceService.getDiagnosticRoleQueryString());
+  }
+
+  getDetectors(): Observable<DetectorMetaData[]> {
+    return this._diagnosticApi.getDetectors(
+      this._resourceService.getVersion(), 
+      this._resourceService.getCurrentResourceId());
   }
 
 }

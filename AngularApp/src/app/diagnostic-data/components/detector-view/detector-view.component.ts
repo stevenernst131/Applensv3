@@ -29,8 +29,8 @@ export class DetectorViewComponent implements OnInit {
   @Input() startTime: moment.Moment;
   @Input() endTime: moment.Moment;
 
-  @Input()
-  showEdit: boolean = true;
+  @Input() showEdit: boolean = true;
+  @Input() insideDetectorList: boolean = false;
 
   @Output() editClicked: EventEmitter<any>;
 
