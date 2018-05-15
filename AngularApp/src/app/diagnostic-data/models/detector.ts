@@ -9,15 +9,20 @@ export interface ArmObject {
 export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
-    status: DetectorStatus;
+    status: Status;
+}
+
+export interface Status {
+    statusId: DetectorStatus,
+    message: string
 }
 
 export enum DetectorStatus {
-    None,
     Critical,
     Warning,
+    Healthy,
     Info,
-    Success
+    None
 }
 
 export interface DiagnosticData {

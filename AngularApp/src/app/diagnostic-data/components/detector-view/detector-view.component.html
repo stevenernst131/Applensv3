@@ -2,7 +2,7 @@
   <div style="margin-bottom: 15px">
     <section class="content-header">
       <h1>
-        {{detectorDataLocalCopy.metadata.name}}
+        <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
         <small>{{detectorDataLocalCopy.metadata.description}}</small>
       </h1>
     </section>
