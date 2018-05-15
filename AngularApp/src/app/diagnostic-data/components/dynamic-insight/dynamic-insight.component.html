@@ -10,6 +10,7 @@
   </div>
 
   <div class="panel-body" *ngIf="insight.expanded">
+    <p *ngIf="insight.description">{{insight.description}}</p>
     <dynamic-data [diagnosticData]="insight.innerDiagnosticData" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
   </div>
 </div>

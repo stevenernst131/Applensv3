@@ -35,7 +35,12 @@
         "../node_modules/moment-timezone/builds/moment-timezone.min.js",
         "../node_modules/moment-timezone/builds/moment-timezone-with-data.js",
         "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/admin-lte/dist/js/adminlte.js"
+        "../node_modules/admin-lte/dist/js/adminlte.js",
+        "../node_modules/marked/lib/marked.js",
+        "../node_modules/prismjs/prism.js",
+        "../node_modules/prismjs/components/prism-clike.min.js", 
+        "../node_modules/prismjs/components/prism-csharp.min.js", 
+        "../node_modules/prismjs/components/prism-css.min.js" 
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

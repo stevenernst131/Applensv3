@@ -5,7 +5,7 @@ import { TimeSeriesGraphComponent } from './components/time-series-graph/time-se
 import { SignalComponent } from './components/signal/signal.component';
 import { NvD3Component, NvD3Module } from 'ng2-nvd3';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { MarkdownModule } from 'angular2-markdown';
+import { MarkdownModule } from 'ngx-markdown';
 
 import 'd3';
 import 'nvd3';
