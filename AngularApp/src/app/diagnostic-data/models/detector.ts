@@ -46,6 +46,13 @@ export interface DetectorMetaData {
     id: string;
     name: string;
     description: string;
+    authors: string;
+    supportTopicList: SupportTopic[];
+}
+
+export interface SupportTopic {
+    id: string,
+    pesId: string
 }
 
 export enum RenderingType {
