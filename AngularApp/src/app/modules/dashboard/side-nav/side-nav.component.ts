@@ -160,3 +160,13 @@ export class SearchPipe implements PipeTransform {
     return searchString && items ? items.filter(item => item.name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
   }
 }
+
+@Pipe({
+  name:'search',
+  pure: false
+})
+export class SearchMenuPipe implements PipeTransform {
+  transform(items: CollapsibleMenuItem[], searchString: string) {
+    return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
+  }
+}

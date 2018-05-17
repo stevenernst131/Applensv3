@@ -10,7 +10,7 @@ import { AngularSplitModule } from 'angular-split';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs/Observable';
-import { SideNavComponent, SearchPipe } from './side-nav/side-nav.component';
+import { SideNavComponent, SearchPipe, SearchMenuPipe } from './side-nav/side-nav.component';
 import { ResourceMenuItemComponent } from './resource-menu-item/resource-menu-item.component';
 import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
@@ -95,6 +95,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchPipe]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchPipe, SearchMenuPipe]
 })
 export class DashboardModule { }

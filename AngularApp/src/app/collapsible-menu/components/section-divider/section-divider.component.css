@@ -12,9 +12,10 @@
 }
 
 .section-divider {
-    cursor: pointer;
+    cursor: pointer;   
+    display: flex;
+    align-items: center;
 }
-
 
 /* DARK THEME */
 

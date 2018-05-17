@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ContentChildren, QueryList } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { CollapsibleMenuItemComponent } from '../collapsible-menu-item/collapsible-menu-item.component';
 
 @Component({
   selector: 'section-divider',

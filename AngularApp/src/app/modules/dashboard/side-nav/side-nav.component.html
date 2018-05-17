@@ -11,7 +11,19 @@
             </div>
         </div>
 
-        <collapsible-menu theme="dark">
+        <collapsible-menu theme="light">
+            <search-box [(searchValue)]="searchValue"></search-box>
+            <section-divider label="Availability and Performance" [collapsible]="true">
+                <collapsible-menu-item *ngFor="let item of this.category.subItems | search:searchValue" [menuItem]="item"></collapsible-menu-item>
+            </section-divider>
+
+            <section-divider label="Configuration and Management" [collapsible]="true">
+                <collapsible-menu-item *ngFor="let item of this.category2.subItems | search:searchValue" [menuItem]="item"></collapsible-menu-item>
+            </section-divider>
+            
+        </collapsible-menu>
+
+        <!-- <collapsible-menu theme="dark">
             <section-divider label="Documentation"> 
                 <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
             </section-divider>
@@ -20,7 +32,7 @@
                 <collapsible-menu-item [menuItem]="this.category2"></collapsible-menu-item>
             </section-divider>
             
-        </collapsible-menu>
+        </collapsible-menu> -->
 
         <!-- <ul class="sidebar-menu" data-widget="tree">
             <li class="header">CREATE</li>
