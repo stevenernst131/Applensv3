@@ -1,3 +1,11 @@
-<data-container [hideIfNoTitle]="false" [title]="renderingProperties.title">
+<ng-template #header>
+    {{renderingProperties.title}}
+    <button class="btn btn-default" style="float:right;margin-top: -7px;" *ngIf="isPublic" (click)="copyMarkdown()">
+        <span class="fa fa-copy"></span>
+        Copy
+    </button>
+</ng-template>
+
+<data-container [headerTemplate]="header" [title]="renderingProperties.title">
     <markdown [data]="markdown"></markdown>
 </data-container>
