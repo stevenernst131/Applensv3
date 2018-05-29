@@ -37,7 +37,42 @@ export class MarkdownComponent extends DataRenderBaseComponent {
   }
 
   copyMarkdown() {
-    let mardownHtml = this._markdownService.compile(this.markdown);
-    this._clipboard.copyAsHtml(mardownHtml);    
+    let markdownHtml = this._markdownService.compile(this.markdown);
+    this._clipboard.copyAsHtml(markdownHtml);    
   }
+
+  openEmail() {
+    let markdownHtml = this._markdownService.compile(this.markdown);
+    let mailto = this.emailTemplate.replace('{body}', markdownHtml);
+    console.log(mailto);
+    let data = new Blob([mailto], {type: 'text/plain'});
+    let textFile = window.URL.createObjectURL(data);
+
+    this.download('CaseEmail.eml', textFile);
+  }
+
+  download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', text);
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
+
+  readonly emailTemplate = `To: 
+Subject: Case Email
+X-Unsent: 1
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+<body>
+    {body}
+</body>
+</html>`
 }
