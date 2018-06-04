@@ -26,6 +26,7 @@ import { MarkdownComponent } from './components/markdown/markdown.component';
 import { DetectorListComponent, DetectorOrderPipe } from './components/detector-list/detector-list.component';
 import { DiagnosticApiService } from '../shared/services/diagnostic-api.service';
 import { DiagnosticService } from './services/diagnostic.service';
+import { ClipboardService } from './services/clipboard.service';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -42,6 +43,7 @@ import { DiagnosticService } from './services/diagnostic.service';
     MarkdownModule.forRoot()
   ],
   providers: [
+    ClipboardService,
     { provide: DIAGNOSTIC_DATA_CONFIG, useValue: INTERNAL_CONFIGURATION }
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,

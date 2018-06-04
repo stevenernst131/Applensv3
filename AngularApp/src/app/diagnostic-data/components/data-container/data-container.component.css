@@ -15,6 +15,7 @@
     background-color: #7287b7;
     border: 1px solid #5d6f98;
     color:white;
+    min-height: 42px;
 }
 
 .data-container-body {
