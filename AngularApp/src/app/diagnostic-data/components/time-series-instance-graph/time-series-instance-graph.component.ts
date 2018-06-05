@@ -7,7 +7,7 @@ import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
 import { TimeSeries, InstanceTimeSeries, InstanceDetails, DetailedInstanceTimeSeries, TablePoint } from '../../models/time-series';
-import { TimeZones } from '../../utilities/time-utilities';
+import { TimeZones, TimeUtilities } from '../../utilities/time-utilities';
 import * as momentNs from 'moment-timezone';
 const moment = momentNs;
 
@@ -41,6 +41,16 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
     super.processData(data);
 
     if (data) {
+      let start = this.startTime;
+      let end = this.endTime;
+      let timeGrain = this.timeGrainInMinutes;
+
+      TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
+      TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
+      end.minute(end.minute() - end.minute() % timeGrain).second(0);
+      this.startTime = start;
+      this.endTime = end;
+      
       this.renderingProperties = <TimeSeriesPerInstanceRendering>data.renderingProperties;
       this.dataTable = data.table;
       this.graphOptions = data.renderingProperties.graphOptions;
