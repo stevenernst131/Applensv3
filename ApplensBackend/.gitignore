@@ -39,3 +39,5 @@ Thumbs.db
 appsettings.Development.json
 appsettings.Local.json
 
+# Nuget
+/packages

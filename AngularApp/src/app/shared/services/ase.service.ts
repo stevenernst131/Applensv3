@@ -54,7 +54,7 @@ export class AseService extends ResourceService {
     return '';
   }
 
-  public getCurrentResourceId(): string {
+  public getCurrentResourceId(forDiagApi: boolean): string {
     return `subscriptions/${this._subscription}/resourcegroups/${this._resourceGroup}/providers/Microsoft.Web/hostingEnvironments/${this._hostingEnvironment}`;
   }
 

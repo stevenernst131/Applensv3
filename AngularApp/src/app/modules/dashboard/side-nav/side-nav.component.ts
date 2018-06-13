@@ -62,7 +62,7 @@ export class SideNavComponent implements OnInit {
 
     this.sideNavItems.push(detectors);
 
-    this._diagnosticApiService.getDetectors(this.resourceService.getVersion(), this.resourceService.getCurrentResourceId()).subscribe(detectorList => {
+    this._diagnosticApiService.getDetectors(this.resourceService.getVersion(), this.resourceService.getCurrentResourceId(true)).subscribe(detectorList => {
 
       let childUrl = this._activatedRoute.firstChild ? this._activatedRoute.firstChild.snapshot.url : this._activatedRoute.snapshot.url;
       
