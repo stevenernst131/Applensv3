@@ -16,7 +16,7 @@ export abstract class ResourceService {
 
   public abstract getResourceName(): string;
 
-  public abstract getCurrentResourceId(): string;
+  public abstract getCurrentResourceId(forDiagApi?: boolean): string;
 
   public abstract getCurrentResource(): Observable<any>;
 

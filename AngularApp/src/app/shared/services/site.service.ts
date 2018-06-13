@@ -67,10 +67,10 @@ export class SiteService extends ResourceService {
     return 'v4';
   }
 
-  public getCurrentResourceId(): string {
+  public getCurrentResourceId(forDiagApi: boolean = false): string {
     let siteId = `subscriptions/${this._subscription}/resourcegroups/${this._resourceGroup}/providers/Microsoft.Web/sites/${this._siteName}`;
     if (this._isStagingSlot) {
-      siteId += `/slots/${this._slotName}`;
+      siteId += forDiagApi ? `(${this._slotName})` : `/slots/${this._slotName}`;
     }
     return siteId;
   }

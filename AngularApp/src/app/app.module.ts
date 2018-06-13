@@ -37,6 +37,11 @@ export const Routes = RouterModule.forRoot([
     resolve: { resource: ResourceTypeResolver }
   },
   {
+    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/sites/:site/slots/:slot',
+    loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
+    resolve: { resource: ResourceTypeResolver }
+  },
+  {
     path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/hostingEnvironments/:hostingEnvironment',
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
     resolve: { resource: ResourceTypeResolver }
