@@ -25,7 +25,7 @@ export class SignalContainerComponent implements OnInit {
 
   ngOnInit() {
 
-    this.resourceId = this._resourceService.getCurrentResourceId();
+    this.resourceId = this._resourceService.getCurrentResourceId(true);
 
     this._route.params.subscribe((params: Params) => {
       this.getDetectorResponse();
