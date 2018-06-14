@@ -4,10 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { ObserverSiteResponse, ObserverSiteInfo } from '../models/observer';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
-import { ActivatedResource, ResourceType } from '../models/resources';
 import { ResourceService } from './resource.service';
 import { ObserverService } from './observer.service';
-import { METHODS } from 'http';
 
 @Injectable()
 export class SiteService extends ResourceService {
