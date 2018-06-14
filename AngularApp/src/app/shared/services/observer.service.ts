@@ -13,7 +13,6 @@ export class ObserverService {
   //          Hostnames will be incorrect if there is another
   //          app with the same name. Pending fix from Hawk
   public getSite(site: string): Observable<ObserverSiteResponse> {
-
     return this._diagnosticApiService.get<ObserverSiteResponse>(`api/sites/${site}`)
       .map((site : ObserverSiteResponse) => {
         if (site && site.details && isArray(site.details)) {
@@ -42,11 +41,9 @@ export class ObserverService {
 
     if (siteName.indexOf('(') > 0) {
       let split = site.SiteName.split('(')
-      siteName = split[0];
       slot = split[1].replace(')', '');
     }
 
-    site.SiteName = siteName;
     site.SlotName = slot;
     site.Hostnames = hostnames;
 

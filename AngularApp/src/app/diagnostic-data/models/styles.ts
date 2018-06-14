@@ -9,7 +9,7 @@ export class StatusStyles {
     public static CriticalIcon: string = "fa-exclamation-circle";
     public static WarningIcon: string = "fa-exclamation-triangle";
     public static HealthyIcon: string = "fa-check-circle";
-    public static InfoIcon: string = "insight.status";
+    public static InfoIcon: string = "fa-info-circle";
 
     public static getColorByStatus(status: DetectorStatus) {
         switch (status) {

@@ -23,5 +23,4 @@ export class ApplensDiagnosticService {
       this._resourceService.getVersion(), 
       this._resourceService.getCurrentResourceId(true));
   }
-
 }

@@ -44,7 +44,6 @@ export class MarkdownComponent extends DataRenderBaseComponent {
   openEmail() {
     let markdownHtml = this._markdownService.compile(this.markdown);
     let mailto = this.emailTemplate.replace('{body}', markdownHtml);
-    console.log(mailto);
     let data = new Blob([mailto], {type: 'text/plain'});
     let textFile = window.URL.createObjectURL(data);
 
