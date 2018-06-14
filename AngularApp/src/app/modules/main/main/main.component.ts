@@ -15,17 +15,18 @@ export class MainComponent implements OnInit {
   selectedResourceType: ResourceTypeState;
   resourceName: string;
   resourceTypes: ResourceTypeState[] = [
+    // TODO: enable support request id input once our insights are flowing to ASC
+    // {
+    //   resourceType: null,
+    //   routeName: 'srid',
+    //   displayName: 'Support Request ID',
+    //   enabled: true
+    // },
     {
       resourceType: ResourceType.Site,
       routeName: 'sites',
       displayName: 'App',
       enabled: true
-    },
-    {
-      resourceType: ResourceType.Function,
-      routeName: 'function',
-      displayName: 'Function',
-      enabled: false
     },
     {
       resourceType: ResourceType.AppServiceEnvironment,
@@ -59,6 +60,11 @@ export class MainComponent implements OnInit {
   }
 
   onSubmit(form: any) {
+
+    if (this.selectedResourceType.routeName === 'srid') {
+      window.location.href = `https://azuresupportcenter.msftcloudes.com/caseoverview?srId=${form.resourceName}`;
+    }
+
     let startUtc = moment.tz(form.startTime.format('YYYY-MM-DD HH:mm'), TimeZones.UTC);
     let endUtc = moment.tz(form.endTime.format('YYYY-MM-DD HH:mm'), TimeZones.UTC);
 

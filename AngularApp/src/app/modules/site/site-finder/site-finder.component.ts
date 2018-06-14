@@ -28,7 +28,6 @@ export class SiteFinderComponent implements OnInit {
 
     this._observerService.getSite(this.site).subscribe(observerSiteResponse => {
       if (observerSiteResponse.details.length === 1) {
-        let matchingSites = observerSiteResponse.details;
         let matchingSite = observerSiteResponse.details[0];
         this.navigateToSite(matchingSite);
       }

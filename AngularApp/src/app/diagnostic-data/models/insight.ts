@@ -15,11 +15,12 @@ export class Insight extends InsightBase {
     
     data: Dictionary<string>;
 
-    showDetails: boolean = false;
+    isExpanded: boolean = false;
 
-    constructor(status: string, title: string) {
+    constructor(status: string, title: string, isExpanded: boolean) {
         super(status, title);
         this.data = {};
+        this.isExpanded = isExpanded;
     }
 
     getKeys(): string[] {

@@ -7,6 +7,7 @@ import 'rxjs/add/observable/of';
 import { ActivatedResource, ResourceType } from '../models/resources';
 import { ResourceService } from './resource.service';
 import { ObserverService } from './observer.service';
+import { METHODS } from 'http';
 
 @Injectable()
 export class SiteService extends ResourceService {
@@ -33,7 +34,6 @@ export class SiteService extends ResourceService {
   // This method will be completed before loading dashboard component
   public setResourcePath(path: string[]): Observable<boolean> {
     this.processResourcePath(path);
-
     return this._observerApiService.getSite(this._siteName)
       .flatMap((observerResponse: ObserverSiteResponse) => {
         this._siteObject = this.getSiteFromObserverResponse(observerResponse);
@@ -56,7 +56,7 @@ export class SiteService extends ResourceService {
   }
 
   public getResourceName(): string {
-    return this._isStagingSlot ? `${this._siteName}(${this._slotName})` : this._siteName;
+    return this._siteName;
   }
 
   public getCurrentResource(): Observable<ObserverSiteInfo> {
