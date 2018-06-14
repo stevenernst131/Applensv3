@@ -35,13 +35,15 @@ export class InsightsComponent extends DataRenderBaseComponent {
     let insightColumnIndex = 1;
     let nameColumnIndex = 2;
     let valueColumnIndex = 3;
+    let isExpandedIndex = 4;
 
     for (let i: number = 0; i < data.rows.length; i++) {
       let row = data.rows[i];
       let insight: Insight;
       let insightName = row[insightColumnIndex];
       if ((insight = insights.find(insight => insight.title === insightName)) == null) {
-        insight = new Insight(row[statusColumnIndex], insightName);
+        let isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false
+        insight = new Insight(row[statusColumnIndex], insightName, isExpanded);
         insights.push(insight);
       }
 
