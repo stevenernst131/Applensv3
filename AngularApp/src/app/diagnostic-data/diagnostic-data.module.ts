@@ -19,12 +19,11 @@ import { EmailComponent } from './components/email/email.component';
 import { InsightsComponent } from './components/insights/insights.component';
 import { DetectorViewComponent } from './components/detector-view/detector-view.component';
 
-import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG } from './config/diagnostic-data-config';
+import { INTERNAL_CONFIGURATION, DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from './config/diagnostic-data-config';
 import { LoaderViewComponent } from './components/loader-view/loader-view.component';
 import { DynamicInsightComponent } from './components/dynamic-insight/dynamic-insight.component';
 import { MarkdownComponent } from './components/markdown/markdown.component';
 import { DetectorListComponent, DetectorOrderPipe } from './components/detector-list/detector-list.component';
-import { DiagnosticApiService } from '../shared/services/diagnostic-api.service';
 import { DiagnosticService } from './services/diagnostic.service';
 import { ClipboardService } from './services/clipboard.service';
 
@@ -43,8 +42,7 @@ import { ClipboardService } from './services/clipboard.service';
     MarkdownModule.forRoot()
   ],
   providers: [
-    ClipboardService,
-    { provide: DIAGNOSTIC_DATA_CONFIG, useValue: INTERNAL_CONFIGURATION }
+    ClipboardService
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
@@ -53,11 +51,12 @@ import { ClipboardService } from './services/clipboard.service';
     LoaderViewComponent],
 })
 export class DiagnosticDataModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(config: DiagnosticDataConfig = INTERNAL_CONFIGURATION): ModuleWithProviders {
     return {
       ngModule: DiagnosticDataModule,
       providers: [
-        DiagnosticService
+        DiagnosticService,
+        { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config }
       ]
     }
   }
