@@ -36,7 +36,7 @@ export class SiteService extends ResourceService {
       .flatMap((observerResponse: ObserverSiteResponse) => {
         this._siteObject = this.getSiteFromObserverResponse(observerResponse);
         this._currentResource.next(this._siteObject);
-        return this._observerApiService.getSiteRequestBody(this._siteObject.SiteName, this._siteObject.StampName);
+        return this._observerApiService.getSiteRequestBody(this._siteObject.SiteName, this._siteObject.InternalStampName);
       }).map((requestBody: any) => {
         if (!requestBody.details.HostNames) {
           requestBody.details.HostNames = this._siteObject.Hostnames.map(hostname => <any>{
