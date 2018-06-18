@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DynamicInsightRendering, DiagnosticData } from '../../models/detector';
 import { DynamicInsight, InsightStatus } from '../../models/insight';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
+import { MarkdownService } from 'ngx-markdown';
 
 @Component({
   selector: 'dynamic-insight',
@@ -15,6 +16,10 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
   insight: DynamicInsight;
 
   InsightStatus = InsightStatus;
+
+  constructor(private _markdownService: MarkdownService){
+    super();
+  }
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -30,7 +35,7 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
 
     this.insight = <DynamicInsight> {
       title: this.renderingProperties.title,
-      description: this.renderingProperties.description,
+      description: this._markdownService.compile(this.renderingProperties.description),
       status: this.renderingProperties.status,
       expanded: this.renderingProperties.expanded ? this.renderingProperties.expanded : true,
       innerDiagnosticData: <DiagnosticData>{

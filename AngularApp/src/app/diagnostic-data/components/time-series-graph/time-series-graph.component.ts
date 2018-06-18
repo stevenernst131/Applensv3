@@ -46,7 +46,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
       TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
       end.minute(end.minute() - end.minute() % timeGrain).second(0);
-      this.timeGrainInMinutes = timeGrain;
       this.startTime = start;
       this.endTime = end;
 

@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { ObserverSiteResponse, ObserverSiteInfo } from '../models/observer';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
-import { ActivatedResource, ResourceType } from '../models/resources';
 import { ResourceService } from './resource.service';
 import { ObserverService } from './observer.service';
 
@@ -33,12 +32,11 @@ export class SiteService extends ResourceService {
   // This method will be completed before loading dashboard component
   public setResourcePath(path: string[]): Observable<boolean> {
     this.processResourcePath(path);
-
     return this._observerApiService.getSite(this._siteName)
       .flatMap((observerResponse: ObserverSiteResponse) => {
         this._siteObject = this.getSiteFromObserverResponse(observerResponse);
         this._currentResource.next(this._siteObject);
-        return this._observerApiService.getSiteRequestBody(this._siteObject.SiteName, this._siteObject.StampName);
+        return this._observerApiService.getSiteRequestBody(this._siteObject.SiteName, this._siteObject.InternalStampName);
       }).map((requestBody: any) => {
         if (!requestBody.details.HostNames) {
           requestBody.details.HostNames = this._siteObject.Hostnames.map(hostname => <any>{
@@ -56,7 +54,7 @@ export class SiteService extends ResourceService {
   }
 
   public getResourceName(): string {
-    return this._isStagingSlot ? `${this._siteName}(${this._slotName})` : this._siteName;
+    return this._siteName;
   }
 
   public getCurrentResource(): Observable<ObserverSiteInfo> {
@@ -67,10 +65,10 @@ export class SiteService extends ResourceService {
     return 'v4';
   }
 
-  public getCurrentResourceId(): string {
+  public getCurrentResourceId(forDiagApi: boolean = false): string {
     let siteId = `subscriptions/${this._subscription}/resourcegroups/${this._resourceGroup}/providers/Microsoft.Web/sites/${this._siteName}`;
     if (this._isStagingSlot) {
-      siteId += `/slots/${this._slotName}`;
+      siteId += forDiagApi ? `(${this._slotName})` : `/slots/${this._slotName}`;
     }
     return siteId;
   }

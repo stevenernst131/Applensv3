@@ -9,7 +9,7 @@ export enum ResourceType {
 export interface ResourceTypeState {
     displayName: string;
     routeName: string;
-    resourceType: ResourceType,
+    resourceType: ResourceType;
     enabled: boolean;
 }
 

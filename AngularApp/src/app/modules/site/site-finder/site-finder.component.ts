@@ -28,7 +28,6 @@ export class SiteFinderComponent implements OnInit {
 
     this._observerService.getSite(this.site).subscribe(observerSiteResponse => {
       if (observerSiteResponse.details.length === 1) {
-        let matchingSites = observerSiteResponse.details;
         let matchingSite = observerSiteResponse.details[0];
         this.navigateToSite(matchingSite);
       }
@@ -41,10 +40,6 @@ export class SiteFinderComponent implements OnInit {
       this.error = error.status == 404 ? `App ${this.site} was not found` : `There was an error trying to find app ${this.site}`;
       this.loading = false;
     });
-  }
-
-  populateRequestBody() {
-
   }
 
   navigateToSite(matchingSite: ObserverSiteInfo) {

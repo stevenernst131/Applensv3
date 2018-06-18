@@ -13,7 +13,7 @@ export class ApplensDiagnosticService {
   getDetector(detector: string): Observable<DetectorResponse> {
     return this._diagnosticApi.getDetector(
       this._resourceService.getVersion(), 
-      this._resourceService.getCurrentResourceId(), 
+      this._resourceService.getCurrentResourceId(true), 
       detector, 
       this._resourceService.getDiagnosticRoleQueryString());
   }
@@ -21,7 +21,6 @@ export class ApplensDiagnosticService {
   getDetectors(): Observable<DetectorMetaData[]> {
     return this._diagnosticApi.getDetectors(
       this._resourceService.getVersion(), 
-      this._resourceService.getCurrentResourceId());
+      this._resourceService.getCurrentResourceId(true));
   }
-
 }

@@ -1,6 +1,6 @@
 {
   "name": "applens-diagnostics",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -26,6 +26,7 @@
     "admin-lte": "^2.4.3",
     "angular-split": "^1.0.0-rc.3",
     "bootstrap": "^3.3.6",
+    "copy-html-to-clipboard": "^4.0.1",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
@@ -34,7 +35,7 @@
     "ng-pick-datetime": "^5.1.8",
     "ng-pick-datetime-moment": "^1.0.5",
     "ng2-nvd3": "^2.0.0",
-    "ngx-markdown": "^1.5.2",
+    "ngx-markdown": "1.5.2",
     "ngx-monaco-editor": "^4.0.1",
     "popper.js": "^1.12.9",
     "prismjs": "^1.14.0",

@@ -5,6 +5,10 @@ export interface DiagnosticDataConfig {
 }
 
 export const INTERNAL_CONFIGURATION: DiagnosticDataConfig = {
+    isPublic: false
+}
+
+export const PUBLIC_CONFIGURATION: DiagnosticDataConfig = {
     isPublic: true
 }
 
