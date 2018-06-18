@@ -42,10 +42,6 @@ export class SiteFinderComponent implements OnInit {
     });
   }
 
-  populateRequestBody() {
-
-  }
-
   navigateToSite(matchingSite: ObserverSiteInfo) {
     let resourceArray: string[] = [
       'subscriptions', matchingSite.Subscription,
