@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CollapsibleMenuItem } from '../collapsible-menu-item/collapsible-menu-item.component';
 
 @Component({
   selector: 'collapsible-menu',
@@ -9,6 +8,8 @@ import { CollapsibleMenuItem } from '../collapsible-menu-item/collapsible-menu-i
 export class CollapsibleMenuComponent implements OnInit {
 
   @Input() theme: string = 'dark';
+
+  @Input() height: string = '100%';
 
   constructor() { }
 

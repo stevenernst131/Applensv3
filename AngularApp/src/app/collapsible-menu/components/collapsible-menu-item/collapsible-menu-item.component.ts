@@ -1,4 +1,4 @@
-import { Component, OnInit, ContentChildren, Input, AfterViewInit, QueryList, AfterContentInit, ElementRef } from '@angular/core';
+import { Component, Input, Pipe, PipeTransform} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
@@ -13,22 +13,18 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     ])
   ]
 })
-export class CollapsibleMenuItemComponent implements OnInit {
+export class CollapsibleMenuItemComponent {
 
   @Input() menuItem: CollapsibleMenuItem;
 
   @Input() level: number = 0;
 
+  @Input() searchValue: string;
+
   hasChildren : boolean;
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-
   handleClick() {
-    if (this.menuItem.subItems && this.menuItem.subItems.length > 1) {
+    if (this.menuItem.subItems && this.menuItem.subItems.length > 0) {
       this.menuItem.expanded = !this.menuItem.expanded;
     }
     else {
@@ -64,5 +60,15 @@ export class CollapsibleMenuItem {
     this.subItems = subItems;
     this.isSelected = isSelected;
     this.icon = icon;
+  }
+}
+
+@Pipe({
+  name:'search',
+  pure: false
+})
+export class SearchPipe implements PipeTransform {
+  transform(items: CollapsibleMenuItem[], searchString: string) {
+    return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
   }
 }
