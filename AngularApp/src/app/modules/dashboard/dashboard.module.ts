@@ -10,7 +10,7 @@ import { AngularSplitModule } from 'angular-split';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs/Observable';
-import { SideNavComponent, SearchPipe } from './side-nav/side-nav.component';
+import { SideNavComponent, SearchMenuPipe } from './side-nav/side-nav.component';
 import { ResourceMenuItemComponent } from './resource-menu-item/resource-menu-item.component';
 import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
@@ -26,6 +26,7 @@ import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
 import { OnboardingFlowComponent } from './onboarding-flow/onboarding-flow.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
+import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -34,7 +35,6 @@ export class InitResolver implements Resolve<Observable<boolean>>{
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
     let resourceRoute: string[] = state.url.split('?')[0].split('/');
-    //this._startupService.setResourceRoute(resourceRoute);
     return this._resourceService.setResourcePath(resourceRoute);
   }
 }
@@ -78,7 +78,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     OwlNativeDateTimeModule,
     OwlMomentDateTimeModule,
     MonacoEditorModule.forRoot(),
-    AngularSplitModule
+    AngularSplitModule,
+    CollapsibleMenuModule
   ],
   providers: [
     ApplensDiagnosticService,
@@ -94,6 +95,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchPipe]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe]
 })
 export class DashboardModule { }

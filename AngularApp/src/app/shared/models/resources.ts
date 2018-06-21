@@ -11,6 +11,7 @@ export interface ResourceTypeState {
     routeName: string;
     resourceType: ResourceType;
     enabled: boolean;
+    caseId: boolean;
 }
 
 export interface ActivatedResource {
