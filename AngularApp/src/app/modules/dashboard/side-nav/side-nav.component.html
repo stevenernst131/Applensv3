@@ -10,52 +10,34 @@
                 <p>{{resourceService.getResourceName()}}</p>
             </div>
         </div>
+        <!--THIS IS FOR TESTING LIGHT THEME-->
+        <!-- <collapsible-menu theme="light">
+            
+            <section-divider label="Availability and Performance" [collapsible]="true">
+                <collapsible-menu-item *ngFor="let item of this.category.subItems | search:searchValue" [menuItem]="item"></collapsible-menu-item>
+            </section-divider>
 
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">CREATE</li>
-            <li (click)="navigateTo('create')" [class.active]="doesMatchCurrentRoute('create')">
-                <a>
-                    <i class="fa fa-fw fa-plus"></i>
-                    <span>New Detector</span>
-                </a>
-            </li>
+            <section-divider label="Configuration and Management" [collapsible]="true">
+                <collapsible-menu-item *ngFor="let item of this.category2.subItems | search:searchValue" [menuItem]="item"></collapsible-menu-item>
+            </section-divider>
+            
+        </collapsible-menu> -->
 
-            <li class="header">DOCUMENTATION</li>
-            <li>
-                <a target="_blank" href="https://app-service-diagnostics-docs.azurewebsites.net/api/Diagnostics.ModelsAndUtils.Models.Response.html#extensionmethods">
-                    <i class="fa fa-link"></i>
-                    <span>Online Documentation</span>
-                </a>
-            </li>
-            <li>
-                <a target="_blank" href="https://github.com/Azure/Azure-AppServices-Diagnostics/tree/master/data/samples/Diagnostics.Samples">
-                    <i class="fa fa-link"></i>
-                    <span>Code Samples</span>
-                </a>
-            </li>
+        <collapsible-menu theme="dark" [height]="contentHeight">
+            <search-box [(searchValue)]="searchValue"></search-box>
+            <menu-scroll>
+                <section-divider label="Create">
+                    <collapsible-menu-item [searchValue]="searchValue" [menuItem]="createNew"></collapsible-menu-item>
+                </section-divider>
+                <section-divider label="Documentation">
+                    <collapsible-menu-item *ngFor="let doc of documentation" [searchValue]="searchValue" [menuItem]="doc"></collapsible-menu-item>
+                </section-divider>
+                <section-divider label="Detectors">
+                    <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category"></collapsible-menu-item>
+                </section-divider>
+            </menu-scroll>
 
 
-            <li class="header">DETECTORS</li>
-            <form class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search Detectors..." [(ngModel)]="searchValue">
-                    <span class="input-group-btn">
-                        <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </span>
-                </div>
-            </form>
-            <li *ngIf="detectorsLoading" style="text-align: center;color: #b8c7ce;">
-                <i class="fa fa-circle-o-notch fa-spin"></i>
-            </li>
-            <ng-container *ngIf="!detectorsLoading">
-                    <li *ngFor="let detector of detectors | detectorSearch:searchValue" [class.active]="doesMatchCurrentRoute('detectors/' + detector.name) || doesMatchCurrentRoute('detectors/' + detector.name + '/edit')">
-                        <a (click)="navigateTo(detector.link)">
-                            <span>{{detector.displayName}}</span>
-                        </a>
-                    </li>
-            </ng-container>
-        </ul>
+        </collapsible-menu>
     </section>
 </aside>
