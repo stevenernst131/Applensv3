@@ -34,7 +34,18 @@ export class SideNavComponent implements OnInit {
       isSelected: null,
       icon: null
     }
-  ]
+  ];
+
+  createNew: CollapsibleMenuItem = {
+    label: 'Create New',
+    onClick: () => {
+      this.navigateTo('create');
+    },
+    expanded: false,
+    subItems: null,
+    isSelected: null,
+    icon: null
+  };
 
   ngOnInit() {
     this.initializeDetectors();

@@ -38,12 +38,16 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
+              <div *ngIf="!this.selectedResourceType.caseId" class="col-md-6">
                 <label>Resource Name</label>
                 <input class="form-control" [(ngModel)]="resourceName" name="resourceName" type="text" aria-describedby="nameHelp" placeholder="Enter resource name">
               </div>
+              <div  *ngIf="this.selectedResourceType.caseId" class="col-md-6">
+                <label>Case Number</label>
+                <input class="form-control" [(ngModel)]="resourceName" name="resourceName" type="text" aria-describedby="nameHelp" placeholder="Enter case number">
+              </div>
             </div>
-            <div class="form-row">
+            <div class="form-row" *ngIf="!this.selectedResourceType.caseId">
               <div class="col-md-6">
                 <label>Start Time</label>
                 <input id="startTime" name="startTime" class="form-control input-sm" [(ngModel)]="startTime" [owlDateTimeTrigger]="start"
