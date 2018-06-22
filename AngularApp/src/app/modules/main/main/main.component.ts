@@ -15,14 +15,6 @@ export class MainComponent implements OnInit {
   selectedResourceType: ResourceTypeState;
   resourceName: string;
   resourceTypes: ResourceTypeState[] = [
-    // TODO: enable support request id input once our insights are flowing to ASC
-    {
-      resourceType: null,
-      routeName: 'srid',
-      displayName: 'Support Request ID',
-      enabled: true,
-      caseId: true
-    },
     {
       resourceType: ResourceType.Site,
       routeName: 'sites',
@@ -36,6 +28,13 @@ export class MainComponent implements OnInit {
       displayName: 'App Service Environment',
       enabled: true,
       caseId: false
+    },
+    {
+      resourceType: null,
+      routeName: 'srid',
+      displayName: 'Support Request ID',
+      enabled: true,
+      caseId: true
     }
   ];
 
