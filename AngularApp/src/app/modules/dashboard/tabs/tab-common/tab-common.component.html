@@ -1,0 +1,13 @@
+<div class="container" style="padding-top:10px; padding-bottom:10px">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a [routerLink]="['./']" preserveFragment queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">Data</a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['edit']" preserveFragment queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab']" [routerLinkActiveOptions]="{exact:true}">Develop</a>
+    </li>
+  </ul>
+</div>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>

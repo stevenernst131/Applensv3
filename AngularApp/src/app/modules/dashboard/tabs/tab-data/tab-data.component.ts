@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { DetectorResponse, RenderingType } from '../../../diagnostic-data/models/detector';
+import { DetectorResponse, RenderingType } from '../../../../diagnostic-data/models/detector';
 import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
-import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
-import { ResourceService } from '../../../shared/services/resource.service';
-import { QueryParamsService } from '../../../shared/services/query-params.service';
+import { DiagnosticApiService } from '../../../../shared/services/diagnostic-api.service';
+import { ResourceService } from '../../../../shared/services/resource.service';
+import { QueryParamsService } from '../../../../shared/services/query-params.service';
 
 @Component({
-  selector: 'signal-container',
-  templateUrl: './signal-container.component.html',
-  styleUrls: ['./signal-container.component.css']
+  selector: 'tab-data',
+  templateUrl: './tab-data.component.html',
+  styleUrls: ['./tab-data.component.css']
 })
-export class SignalContainerComponent implements OnInit {
+export class TabDataComponent implements OnInit {
 
   constructor(private _router: Router, private _route: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService,
     public queryParamsService: QueryParamsService) { }
@@ -44,15 +44,15 @@ export class SignalContainerComponent implements OnInit {
     this.signalResponse = null;
     this.signal = this._route.snapshot.params['signal'];
     this._diagnosticApiService.getDetector(this._resourceService.getVersion(), this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString())
-    .subscribe((response: DetectorResponse) => {
-      this.signalResponse = response;
-    }, (error: any) => {
-      this.error = error;
-    });
+      .subscribe((response: DetectorResponse) => {
+        this.signalResponse = response;
+      }, (error: any) => {
+        this.error = error;
+      });
   }
 
   onEditClicked(event: any): void {
-    
+
     let navigationExtras: NavigationExtras = {
       queryParamsHandling: 'preserve',
       preserveFragment: true,
@@ -62,3 +62,4 @@ export class SignalContainerComponent implements OnInit {
     this._router.navigate(['edit'], navigationExtras);
   }
 }
+
