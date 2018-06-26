@@ -1,8 +1,0 @@
-<div style="padding:20px">
-  <div style="text-align: right">
-    <button class="btn btn-primary" style="display: inline-block" (click)="onEditClicked($event)">Edit</button>
-  </div>
-  <detector-view [detectorResponse]="signalResponse" [error]="error" [startTime]="queryParamsService.startTime" [endTime]="queryParamsService.endTime"
-    (editClicked)="onEditClicked($event)">
-  </detector-view>
-</div>
