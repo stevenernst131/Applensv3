@@ -1,12 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { GithubApiService } from '../../../../shared/services/github-api.service';
-import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
-import { QueryResponse, CompilerResponse } from '../../../../diagnostic-data/models/compiler-response';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { DiagnosticApiService } from '../../../../shared/services/diagnostic-api.service';
-import { ResourceService } from '../../../../shared/services/resource.service';
-import { Package } from '../../../../shared/models/package';
-import { QueryParamsService } from '../../../../shared/services/query-params.service';
 import { OnboardingFlowComponent, DevelopMode } from '../../onboarding-flow/onboarding-flow.component';
 
 @Component({

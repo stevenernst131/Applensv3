@@ -32,10 +32,8 @@ export class DetectorViewComponent implements OnInit {
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;
 
-  @Output() editClicked: EventEmitter<any>;
 
   constructor() {
-    this.editClicked = new EventEmitter<any>();
   }
 
   ngOnInit() {
@@ -46,9 +44,5 @@ export class DetectorViewComponent implements OnInit {
     this.errorSubject.subscribe((data: any) => {
       this.errorState = data;
     });
-  }
-
-  edit(): void {
-    this.editClicked.emit();
   }
 }

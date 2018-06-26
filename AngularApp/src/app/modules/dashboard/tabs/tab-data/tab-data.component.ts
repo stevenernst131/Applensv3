@@ -50,16 +50,4 @@ export class TabDataComponent implements OnInit {
         this.error = error;
       });
   }
-
-  onEditClicked(event: any): void {
-
-    let navigationExtras: NavigationExtras = {
-      queryParamsHandling: 'preserve',
-      preserveFragment: true,
-      relativeTo: this._route
-    };
-
-    this._router.navigate(['edit'], navigationExtras);
-  }
 }
-
