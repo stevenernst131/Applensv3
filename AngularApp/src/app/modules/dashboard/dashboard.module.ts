@@ -60,7 +60,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       },
       {
         path: 'detectors/:signal/edit',
-        component: OnboardingFlowComponent
+        component: OnboardingFlowComponent        
       }
     ]
   },

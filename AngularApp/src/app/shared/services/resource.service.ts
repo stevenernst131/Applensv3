@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ActivatedResource, ResourceType } from '../models/resources';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()

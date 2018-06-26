@@ -32,9 +32,9 @@ export const Routes = RouterModule.forRoot([
     loadChildren: 'app/modules/ase/ase.module#AseModule'
   },
   {
-    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/sites/:site',
+    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/sites/:site',
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
-    resolve: { resource: ResourceTypeResolver }
+    resolve: { resource: ResourceTypeResolver },
   },
   {
     path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/sites/:site/slots/:slot',

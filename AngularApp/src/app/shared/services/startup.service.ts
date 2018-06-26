@@ -26,10 +26,10 @@ export class StartupService {
 
   private determineResourceType(resourceRoute: string[]): void {
     let type: ResourceType;
-    if (resourceRoute[5].toLowerCase() == 'sites') {
+    if (resourceRoute.indexOf('sites') > 0) {
       type = ResourceType.Site;
     }
-    else if (resourceRoute[5].toLowerCase() == 'hostingenvironments') {
+    else if (resourceRoute.indexOf('hostingenvironments') > 0) {
       type = ResourceType.AppServiceEnvironment;
     }
 
