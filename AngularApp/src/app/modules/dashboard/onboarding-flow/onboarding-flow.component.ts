@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 import { QueryResponse, CompilerResponse } from '../../../diagnostic-data/models/compiler-response';
@@ -8,6 +8,11 @@ import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
 import { QueryParamsService } from '../../../shared/services/query-params.service';
 
+export enum DevelopMode {
+  Create,
+  Edit
+}
+
 @Component({
   selector: 'onboarding-flow',
   templateUrl: './onboarding-flow.component.html',
@@ -15,8 +20,9 @@ import { QueryParamsService } from '../../../shared/services/query-params.servic
 })
 export class OnboardingFlowComponent implements OnInit {
 
+  @Input() mode: DevelopMode = DevelopMode.Create;
+  @Input() detectorId: string = '';
   fileName: string;
-  detectorId: string;
   editorOptions: any;
   code: string;
   resourceId: string;
@@ -66,7 +72,7 @@ export class OnboardingFlowComponent implements OnInit {
   ngOnInit() {
     this.resourceId = this.resourceService.getCurrentResourceId();
 
-    if (this._route.snapshot.url[0].path.toLowerCase().indexOf('create') >= 0) {
+    if (this.mode == DevelopMode.Create) {
       // CREATE FLOW
       this.githubService.getDetectorTemplate(this.resourceService.templateFileName).subscribe(data => {
         this.code = data;
@@ -75,7 +81,6 @@ export class OnboardingFlowComponent implements OnInit {
     }
     else {
       // EDIT FLOW
-      this.detectorId = this._route.snapshot.params['signal'].toLowerCase();
       this.fileName = `${this.detectorId}.csx`;
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
         this.code = data;
