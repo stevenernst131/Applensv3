@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'tab-common',
@@ -12,6 +11,5 @@ export class TabCommonComponent implements OnInit {
   }
 
   ngOnInit() {
-
   }
 }

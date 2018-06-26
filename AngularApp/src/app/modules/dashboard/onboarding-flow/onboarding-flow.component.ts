@@ -19,6 +19,7 @@ export enum DevelopMode {
   styleUrls: ['./onboarding-flow.component.css']
 })
 export class OnboardingFlowComponent implements OnInit {
+
   @Input() mode: DevelopMode = DevelopMode.Create;
   @Input() detectorId: string = '';
   fileName: string;
@@ -72,6 +73,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.resourceId = this.resourceService.getCurrentResourceId();
 
     if (this.mode == DevelopMode.Create) {
+      // CREATE FLOW
       this.githubService.getDetectorTemplate(this.resourceService.templateFileName).subscribe(data => {
         this.code = data;
       });
