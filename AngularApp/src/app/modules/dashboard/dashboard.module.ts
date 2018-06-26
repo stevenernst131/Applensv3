@@ -17,13 +17,15 @@ import { ResourceServiceFactory } from '../../shared/providers/resource.service.
 import { SiteService } from '../../shared/services/site.service';
 import { ResourceHomeComponent } from './resource-home/resource-home.component';
 import { AseService } from '../../shared/services/ase.service';
-import { SignalContainerComponent } from './signal-container/signal-container.component';
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
 import { QueryParamsService } from '../../shared/services/query-params.service';
 import { TimePickerComponent } from './time-picker/time-picker.component';
 import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
 import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
 import { OnboardingFlowComponent } from './onboarding-flow/onboarding-flow.component';
+import { TabCommonComponent } from './tabs/tab-common/tab-common.component';
+import { TabDataComponent } from './tabs/tab-data/tab-data.component';
+import { TabDevelopComponent } from './tabs/tab-develop/tab-develop.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
@@ -56,11 +58,21 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       },
       {
         path: 'detectors/:signal',
-        component: SignalContainerComponent
-      },
-      {
-        path: 'detectors/:signal/edit',
-        component: OnboardingFlowComponent
+        component: TabCommonComponent,
+        children: [
+          {
+            path: '',
+            component: TabDataComponent
+          },
+          {
+            path: 'data',
+            redirectTo: ''
+          },
+          {
+            path: 'edit',
+            component: TabDevelopComponent
+          }
+        ]
       }
     ]
   },
@@ -95,6 +107,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, SignalContainerComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent]
 })
 export class DashboardModule { }
