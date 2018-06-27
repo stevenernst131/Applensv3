@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TabCommonComponent implements OnInit {
 
+  contentHeight: string;
   constructor() {
+    this.contentHeight = (window.innerHeight - 112) + 'px';
   }
 
   ngOnInit() {
