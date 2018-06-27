@@ -58,14 +58,7 @@ export class SideNavComponent implements OnInit {
   }
 
   private getCurrentRoutePath() {
-    this.currentRoutePath = this._getLastNestedRoute(this._activatedRoute).snapshot.url.map(urlSegment => urlSegment.path);
-  }
-
-  private _getLastNestedRoute(activatedRoute: ActivatedRoute) {
-    while (activatedRoute.firstChild) {
-      activatedRoute = activatedRoute.firstChild;
-    }
-    return activatedRoute;
+    this.currentRoutePath = this._activatedRoute.firstChild.snapshot.url.map(urlSegment => urlSegment.path);
   }
 
   navigateTo(path: string) {
