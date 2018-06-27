@@ -20,3 +20,19 @@ body {
 .skin-purple-light .sidebar-menu > li:hover > a, .skin-purple-light .sidebar-menu > li.active > a {
     background: #ececec;
 }
+
+.critical-color {
+    color: #ff0000;
+}
+
+.warning-color {
+    color: #ff9104;
+}
+
+.success-color {
+    color: #3da907;
+}
+
+.info-color {
+    color: #3a9bc7;
+}
