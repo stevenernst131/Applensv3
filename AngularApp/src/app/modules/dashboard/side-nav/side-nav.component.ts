@@ -37,7 +37,7 @@ export class SideNavComponent implements OnInit {
   ];
 
   createNew: CollapsibleMenuItem = {
-    label: 'Create New',
+    label: 'New Detector',
     onClick: () => {
       this.navigateTo('create');
     },
