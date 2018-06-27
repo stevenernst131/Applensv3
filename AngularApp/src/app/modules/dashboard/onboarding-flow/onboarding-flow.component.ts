@@ -39,14 +39,10 @@ export class OnboardingFlowComponent implements OnInit {
   alertMessage: string;
   showAlert: boolean;
 
-  containerHeight: string;
-
   private publishingPackage: Package;
 
   constructor(private _route: ActivatedRoute, private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService,
     private resourceService: ResourceService, public queryParamsService: QueryParamsService) {
-
-    this.containerHeight = (window.innerHeight - 50) + 'px';
 
     this.editorOptions = {
       theme: 'vs',
