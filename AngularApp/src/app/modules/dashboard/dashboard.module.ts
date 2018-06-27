@@ -29,6 +29,7 @@ import { TabDevelopComponent } from './tabs/tab-develop/tab-develop.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
+import { ObserverService } from '../../shared/services/observer.service';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -36,8 +37,7 @@ export class InitResolver implements Resolve<Observable<boolean>>{
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
-    let resourceRoute: string[] = state.url.split('?')[0].split('/');
-    return this._resourceService.setResourcePath(resourceRoute);
+    return this._resourceService.waitForInitialization();
   }
 }
 
@@ -99,7 +99,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     {
       provide: ResourceService,
       useFactory: ResourceServiceFactory,
-      deps: [StartupService, SiteService, AseService]
+      deps: [StartupService, ObserverService]
     },
     {
       provide: OWL_DATE_TIME_FORMATS, 

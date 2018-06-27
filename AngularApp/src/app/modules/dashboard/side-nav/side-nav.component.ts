@@ -73,7 +73,7 @@ export class SideNavComponent implements OnInit {
 
   initializeDetectors() {
 
-    this._diagnosticApiService.getDetectors(this.resourceService.getVersion(), this.resourceService.getCurrentResourceId(true)).subscribe(detectorList => {
+    this._diagnosticApiService.getDetectors(this.resourceService.versionPrefix, this.resourceService.getCurrentResourceId(true)).subscribe(detectorList => {
       if (detectorList) {
         detectorList.forEach(element => {
           let onClick = () => {

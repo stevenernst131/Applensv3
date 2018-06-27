@@ -18,3 +18,11 @@ export interface ActivatedResource {
     type: ResourceType,
     resourceDefinition: Dictionary<string>
 }
+
+export interface ArmResource {
+    subscriptionId: string;
+    resourceGroup: string;
+    provider: string;
+    resourceTypeName: string;
+    resourceName: string;
+}

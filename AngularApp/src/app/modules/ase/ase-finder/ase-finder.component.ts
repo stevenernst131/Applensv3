@@ -44,6 +44,7 @@ export class AseFinderComponent implements OnInit {
     let resourceArray: string[] = [
       'subscriptions', matchingAse.Subscription,
       'resourceGroups', matchingAse.ResourceGroupName,
+      'providers','Microsoft.Web',
       'hostingEnvironments', matchingAse.Name];
 
     this._router.navigate(resourceArray);

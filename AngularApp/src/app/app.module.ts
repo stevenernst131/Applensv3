@@ -7,14 +7,16 @@ import { MainComponent } from './modules/main/main/main.component';
 import { MainModule } from './modules/main/main.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StartupService } from './shared/services/startup.service';
+import { ArmResource } from './shared/models/resources';
 
 @Injectable()
 export class ResourceTypeResolver implements Resolve<void>{
   constructor(private _startupService: StartupService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): void {
-    let resourceRoute: string[] = state.url.split('?')[0].split('/');
-    this._startupService.setResourceRoute(resourceRoute);
+    console.log(route.params);
+    let armResource = <ArmResource>route.params;
+    this._startupService.setResource(armResource);
   }
 }
 
@@ -32,20 +34,20 @@ export const Routes = RouterModule.forRoot([
     loadChildren: 'app/modules/ase/ase.module#AseModule'
   },
   {
-    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/sites/:site',
+    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/:resourceTypeName/:resourceName',
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
     resolve: { resource: ResourceTypeResolver },
   },
-  {
-    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/sites/:site/slots/:slot',
-    loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
-    resolve: { resource: ResourceTypeResolver }
-  },
-  {
-    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/hostingEnvironments/:hostingEnvironment',
-    loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
-    resolve: { resource: ResourceTypeResolver }
-  }
+  // {
+  //   path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/sites/:site/slots/:slot',
+  //   loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
+  //   resolve: { resource: ResourceTypeResolver }
+  // },
+  // {
+  //   path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/hostingEnvironments/:hostingEnvironment',
+  //   loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
+  //   resolve: { resource: ResourceTypeResolver }
+  // }
 ]);
 
 @NgModule({

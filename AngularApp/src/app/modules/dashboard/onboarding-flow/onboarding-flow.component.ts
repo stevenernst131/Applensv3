@@ -99,7 +99,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Running";
     this.runButtonIcon = "fa fa-circle-o-notch fa-spin";
 
-    this.diagnosticApiService.getCompilerResponse(this.resourceService.getVersion(), this.resourceId, this.resourceService.getDiagnosticRoleQueryString(), body)
+    this.diagnosticApiService.getCompilerResponse(this.resourceService.versionPrefix, this.resourceId, body)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;
