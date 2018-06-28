@@ -29,12 +29,12 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         DiagnosticApiService,
+        ResourceService,
         SiteService,
+        AseService,
         StartupService,
         ObserverService,
         GithubApiService,
-        ResourceService,
-        AseService,
         CacheService,
         QueryParamsService
       ]

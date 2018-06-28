@@ -9,36 +9,32 @@ import { CacheService } from './cache.service';
 import { QueryParamsService } from './query-params.service';
 import { HttpMethod } from '../models/http';
 import { QueryResponse } from '../../diagnostic-data/models/compiler-response';
-import { ResourceService } from './resource.service';
 
 @Injectable()
 export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
-  public requestBody: any;
-
-  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService, private _resourceService: ResourceService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService) { }
 
   public getDiagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
   }
 
-  public getDetector(version: string, resourceId: string, detector: string, resourceSpecificQueryString: string): Observable<DetectorResponse> {
+  public getDetector(version: string, resourceId: string, detector: string, body?: any): Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters();
-    let path = `${version}/${resourceId}/detectors/${detector}?${resourceSpecificQueryString}${timeParameters}`;
-    return this.invoke<DetectorResponse>(path, HttpMethod.POST, this.requestBody);
+    let path = `${version}/${resourceId}/detectors/${detector}?${timeParameters}`;
+    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
   }
 
-  public getDetectors(version: string, resourceId: string): Observable<DetectorMetaData[]> {
+  public getDetectors(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
     let path = `${version}/${resourceId}/detectors`;
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, this.requestBody).map(response => response.map(detector => detector.metadata));
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).map(response => response.map(detector => detector.metadata));
   }
 
-  public getCompilerResponse(version: string, resourceId: string, resourceSpecificQueryString: string, body: any): Observable<QueryResponse<DetectorResponse>> {
+  public getCompilerResponse(version: string, resourceId: string, body: any): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters();
-    body.resource = this.requestBody;
-    let path = `${version}/${resourceId}/diagnostics/query?${resourceSpecificQueryString}${timeParameters}`;
+    let path = `${version}/${resourceId}/diagnostics/query?${timeParameters}`;
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
 

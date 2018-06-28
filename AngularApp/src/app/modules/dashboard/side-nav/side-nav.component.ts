@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationExtras, NavigationEnd } from '@angula
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { CollapsibleMenuItem } from '../../../collapsible-menu/components/collapsible-menu-item/collapsible-menu-item.component';
+import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 
 @Component({
   selector: 'side-nav',
@@ -21,7 +22,9 @@ export class SideNavComponent implements OnInit {
 
   contentHeight: string;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, public resourceService: ResourceService) {
+  getDetectorsRouteNotFound: boolean = false;
+
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public resourceService: ResourceService) {
     this.contentHeight = (window.innerHeight - 139) + 'px';
   }
 
@@ -73,7 +76,7 @@ export class SideNavComponent implements OnInit {
 
   initializeDetectors() {
 
-    this._diagnosticApiService.getDetectors(this.resourceService.getVersion(), this.resourceService.getCurrentResourceId(true)).subscribe(detectorList => {
+    this._diagnosticApiService.getDetectors().subscribe(detectorList => {
       if (detectorList) {
         detectorList.forEach(element => {
           let onClick = () => {
@@ -97,6 +100,12 @@ export class SideNavComponent implements OnInit {
         });
 
         this.detectorsLoading = false;
+      }
+    },
+    error => {
+      // TODO: handle detector route not found
+      if (error && error.status === 404) {
+        this.getDetectorsRouteNotFound = true;
       }
     });
   }

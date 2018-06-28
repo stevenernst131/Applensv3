@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceTypeState, ResourceType } from '../../../shared/models/resources';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import * as moment from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
 
@@ -35,6 +35,13 @@ export class MainComponent implements OnInit {
       displayName: 'Support Request ID',
       enabled: true,
       caseId: true
+    },
+    {
+      resourceType: null,
+      routeName: 'srid',
+      displayName: 'Support Request ID',
+      enabled: true,
+      caseId: true
     }
   ];
 
@@ -43,7 +50,7 @@ export class MainComponent implements OnInit {
 
   contentHeight: string;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute) {
+  constructor(private _router: Router) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 

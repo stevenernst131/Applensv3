@@ -46,6 +46,7 @@ export class SiteFinderComponent implements OnInit {
     let resourceArray: string[] = [
       'subscriptions', matchingSite.Subscription,
       'resourceGroups', matchingSite.ResourceGroupName,
+      'providers', 'Microsoft.Web',
       'sites', matchingSite.SiteName];
 
     if (matchingSite.SlotName && matchingSite.SlotName.length > 0) {

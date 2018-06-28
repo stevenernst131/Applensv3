@@ -1,26 +1,52 @@
 import { Injectable } from '@angular/core';
-import { ActivatedResource, ResourceType } from '../models/resources';
 import { Observable } from 'rxjs/Observable';
+import { ArmResource } from '../models/resources';
 
 @Injectable()
-export abstract class ResourceService {
+export class ResourceService {
+
+  public lensPrefix: string;
+  public imgSrc: string;
+  public versionPrefix: string;
+  public templateFileName: string;
+
+  protected _requestBody: any = null;
+  protected _armResource: ArmResource;
+  protected _initialized: Observable<boolean>;
 
   constructor() { }
 
-  public abstract lensPrefix: string;
-  public abstract imgSrc: string;
+  initialize(armResource: ArmResource, templateFileName: string = '', lensPrefix: string = 'App', imgSrc: string = '', versionPrefix: string = '') {
+    this._armResource = armResource;
+    this.templateFileName = templateFileName;
+    this.lensPrefix = lensPrefix;
+    this.imgSrc = imgSrc;
+    this.versionPrefix = versionPrefix;
 
-  public abstract templateFileName: string;
+    this.startInitializationObservable();
+  }
 
-  public abstract setResourcePath(path: string[]): Observable<boolean>;
+  public startInitializationObservable() {
+    this._initialized = Observable.of(true);
+  }
 
-  public abstract getResourceName(): string;
+  public waitForInitialization(): Observable<boolean> {
+    return this._initialized;
+  }
 
-  public abstract getCurrentResourceId(forDiagApi?: boolean): string;
+  public getResourceName(): string {
+    return this._armResource.resourceName;
+  }
 
-  public abstract getCurrentResource(): Observable<any>;
+  public getCurrentResourceId(forDiagApi?: boolean): string {
+    return `subscriptions/${this._armResource.subscriptionId}/resourcegroups/${this._armResource.resourceGroup}/providers/${this._armResource.provider}/${this._armResource.resourceTypeName}/${this._armResource.resourceName}`;
+  }
 
-  public abstract getDiagnosticRoleQueryString(): string;
+  public getCurrentResource(): Observable<any> {
+    return Observable.of(this._armResource);
+  }
 
-  public abstract getVersion(): string;
+  public getRequestBody(): any {
+    return this._requestBody;
+  }
 }

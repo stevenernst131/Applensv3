@@ -3,6 +3,7 @@ import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.se
 import { ResourceService } from '../../../shared/services/resource.service';
 import { DetectorResponse, DetectorMetaData } from '../../../diagnostic-data/models/detector';
 import { Observable } from 'rxjs/Observable';
+import { QueryResponse } from '../../../diagnostic-data/models/compiler-response';
 
 @Injectable()
 export class ApplensDiagnosticService {
@@ -12,15 +13,24 @@ export class ApplensDiagnosticService {
 
   getDetector(detector: string): Observable<DetectorResponse> {
     return this._diagnosticApi.getDetector(
-      this._resourceService.getVersion(), 
+      this._resourceService.versionPrefix, 
       this._resourceService.getCurrentResourceId(true), 
-      detector, 
-      this._resourceService.getDiagnosticRoleQueryString());
+      detector,
+      this._resourceService.getRequestBody());
   }
 
   getDetectors(): Observable<DetectorMetaData[]> {
     return this._diagnosticApi.getDetectors(
-      this._resourceService.getVersion(), 
-      this._resourceService.getCurrentResourceId(true));
+      this._resourceService.versionPrefix, 
+      this._resourceService.getCurrentResourceId(true),
+      this._resourceService.getRequestBody());
+  }
+
+  getCompilerResponse(body: any): Observable<QueryResponse<DetectorResponse>> {
+    body.resource = this._resourceService.getRequestBody();
+    return this._diagnosticApi.getCompilerResponse(
+      this._resourceService.versionPrefix,
+      this._resourceService.getCurrentResourceId(true),
+      body);
   }
 }
