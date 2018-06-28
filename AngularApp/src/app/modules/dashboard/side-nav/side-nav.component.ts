@@ -22,6 +22,8 @@ export class SideNavComponent implements OnInit {
 
   contentHeight: string;
 
+  getDetectorsRouteNotFound: boolean = false;
+
   constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public resourceService: ResourceService) {
     this.contentHeight = (window.innerHeight - 139) + 'px';
   }
@@ -98,6 +100,12 @@ export class SideNavComponent implements OnInit {
         });
 
         this.detectorsLoading = false;
+      }
+    },
+    error => {
+      // TODO: handle detector route not found
+      if (error && error.status === 404) {
+        this.getDetectorsRouteNotFound = true;
       }
     });
   }

@@ -20,7 +20,7 @@ export class AseFinderComponent implements OnInit {
 
   contentHeight: string;
 
-  constructor(private _route: ActivatedRoute, private _router: Router, private _observerService: ObserverService, private _startupService: StartupService) {
+  constructor(private _route: ActivatedRoute, private _router: Router, private _observerService: ObserverService) {
     this.contentHeight = window.innerHeight + 'px';
   }
 

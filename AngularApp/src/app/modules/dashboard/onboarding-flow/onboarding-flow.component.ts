@@ -7,6 +7,7 @@ import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.se
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
 import { QueryParamsService } from '../../../shared/services/query-params.service';
+import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 
 export enum DevelopMode {
   Create,
@@ -41,8 +42,8 @@ export class OnboardingFlowComponent implements OnInit {
 
   private publishingPackage: Package;
 
-  constructor(private _route: ActivatedRoute, private githubService: GithubApiService, private route: ActivatedRoute, private diagnosticApiService: DiagnosticApiService,
-    private resourceService: ResourceService, public queryParamsService: QueryParamsService) {
+  constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService, 
+    public queryParamsService: QueryParamsService) {
 
     this.editorOptions = {
       theme: 'vs',
@@ -99,7 +100,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Running";
     this.runButtonIcon = "fa fa-circle-o-notch fa-spin";
 
-    this.diagnosticApiService.getCompilerResponse(this.resourceService.versionPrefix, this.resourceId, body)
+    this.diagnosticApiService.getCompilerResponse(body)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;

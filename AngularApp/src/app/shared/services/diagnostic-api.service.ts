@@ -9,14 +9,13 @@ import { CacheService } from './cache.service';
 import { QueryParamsService } from './query-params.service';
 import { HttpMethod } from '../models/http';
 import { QueryResponse } from '../../diagnostic-data/models/compiler-response';
-import { ResourceService } from './resource.service';
 
 @Injectable()
 export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
-  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService, private _resourceService: ResourceService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService) { }
 
   public getDiagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
@@ -35,7 +34,6 @@ export class DiagnosticApiService {
 
   public getCompilerResponse(version: string, resourceId: string, body: any): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters();
-    body.resource = this._resourceService.getRequestBody();
     let path = `${version}/${resourceId}/diagnostics/query?${timeParameters}`;
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
