@@ -1,7 +1,6 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ArmResource } from '../models/resources';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class ResourceService {
@@ -13,7 +12,7 @@ export class ResourceService {
 
   protected _requestBody: any = null;
   protected _armResource: ArmResource;
-  protected _initialized: BehaviorSubject<boolean> = new BehaviorSubject(null);
+  protected _initialized: Observable<boolean>;
 
   constructor() { }
 
@@ -28,11 +27,10 @@ export class ResourceService {
   }
 
   public startInitializationObservable() {
-    this._initialized.next(true);
+    this._initialized = Observable.of(true);
   }
 
   public waitForInitialization(): Observable<boolean> {
-    
     return this._initialized;
   }
 
@@ -41,8 +39,7 @@ export class ResourceService {
   }
 
   public getCurrentResourceId(forDiagApi?: boolean): string {
-    return `subscriptions/${this._armResource.subscriptionId}/resourcegroups/${this._armResource.resourceGroup}/providers/${this._armResource.provider}` + 
-      `/${this._armResource.resourceTypeName}${this.getResourceName}`;
+    return `subscriptions/${this._armResource.subscriptionId}/resourcegroups/${this._armResource.resourceGroup}/providers/${this._armResource.provider}/${this._armResource.resourceTypeName}/${this._armResource.resourceName}`;
   }
 
   public getCurrentResource(): Observable<any> {

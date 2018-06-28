@@ -57,7 +57,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         component: OnboardingFlowComponent
       },
       {
-        path: 'detectors/:signal',
+        path: 'detectors/:detector',
         component: TabCommonComponent,
         children: [
           {

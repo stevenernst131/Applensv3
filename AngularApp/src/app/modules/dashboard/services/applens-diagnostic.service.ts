@@ -14,12 +14,14 @@ export class ApplensDiagnosticService {
     return this._diagnosticApi.getDetector(
       this._resourceService.versionPrefix, 
       this._resourceService.getCurrentResourceId(true), 
-      detector);
+      detector,
+      this._resourceService.getRequestBody());
   }
 
   getDetectors(): Observable<DetectorMetaData[]> {
     return this._diagnosticApi.getDetectors(
       this._resourceService.versionPrefix, 
-      this._resourceService.getCurrentResourceId(true));
+      this._resourceService.getCurrentResourceId(true),
+      this._resourceService.getRequestBody());
   }
 }

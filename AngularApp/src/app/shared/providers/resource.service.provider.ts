@@ -9,20 +9,21 @@ export let ResourceServiceFactory = (startupService: StartupService, observerSer
     let resource: ArmResource = startupService.getResourceInfo();
     let type = `${resource.provider}/${resource.resourceTypeName}`
 
-    console.log(type);
-
     let service: ResourceService;
 
     switch (type) {
         case 'Microsoft.Web/hostingEnvironments':
             service = new AseService(observerService);
             service.initialize(resource);
+            break;
         case 'Microsoft.Web/sites':
             service = new SiteService(observerService);
             service.initialize(resource);
+            break;
         default:
             service = new ResourceService();
             service.initialize(resource);
+            break;
     };
 
     return service;
