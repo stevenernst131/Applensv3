@@ -31,13 +31,16 @@ export class DashboardComponent implements OnInit {
     }
 
   ngOnInit() {
-    console.log(this._activatedRoute.snapshot.data);
     this.updateStartandEndTime();
   }
 
   updateTime() {
     this._queryParamsService.setStartAndEndTime(this.startTime, this.endTime);
     this.updateStartandEndTime();
+  }
+
+  reloadHome() {
+    window.location.href = '/';
   }
 
   updateStartandEndTime() {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceTypeState, ResourceType, ResourceServiceInputs } from '../../../shared/models/resources';
-import { Router, NavigationExtras, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
 import { Http } from '@angular/http';
@@ -67,7 +67,6 @@ export class MainComponent implements OnInit {
 
   ngOnInit() {
     this.selectedResourceType = this.resourceTypes[0];
-    console.log(this._activatedRoute.snapshot.data);
   }
 
   selectResourceType(type: ResourceTypeState) {
