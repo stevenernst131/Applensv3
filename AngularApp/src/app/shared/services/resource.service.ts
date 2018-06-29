@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { ArmResource } from '../models/resources';
+import { ArmResource, ResourceServiceInputs, RESOURCE_SERVICE_INPUTS } from '../models/resources';
 
 @Injectable()
 export class ResourceService {
 
-  public lensPrefix: string;
   public imgSrc: string;
   public versionPrefix: string;
   public templateFileName: string;
@@ -14,16 +13,11 @@ export class ResourceService {
   protected _armResource: ArmResource;
   protected _initialized: Observable<boolean>;
 
-  constructor() { }
-
-  initialize(armResource: ArmResource, templateFileName: string = '', lensPrefix: string = 'App', imgSrc: string = '', versionPrefix: string = '') {
-    this._armResource = armResource;
-    this.templateFileName = templateFileName;
-    this.lensPrefix = lensPrefix;
-    this.imgSrc = imgSrc;
-    this.versionPrefix = versionPrefix;
-
-    this.startInitializationObservable();
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs)  { 
+    this._armResource = inputs.armResource;
+    this.templateFileName = inputs.templateFileName;
+    this.imgSrc = inputs.imgSrc;
+    this.versionPrefix = inputs.versionPrefix;
   }
 
   public startInitializationObservable() {

@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
-import { ActivatedResource, ResourceType, ArmResource } from '../models/resources';
+import { ArmResource, ResourceServiceInputs } from '../models/resources';
 
 @Injectable()
 export class StartupService {
 
-  private _armResource: ArmResource;
+  private _resourceServiceInputs: ResourceServiceInputs;
 
   constructor() { }
 
   public getResourceInfo(): ArmResource {
-    return this._armResource;
+    return this._resourceServiceInputs.armResource;
   }
 
-  public setResource(resource: ArmResource) {
-    this._armResource = resource;
+  public getInputs(): ResourceServiceInputs {
+    return this._resourceServiceInputs;
+  }
+
+  public setResource(inputs: ResourceServiceInputs) {
+    this._resourceServiceInputs = inputs;
   }
 }

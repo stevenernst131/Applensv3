@@ -3,7 +3,7 @@ import { ResourceService } from './resource.service';
 import { ObserverService } from './observer.service';
 import { ObserverAseInfo, ObserverAseResponse } from '../models/observer';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ArmResource } from '../models/resources';
+import { ArmResource, RESOURCE_SERVICE_INPUTS, ResourceServiceInputs } from '../models/resources';
 
 @Injectable()
 export class AseService extends ResourceService {
@@ -12,12 +12,8 @@ export class AseService extends ResourceService {
 
   private _hostingEnvironmentResource: ObserverAseInfo;
 
-  constructor(private _observerApiService: ObserverService) {
-    super();
-  }
-
-  public initialize(armResource: ArmResource){
-    super.initialize(armResource, 'Detector_HostingEnvironment', 'ASE', 'assets/img/ASE-Logo.jpg', 'v2');
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs, protected _observerApiService: ObserverService) {
+    super(inputs);
   }
 
   public startInitializationObservable() {

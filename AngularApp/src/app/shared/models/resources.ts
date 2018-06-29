@@ -1,4 +1,5 @@
 import { Dictionary } from "./extensions";
+import { InjectionToken } from "@angular/core";
 
 export enum ResourceType {
     Site,
@@ -8,7 +9,7 @@ export enum ResourceType {
 
 export interface ResourceTypeState {
     displayName: string;
-    routeName: string;
+    routeName: Function;
     resourceType: ResourceType;
     enabled: boolean;
     caseId: boolean;
@@ -25,4 +26,24 @@ export interface ArmResource {
     provider: string;
     resourceTypeName: string;
     resourceName: string;
+}
+
+export interface ResourceServiceInputs {
+    resourceType: string;
+    templateFileName: string;
+    imgSrc: string;
+    versionPrefix: string;
+    service: string;
+    armResource: ArmResource;
+}
+
+export const RESOURCE_SERVICE_INPUTS = new InjectionToken<ResourceServiceInputs>('ResourceServiceInputs');
+
+export const DEFAULT_RESOURCE_SERVICE_INPUTS: ResourceServiceInputs = {
+    resourceType: '',
+    imgSrc: '',
+    service: '',
+    templateFileName: '',
+    versionPrefix: '',
+    armResource: null
 }

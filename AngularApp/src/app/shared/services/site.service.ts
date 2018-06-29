@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ObserverSiteResponse, ObserverSiteInfo } from '../models/observer';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 import { ResourceService } from './resource.service';
 import { ObserverService } from './observer.service';
-import { ArmResource } from '../models/resources';
+import { ArmResource, RESOURCE_SERVICE_INPUTS, ResourceServiceInputs } from '../models/resources';
 
 @Injectable()
 export class SiteService extends ResourceService {
@@ -14,12 +14,10 @@ export class SiteService extends ResourceService {
 
   private _siteObject: ObserverSiteInfo;
 
-  constructor(private _observerApiService: ObserverService) {
-    super();
-  }
+  private s = 'test';
 
-  public initialize(armResource: ArmResource){
-    super.initialize(armResource, 'Detector_WebApp', 'App', 'assets/img/Azure-WebApps-Logo.png', 'v4');
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs, protected _observerApiService: ObserverService) {
+    super(inputs);
   }
 
   public startInitializationObservable() {
