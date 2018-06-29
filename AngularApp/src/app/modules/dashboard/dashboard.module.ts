@@ -14,9 +14,7 @@ import { SideNavComponent, SearchMenuPipe } from './side-nav/side-nav.component'
 import { ResourceMenuItemComponent } from './resource-menu-item/resource-menu-item.component';
 import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
-import { SiteService } from '../../shared/services/site.service';
 import { ResourceHomeComponent } from './resource-home/resource-home.component';
-import { AseService } from '../../shared/services/ase.service';
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
 import { QueryParamsService } from '../../shared/services/query-params.service';
 import { TimePickerComponent } from './time-picker/time-picker.component';
@@ -29,6 +27,7 @@ import { TabDevelopComponent } from './tabs/tab-develop/tab-develop.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
+import { ObserverService } from '../../shared/services/observer.service';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -36,8 +35,7 @@ export class InitResolver implements Resolve<Observable<boolean>>{
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
-    let resourceRoute: string[] = state.url.split('?')[0].split('/');
-    return this._resourceService.setResourcePath(resourceRoute);
+    return this._resourceService.waitForInitialization();
   }
 }
 
@@ -57,7 +55,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
         component: OnboardingFlowComponent
       },
       {
-        path: 'detectors/:signal',
+        path: 'detectors/:detector',
         component: TabCommonComponent,
         children: [
           {
@@ -99,7 +97,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     {
       provide: ResourceService,
       useFactory: ResourceServiceFactory,
-      deps: [StartupService, SiteService, AseService]
+      deps: [StartupService, ObserverService]
     },
     {
       provide: OWL_DATE_TIME_FORMATS, 

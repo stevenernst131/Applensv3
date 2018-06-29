@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Authentication;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace AppLensV3
 {
@@ -63,7 +65,7 @@ namespace AppLensV3
             return client;
         }
 
-        public async Task<dynamic> Execute(string method, string path, string body = null)
+        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null)
         {
             try
             {
@@ -81,19 +83,11 @@ namespace AppLensV3
                     
                 }
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync();
-
-                    var responseObject = JsonConvert.DeserializeObject(responseString);
-                    return responseObject;
-                }
-
-                throw new HttpRequestException(response.StatusCode.ToString());
+                return response;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

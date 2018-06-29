@@ -1,0 +1,46 @@
+{
+    "enabledResourceTypes": [
+        {
+            "service": "SiteService",
+            "resourceType": "Microsoft.Web/sites",
+            "templateFileName": "Detector_WebApp",
+            "imgSrc": "assets/img/Azure-WebApps-Logo.png",
+            "versionPrefix": "v4/"
+        },
+        {
+            "service": "AseService",
+            "resourceType": "Microsoft.Web/hostingEnvironments",
+            "templateFileName": "Detector_HostingEnvironment",
+            "imgSrc": "assets/img/Azure-WebApps-Logo.png",
+            "versionPrefix": "v2/"
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.Logic/workflows",
+            "templateFileName": "Detector_LogicApp",
+            "imgSrc": "",
+            "versionPrefix": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.ApiManagement/service",
+            "templateFileName": "Detector_ApiManagementService",
+            "imgSrc": "",
+            "versionPrefix": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.CertificateRegistration/certificateOrders",
+            "templateFileName": "Detector_AppServiceCertificate",
+            "imgSrc": "",
+            "versionPrefix": ""
+        },
+        {
+            "service": "ResourceService",
+            "resourceType": "Microsoft.DomainRegistration/domains",
+            "templateFileName": "Detector_AppServiceDomain",
+            "imgSrc": "",
+            "versionPrefix": ""
+        }
+    ]
+}

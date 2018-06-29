@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DetectorResponse, RenderingType } from '../../../../diagnostic-data/models/detector';
-import { Router, ActivatedRoute, Params, NavigationExtras } from '@angular/router';
-import { DiagnosticApiService } from '../../../../shared/services/diagnostic-api.service';
-import { ResourceService } from '../../../../shared/services/resource.service';
+import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
+import { ActivatedRoute, Params } from '@angular/router';
 import { QueryParamsService } from '../../../../shared/services/query-params.service';
+import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
 
 @Component({
   selector: 'tab-data',
@@ -12,20 +11,15 @@ import { QueryParamsService } from '../../../../shared/services/query-params.ser
 })
 export class TabDataComponent implements OnInit {
 
-  constructor(private _router: Router, private _route: ActivatedRoute, private _diagnosticApiService: DiagnosticApiService, private _resourceService: ResourceService,
-    public queryParamsService: QueryParamsService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService) { }
 
-  signalResponse: DetectorResponse;
+  detectorResponse: DetectorResponse;
 
-  signal: string;
-
-  resourceId: string;
+  detector: string;
 
   error: any;
 
   ngOnInit() {
-
-    this.resourceId = this._resourceService.getCurrentResourceId(true);
 
     this._route.params.subscribe((params: Params) => {
       this.getDetectorResponse();
@@ -41,11 +35,11 @@ export class TabDataComponent implements OnInit {
   }
 
   getDetectorResponse() {
-    this.signalResponse = null;
-    this.signal = this._route.snapshot.params['signal'];
-    this._diagnosticApiService.getDetector(this._resourceService.getVersion(), this.resourceId, this.signal, this._resourceService.getDiagnosticRoleQueryString())
+    this.detectorResponse = null;
+    this.detector = this._route.snapshot.params['detector'];
+    this._diagnosticApiService.getDetector(this.detector)
       .subscribe((response: DetectorResponse) => {
-        this.signalResponse = response;
+        this.detectorResponse = response;
       }, (error: any) => {
         this.error = error;
       });

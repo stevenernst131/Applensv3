@@ -2,7 +2,6 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Nvd3GraphComponent } from './components/nvd3-graph/nvd3-graph.component';
 import { TimeSeriesGraphComponent } from './components/time-series-graph/time-series-graph.component';
-import { SignalComponent } from './components/signal/signal.component';
 import { NvD3Component, NvD3Module } from 'ng2-nvd3';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MarkdownModule } from 'ngx-markdown';
@@ -44,10 +43,10 @@ import { ClipboardService } from './services/clipboard.service';
   providers: [
     ClipboardService
   ],
-  declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
+  declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
     LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe],
-  exports: [TimeSeriesGraphComponent, SignalComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
+  exports: [TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
 export class DiagnosticDataModule {

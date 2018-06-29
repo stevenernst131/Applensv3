@@ -1,26 +1,46 @@
-import { Injectable } from '@angular/core';
-import { ActivatedResource, ResourceType } from '../models/resources';
+import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { ArmResource, ResourceServiceInputs, RESOURCE_SERVICE_INPUTS } from '../models/resources';
 
 @Injectable()
-export abstract class ResourceService {
+export class ResourceService {
 
-  constructor() { }
+  public imgSrc: string;
+  public versionPrefix: string;
+  public templateFileName: string;
 
-  public abstract lensPrefix: string;
-  public abstract imgSrc: string;
+  protected _requestBody: any = null;
+  protected _armResource: ArmResource;
+  protected _initialized: Observable<boolean>;
 
-  public abstract templateFileName: string;
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs)  { 
+    this._armResource = inputs.armResource;
+    this.templateFileName = inputs.templateFileName;
+    this.imgSrc = inputs.imgSrc;
+    this.versionPrefix = inputs.versionPrefix;
+  }
 
-  public abstract setResourcePath(path: string[]): Observable<boolean>;
+  public startInitializationObservable() {
+    this._initialized = Observable.of(true);
+  }
 
-  public abstract getResourceName(): string;
+  public waitForInitialization(): Observable<boolean> {
+    return this._initialized;
+  }
 
-  public abstract getCurrentResourceId(forDiagApi?: boolean): string;
+  public getResourceName(): string {
+    return this._armResource.resourceName;
+  }
 
-  public abstract getCurrentResource(): Observable<any>;
+  public getCurrentResourceId(forDiagApi?: boolean): string {
+    return `subscriptions/${this._armResource.subscriptionId}/resourcegroups/${this._armResource.resourceGroup}/providers/${this._armResource.provider}/${this._armResource.resourceTypeName}/${this._armResource.resourceName}`;
+  }
 
-  public abstract getDiagnosticRoleQueryString(): string;
+  public getCurrentResource(): Observable<any> {
+    return Observable.of(this._armResource);
+  }
 
-  public abstract getVersion(): string;
+  public getRequestBody(): any {
+    return this._requestBody;
+  }
 }
