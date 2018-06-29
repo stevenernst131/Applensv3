@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
-import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivate, Router } from '@angular/router';
+import { RouterModule, Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { MainComponent } from './modules/main/main/main.component';
@@ -10,17 +10,6 @@ import { StartupService } from './shared/services/startup.service';
 import { ArmResource, ResourceServiceInputs } from './shared/models/resources';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
-
-// @Injectable()
-// export class ResourceTypeResolver implements Resolve<void>{
-//   constructor(private _startupService: StartupService) { }
-
-//   resolve(route: ActivatedRouteSnapshot): void {
-//     console.log(route.params);
-//     let armResource = <ArmResource>route.params;
-//     this._startupService.setResource(armResource);
-//   }
-// }
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -35,14 +24,15 @@ export class ValidResourceResolver implements Resolve<void>{
 
         let enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
         let matchingResourceInputs = enabledResourceTypes.find(t => t.resourceType == type);
-        matchingResourceInputs.armResource = resource;
 
         if (matchingResourceInputs) {
+          matchingResourceInputs.armResource = resource;
           this._startupService.setResource(matchingResourceInputs);
           return matchingResourceInputs;
         }
       }
 
+      //TODO: below does not seem to work
       this._router.navigate(['/']);
       return `Resource Type '${type}' not enabled in Applens`;
     });
@@ -65,10 +55,7 @@ export const Routes = RouterModule.forRoot([
   {
     path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/:resourceTypeName/:resourceName',
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
-    resolve: { validResources: ValidResourceResolver },
-    data: {
-      temp: 'test'
-    }
+    resolve: { validResources: ValidResourceResolver }
   }
 ]);
 

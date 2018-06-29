@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ResourceTypeState, ResourceType } from '../../../shared/models/resources';
+import { ResourceTypeState, ResourceType, ResourceServiceInputs } from '../../../shared/models/resources';
 import { Router, NavigationExtras, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
+import { Http } from '@angular/http';
 
 @Component({
   selector: 'app-main',
@@ -41,7 +42,7 @@ export class MainComponent implements OnInit {
       routeName: (name) => `${name}/home`,
       displayName: 'ARM Resource ID',
       enabled: true,
-      caseId: true
+      caseId: false
     }
   ];
 
@@ -50,11 +51,18 @@ export class MainComponent implements OnInit {
 
   contentHeight: string;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute) {
+  enabledResourceTypes: ResourceServiceInputs[];
+
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 
     this.contentHeight = window.innerHeight + 'px';
+
+    // TODO: Use this to restrict access to routes that don't match a supported resource type
+    this._http.get('assets/enabledResourceTypes.json').map(response => {
+      this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
+    });
   }
 
   ngOnInit() {

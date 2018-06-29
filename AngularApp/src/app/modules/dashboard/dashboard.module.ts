@@ -1,10 +1,10 @@
-import { NgModule, Injectable, Injector } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
-import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivate } from '@angular/router';
+import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
 import { AngularSplitModule } from 'angular-split';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
@@ -14,7 +14,6 @@ import { SideNavComponent, SearchMenuPipe } from './side-nav/side-nav.component'
 import { ResourceMenuItemComponent } from './resource-menu-item/resource-menu-item.component';
 import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
-import { SiteService } from '../../shared/services/site.service';
 import { ResourceHomeComponent } from './resource-home/resource-home.component';
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
 import { QueryParamsService } from '../../shared/services/query-params.service';
@@ -29,7 +28,6 @@ import { ApplensDiagnosticService } from './services/applens-diagnostic.service'
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 import { ObserverService } from '../../shared/services/observer.service';
-import { RESOURCE_SERVICE_INPUTS } from '../../shared/models/resources';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
