@@ -1,39 +1,22 @@
 import { Injectable } from '@angular/core';
-import { ActivatedResource, ResourceType } from '../models/resources';
+import { ArmResource, ResourceServiceInputs } from '../models/resources';
 
 @Injectable()
 export class StartupService {
 
-  public useAct
-  private _activatedResource: ActivatedResource;
-  private _resourceType: ResourceType;
-  private _resourceRoute: string[];
+  private _resourceServiceInputs: ResourceServiceInputs;
 
   constructor() { }
 
-  public getResourceType() {
-    return this._resourceType;
+  public getResourceInfo(): ArmResource {
+    return this._resourceServiceInputs.armResource;
   }
 
-  public setResourceRoute(resourceRoute: string[]) {
-    this._resourceRoute = resourceRoute;
-    this.determineResourceType(this._resourceRoute);
+  public getInputs(): ResourceServiceInputs {
+    return this._resourceServiceInputs;
   }
 
-  public getResourceRoute(): string[] {
-    return this._resourceRoute;
+  public setResource(inputs: ResourceServiceInputs) {
+    this._resourceServiceInputs = inputs;
   }
-
-  private determineResourceType(resourceRoute: string[]): void {
-    let type: ResourceType;
-    if (resourceRoute[5].toLowerCase() == 'sites') {
-      type = ResourceType.Site;
-    }
-    else if (resourceRoute[5].toLowerCase() == 'hostingenvironments') {
-      type = ResourceType.AppServiceEnvironment;
-    }
-
-    this._resourceType = type;
-  }
-
 }

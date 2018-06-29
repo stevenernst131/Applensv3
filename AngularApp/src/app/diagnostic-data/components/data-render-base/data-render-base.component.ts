@@ -13,8 +13,8 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
 
   private _diagnosticDataSubject: ReplaySubject<DiagnosticData> = new ReplaySubject<DiagnosticData>(1);
 
-  @Input() set diagnosticDataInput(signal: DiagnosticData) {
-    this._diagnosticDataSubject.next(signal);
+  @Input() set diagnosticDataInput(detector: DiagnosticData) {
+    this._diagnosticDataSubject.next(detector);
   };
 
   diagnosticData: DiagnosticData;

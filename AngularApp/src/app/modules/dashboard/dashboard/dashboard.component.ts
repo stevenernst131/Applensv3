@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
-import { ResourceServiceFactory } from '../../../shared/providers/resource.service.provider';
-import { StartupService } from '../../../shared/services/startup.service';
-import { SiteService } from '../../../shared/services/site.service';
 import * as moment from 'moment';
 import { QueryParamsService } from '../../../shared/services/query-params.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -19,7 +16,7 @@ export class DashboardComponent implements OnInit {
 
   contentHeight: string;
 
-  constructor(public resourceService: ResourceService, private _startupService: StartupService, private _queryParamsService: QueryParamsService, 
+  constructor(public resourceService: ResourceService, private _queryParamsService: QueryParamsService, 
     private _router: Router, private _activatedRoute: ActivatedRoute) {
       this.contentHeight = (window.innerHeight -50) + 'px';
 
@@ -40,6 +37,10 @@ export class DashboardComponent implements OnInit {
   updateTime() {
     this._queryParamsService.setStartAndEndTime(this.startTime, this.endTime);
     this.updateStartandEndTime();
+  }
+
+  reloadHome() {
+    window.location.href = '/';
   }
 
   updateStartandEndTime() {

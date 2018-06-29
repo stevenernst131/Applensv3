@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ResourceTypeState, ResourceType } from '../../../shared/models/resources';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { ResourceTypeState, ResourceType, ResourceServiceInputs } from '../../../shared/models/resources';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
+import { Http } from '@angular/http';
 
 @Component({
   selector: 'app-main',
@@ -17,24 +18,31 @@ export class MainComponent implements OnInit {
   resourceTypes: ResourceTypeState[] = [
     {
       resourceType: ResourceType.Site,
-      routeName: 'sites',
+      routeName: (name) => `sites/${name}`,
       displayName: 'App',
       enabled: true,
       caseId: false
     },
     {
       resourceType: ResourceType.AppServiceEnvironment,
-      routeName: 'hostingEnvironments',
+      routeName: (name) => `hostingEnvironments/${name}`,
       displayName: 'App Service Environment',
       enabled: true,
       caseId: false
     },
     {
       resourceType: null,
-      routeName: 'srid',
+      routeName: () => 'srid',
       displayName: 'Support Request ID',
       enabled: true,
       caseId: true
+    },
+    {
+      resourceType: null,
+      routeName: (name) => `${name}/home`,
+      displayName: 'ARM Resource ID',
+      enabled: true,
+      caseId: false
     }
   ];
 
@@ -43,11 +51,18 @@ export class MainComponent implements OnInit {
 
   contentHeight: string;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute) {
+  enabledResourceTypes: ResourceServiceInputs[];
+
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 
     this.contentHeight = window.innerHeight + 'px';
+
+    // TODO: Use this to restrict access to routes that don't match a supported resource type
+    this._http.get('assets/enabledResourceTypes.json').map(response => {
+      this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
+    });
   }
 
   ngOnInit() {
@@ -63,7 +78,9 @@ export class MainComponent implements OnInit {
 
   onSubmit(form: any) {
 
-    if (this.selectedResourceType.routeName === 'srid') {
+    let route = this.selectedResourceType.routeName(form.resourceName);
+
+    if (route === 'srid') {
       window.location.href = `https://azuresupportcenter.msftcloudes.com/caseoverview?srId=${form.resourceName}`;
     }
 
@@ -79,7 +96,7 @@ export class MainComponent implements OnInit {
       queryParams: timeParams
     }
 
-    this._router.navigate([this.selectedResourceType.routeName, form.resourceName.trim()], navigationExtras);
+    this._router.navigate([route], navigationExtras);
   }
 
 }

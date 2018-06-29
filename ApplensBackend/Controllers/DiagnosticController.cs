@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace AppLensV3.Controllers
 {
@@ -37,8 +38,17 @@ namespace AppLensV3.Controllers
                 method = Request.Headers["x-ms-method"];
             }
 
-            var response = await this._diagnosticClient.Execute(method, path, body.ToString());
-            return Ok(response);
+            var response = await this._diagnosticClient.Execute(method, path, body?.ToString());
+
+            if (response != null && response.IsSuccessStatusCode)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                var responseObject = JsonConvert.DeserializeObject(responseString);
+                return Ok(responseObject);
+            }
+
+            return StatusCode((int)response.StatusCode);
         }
     }
 }
