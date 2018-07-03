@@ -21,6 +21,8 @@ namespace AppLensV3
 
         private HttpClient _client { get; set; }
 
+        private List<string> _nonPassThroughResourceProviderList { get; set; }
+
         public string AuthCertThumbprint
         {
             get
@@ -41,6 +43,7 @@ namespace AppLensV3
         {
             _configuration = configuration;
             _client = InitializeClient();
+            _nonPassThroughResourceProviderList = new List<string>() { "microsoft.web/sites", "microsoft.web/hostingenvironments" };
         }
 
         private HttpClient InitializeClient()
@@ -55,10 +58,13 @@ namespace AppLensV3
                 return true;
             };
 
-            var client = new HttpClient(handler);
-            client.BaseAddress = new Uri(DiagnosticRoleEndpoint);
-            client.Timeout = TimeSpan.FromSeconds(5 * 60);
-            client.MaxResponseContentBufferSize = Int32.MaxValue;
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(DiagnosticRoleEndpoint),
+                Timeout = TimeSpan.FromSeconds(5 * 60),
+                MaxResponseContentBufferSize = Int32.MaxValue
+            };
+
             client.DefaultRequestHeaders.Add("internal-applens", "true");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -70,18 +76,30 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                switch(method.ToUpper())
+                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)))
                 {
-                    case "POST":
-                        var content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
-                        response = await _client.PostAsync(path, content);
-                        break;
-                    case "GET":
-                    default:
-                        response = await _client.GetAsync(path);
-                        break;
-                    
+                    switch (method.ToUpper())
+                    {
+                        case "POST":
+                            var content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+                            response = await _client.PostAsync(path, content);
+                            break;
+                        case "GET":
+                        default:
+                            response = await _client.GetAsync(path);
+                            break;
+                    }
                 }
+                else
+                {
+                    HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, "api/invoke");
+                    requestMessage.Headers.Add("x-ms-path-query", path);
+                    requestMessage.Headers.Add("x-ms-verb", method);
+                    requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
+
+                    response = await _client.SendAsync(requestMessage);
+                }
+                
 
                 return response;
             }
