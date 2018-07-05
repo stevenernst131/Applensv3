@@ -1,0 +1,19 @@
+<div *ngIf="hasKustoQueries" class="panel panel-default data-container-card">
+    <div class="panel-heading data-container-header">
+        Kusto Queries
+    </div>
+    <div class="panel-body data-container-body">
+        <ol>
+            <li *ngFor="let providerMetadata of dataProvidersMetadata">
+              <div *ngIf="providerMetadata.providerName == 'Kusto'">
+                <ul *ngFor="let property of providerMetadata.propertyBag">
+                  <div *ngIf="property.key == 'Query' && property.value">
+                    <a [attr.href]="property.value.url" target='_blank'> {{ property.value.text }}</a>
+                  </div>
+                </ul>
+              </div>
+            </li>
+          </ol>      
+    </div>  
+  </div>
+
