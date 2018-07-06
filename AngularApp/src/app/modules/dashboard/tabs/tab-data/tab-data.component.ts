@@ -19,6 +19,9 @@ export class TabDataComponent implements OnInit {
 
   error: any;
 
+  dataSourceMode : boolean = false;
+  loadingDetector : boolean = true;
+
   ngOnInit() {
 
     this._route.params.subscribe((params: Params) => {
@@ -36,9 +39,17 @@ export class TabDataComponent implements OnInit {
 
   getDetectorResponse() {
     this.detectorResponse = null;
-    this.detector = this._route.snapshot.params['detector'];
+    if (this._route.snapshot.params['detector']) {
+      this.detector = this._route.snapshot.params['detector'];
+    }
+    else {
+      this.detector = this._route.parent.snapshot.params['detector'].toLowerCase();
+      this.dataSourceMode = true;
+    }
+
     this._diagnosticApiService.getDetector(this.detector)
       .subscribe((response: DetectorResponse) => {
+        this.loadingDetector = false;
         this.detectorResponse = response;
       }, (error: any) => {
         this.error = error;

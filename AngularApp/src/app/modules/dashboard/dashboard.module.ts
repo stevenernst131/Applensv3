@@ -28,6 +28,7 @@ import { ApplensDiagnosticService } from './services/applens-diagnostic.service'
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 import { ObserverService } from '../../shared/services/observer.service';
+import { DataSourcesComponent } from './tabs/data-sources/data-sources.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -70,6 +71,11 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
             path: 'edit',
             component: TabDevelopComponent
           }
+          ,
+          {
+            path: 'datasource',
+            component: TabDataComponent
+          }
         ]
       }
     ]
@@ -100,11 +106,11 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       deps: [StartupService, ObserverService]
     },
     {
-      provide: OWL_DATE_TIME_FORMATS, 
+      provide: OWL_DATE_TIME_FORMATS,
       useValue: CUSTOM_MOMENT_FORMATS
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, DataSourcesComponent]
 })
 export class DashboardModule { }
