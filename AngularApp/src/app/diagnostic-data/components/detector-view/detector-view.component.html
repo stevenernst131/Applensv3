@@ -12,8 +12,6 @@
     <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
   </div>
 
-  <data-sources [dataProvidersMetadata]="detectorDataLocalCopy.dataProvidersMetadata">    
-  </data-sources>
 </div>
 
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>

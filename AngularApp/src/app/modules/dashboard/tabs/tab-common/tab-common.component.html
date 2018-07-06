@@ -2,12 +2,17 @@
   <div style="padding-top:10px;background-color: #ecf0f5;">
     <ul class="nav nav-tabs" style="padding-left:20px;">
       <li class="nav-item">
-        <a [routerLink]="['./']" preserveFragment queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab' ]" [routerLinkActiveOptions]="{exact: true}">Data</a>
+        <a [routerLink]="['./']" preserveFragment queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab' ]" 
+        [routerLinkActiveOptions]="{exact: true}">Data</a>
       </li>
       <li class="nav-item">
         <a [routerLink]="['edit']" preserveFragment queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab']"
           [routerLinkActiveOptions]="{exact:true}">Develop</a>
       </li>
+      <li class="nav-item">
+          <a [routerLink]="['datasource']" queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab']"
+          [routerLinkActiveOptions]="{exact:true}">Data Sources</a>
+        </li>
     </ul>
   </div>
   <div>

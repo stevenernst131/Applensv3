@@ -25,7 +25,6 @@ import { MarkdownComponent } from './components/markdown/markdown.component';
 import { DetectorListComponent, DetectorOrderPipe } from './components/detector-list/detector-list.component';
 import { DiagnosticService } from './services/diagnostic.service';
 import { ClipboardService } from './services/clipboard.service';
-import { DataSourcesComponent } from './components/data-sources/data-sources.component';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -46,7 +45,7 @@ import { DataSourcesComponent } from './components/data-sources/data-sources.com
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, DataSourcesComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe],
   exports: [TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
