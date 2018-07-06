@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataProviderMetadata } from '../../models/detector';
+import { DataProviderMetadata } from '../../../../diagnostic-data/models/detector';
 
 @Component({
   selector: 'data-sources',
@@ -14,6 +14,8 @@ export class DataSourcesComponent implements OnInit {
   dataProvidersMetadata: DataProviderMetadata[];
 
   hasKustoQueries: boolean = false;
+
+  showDetails: boolean = true;
 
   ngOnInit() {
 
