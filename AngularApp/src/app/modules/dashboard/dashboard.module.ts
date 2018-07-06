@@ -54,7 +54,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       {
         path: 'create',
         component: OnboardingFlowComponent
-      },      
+      },
       {
         path: 'detectors/:detector',
         component: TabCommonComponent,
@@ -66,7 +66,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           {
             path: 'data',
             redirectTo: ''
-          },          
+          },
           {
             path: 'edit',
             component: TabDevelopComponent
@@ -77,7 +77,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
             component: TabDataComponent
           }
         ]
-      }      
+      }
     ]
   },
 
