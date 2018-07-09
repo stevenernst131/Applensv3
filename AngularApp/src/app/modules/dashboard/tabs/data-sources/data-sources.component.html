@@ -1,25 +1,25 @@
-<div class="panel panel-default">
+<div *ngIf="!dataProvidersMetadata">
+  Coming Soon...
+</div>
+
+<div *ngIf="dataProvidersMetadata" class="panel panel-default">
+  <ng-container *ngFor="let providerMetadata of dataProvidersMetadata">
     <div class="panel-heading">
-      <h5 class="panel-title ">      
-        Kusto        
+      <h5 class="panel-title ">
+        {{ providerMetadata.providerName }}
       </h5>
     </div>
-    <div class="panel-body">     
+    <div class="panel-body">
       <div class="panel-body data-container-body">
-        <ul>
-          <li *ngFor="let providerMetadata of dataProvidersMetadata">
-            <div *ngIf="providerMetadata.providerName == 'Kusto'">
-              <ul *ngFor="let property of providerMetadata.propertyBag">
-                <li style="margin-bottom: 10px" *ngIf="property.key == 'Query' && property.value">
-                  <pre><code>{{ property.value.text }}</code></pre>
-                  <div style="margin-bottom: 5px">
-                    <a class="kustolink" [attr.href]="property.value.url" target='_blank'>Run in Kusto Web Explorer</a>
-                  </div>
-                </li>
-              </ul>
+        <ul *ngFor="let property of providerMetadata.propertyBag">
+          <li style="margin-bottom: 10px" *ngIf="property.key == 'Query' && property.value">
+            <pre><code>{{ property.value.text }}</code></pre>
+            <div style="margin-bottom: 5px">
+              <a class="kustolink" [attr.href]="property.value.url" target='_blank'>Run in Kusto Web Explorer</a>
             </div>
           </li>
         </ul>
       </div>
     </div>
-  </div>
+  </ng-container>
+</div>
