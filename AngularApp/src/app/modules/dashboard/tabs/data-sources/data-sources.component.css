@@ -1,23 +1,4 @@
 
-.status-icon {
-    margin-right: 25px;
-}
-
-
-.fa-info-circle {
-    color: #3a9bc7;
-}
-
-.expand-icon {
-    float:right;
-    font-size: 20px;
-}
-
-ul {
-    list-style-type: none; 
-    padding: 0;
-}
-
 .kustolink {
     font-size: smaller;
     text-decoration-line: underline;
