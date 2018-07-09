@@ -40,8 +40,6 @@ export class OnboardingFlowComponent implements OnInit {
   alertMessage: string;
   showAlert: boolean;
 
-  showDataSources: boolean = false;
-
   private publishingPackage: Package;
 
   constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
