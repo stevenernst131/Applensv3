@@ -42,7 +42,7 @@ export class OnboardingFlowComponent implements OnInit {
 
   private publishingPackage: Package;
 
-  constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService, 
+  constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
     public queryParamsService: QueryParamsService) {
 
     this.editorOptions = {
