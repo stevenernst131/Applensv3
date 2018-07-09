@@ -90,3 +90,8 @@
     border-radius: 5px;
     color:white;
 }
+.invocation-title.active{
+    background-color: #1b3b4b;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
