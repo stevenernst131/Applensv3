@@ -1,12 +1,4 @@
-<div style="padding:20px" *ngIf="!dataSourceMode">
+<div style="padding:20px">
   <detector-view [detectorResponse]="detectorResponse" [error]="error" [startTime]="queryParamsService.startTime" [endTime]="queryParamsService.endTime">
   </detector-view>
-</div>
-
-<div style="padding:20px" *ngIf="dataSourceMode">    
-    <loader-view *ngIf="loadingDetector" message="Loading Detector...">      
-    </loader-view>
-    
-    <data-sources *ngIf="!loadingDetector" [dataProvidersMetadata]="detectorResponse.dataProvidersMetadata">
-    </data-sources>
 </div>
