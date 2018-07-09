@@ -6,26 +6,12 @@ import { DataProviderMetadata } from '../../../../diagnostic-data/models/detecto
   templateUrl: './data-sources.component.html',
   styleUrls: ['./data-sources.component.css']
 })
-export class DataSourcesComponent implements OnInit {
+export class DataSourcesComponent  {
 
   constructor() { }
-
+  
   @Input()
   dataProvidersMetadata: DataProviderMetadata[];
 
-  hasKustoQueries: boolean = false;
-
-  showDetails: boolean = true;
-
-  ngOnInit() {
-
-    if (this.dataProvidersMetadata && this.dataProvidersMetadata.length > 0) {
-      this.dataProvidersMetadata.forEach(element => {
-        if (element.providerName == "Kusto" && element.propertyBag.length > 0) {
-          this.hasKustoQueries = true;
-        }
-      });
-    }
-
-  }
 }
+
