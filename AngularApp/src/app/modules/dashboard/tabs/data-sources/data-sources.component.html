@@ -11,14 +11,14 @@
     </div>
     <div class="panel-body">
       <div class="panel-body data-container-body">
-        <ul *ngFor="let property of providerMetadata.propertyBag">
-          <li style="margin-bottom: 10px" *ngIf="property.key == 'Query' && property.value">
+        <ng-container *ngFor="let property of providerMetadata.propertyBag">
+          <div style="margin-bottom: 10px" *ngIf="property.key == 'Query' && property.value">
             <pre><code>{{ property.value.text }}</code></pre>
             <div style="margin-bottom: 5px">
               <a class="kustolink" [attr.href]="property.value.url" target='_blank'>Run in Kusto Web Explorer</a>
             </div>
-          </li>
-        </ul>
+          </div>
+        </ng-container>
       </div>
     </div>
   </ng-container>
