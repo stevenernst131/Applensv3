@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { DetectorResponse } from '../../models/detector';
+import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 import * as moment from 'moment';
 
 @Component({
