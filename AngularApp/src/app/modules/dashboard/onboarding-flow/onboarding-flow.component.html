@@ -58,8 +58,8 @@
                     <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="queryParamsService.startTime"
                         [endTime]="queryParamsService.endTime" [error]="errorState" [showEdit]="false"></detector-view>
 
-                        <data-sources *ngIf="queryResponse && showDataSources" [dataProvidersMetadata]="queryResponse.invocationOutput.dataProvidersMetadata">
-                        </data-sources>
+                    <tab-data-sources *ngIf="queryResponse && showDataSources">
+                    </tab-data-sources>
                 </div>
 
             </split-area>

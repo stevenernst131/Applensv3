@@ -28,7 +28,7 @@ import { ApplensDiagnosticService } from './services/applens-diagnostic.service'
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 import { ObserverService } from '../../shared/services/observer.service';
-import { DataSourcesComponent } from './tabs/data-sources/data-sources.component';
+import { TabDataSourcesComponent } from './tabs/tab-data-sources/tab-data-sources.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -74,7 +74,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           ,
           {
             path: 'datasource',
-            component: TabDataComponent
+            component: TabDataSourcesComponent
           }
         ]
       }
@@ -111,6 +111,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, DataSourcesComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent,TabDataSourcesComponent]
 })
 export class DashboardModule { }

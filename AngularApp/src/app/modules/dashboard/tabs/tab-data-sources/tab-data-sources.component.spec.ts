@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataSourcesComponent } from './data-sources.component';
+import { TabDataSourcesComponent } from './tab-data-sources.component';
 
 describe('DataSourcesComponent', () => {
-  let component: DataSourcesComponent;
-  let fixture: ComponentFixture<DataSourcesComponent>;
+  let component: TabDataSourcesComponent;
+  let fixture: ComponentFixture<TabDataSourcesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataSourcesComponent ]
+      declarations: [ TabDataSourcesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DataSourcesComponent);
+    fixture = TestBed.createComponent(TabDataSourcesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

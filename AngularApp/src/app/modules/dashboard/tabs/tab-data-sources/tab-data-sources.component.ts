@@ -1,24 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
-import { ActivatedRoute, Params } from '@angular/router';
-import { QueryParamsService } from '../../../../shared/services/query-params.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { DataProviderMetadata, DetectorResponse } from '../../../../diagnostic-data/models/detector';
+import { ActivatedRoute, Params } from '../../../../../../node_modules/@angular/router';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
 
 @Component({
-  selector: 'tab-data',
-  templateUrl: './tab-data.component.html',
-  styleUrls: ['./tab-data.component.css']
+  selector: 'tab-data-sources',
+  templateUrl: './tab-data-sources.component.html',
+  styleUrls: ['./tab-data-sources.component.css']
 })
-export class TabDataComponent implements OnInit {
+export class TabDataSourcesComponent  {
 
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService) { }
-
+  constructor(private _route: ActivatedRoute,private _diagnosticApiService: ApplensDiagnosticService) {
+  }
+  
   detectorResponse: DetectorResponse;
-
   detector: string;
-
   error: any;
-
   loadingDetector : boolean = true;
 
   ngOnInit() {
@@ -38,7 +35,13 @@ export class TabDataComponent implements OnInit {
 
   getDetectorResponse() {
     this.detectorResponse = null;
-    this.detector = this._route.snapshot.params['detector'];
+    
+    if (this._route.snapshot.params['detector']) {
+      this.detector = this._route.snapshot.params['detector'];
+    }
+    else {
+      this.detector = this._route.parent.snapshot.params['detector'].toLowerCase();
+    }
 
     this._diagnosticApiService.getDetector(this.detector)
       .subscribe((response: DetectorResponse) => {
