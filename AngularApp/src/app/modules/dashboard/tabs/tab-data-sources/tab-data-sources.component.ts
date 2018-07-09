@@ -8,15 +8,15 @@ import { ApplensDiagnosticService } from '../../services/applens-diagnostic.serv
   templateUrl: './tab-data-sources.component.html',
   styleUrls: ['./tab-data-sources.component.css']
 })
-export class TabDataSourcesComponent  {
+export class TabDataSourcesComponent {
 
-  constructor(private _route: ActivatedRoute,private _diagnosticApiService: ApplensDiagnosticService) {
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService) {
   }
-  
+
   detectorResponse: DetectorResponse;
   detector: string;
   error: any;
-  loadingDetector : boolean = true;
+  loadingDetector: boolean = true;
 
   ngOnInit() {
 
@@ -29,13 +29,9 @@ export class TabDataSourcesComponent  {
     })
   }
 
-  refresh() {
-    this.getDetectorResponse();
-  }
-
   getDetectorResponse() {
     this.detectorResponse = null;
-    
+
     if (this._route.snapshot.params['detector']) {
       this.detector = this._route.snapshot.params['detector'];
     }
