@@ -10,6 +10,7 @@ export interface DetectorResponse {
     dataset: DiagnosticData[];
     metadata: DetectorMetaData;
     status: Status;
+    dataProvidersMetadata: DataProviderMetadata[]
 }
 
 export interface Status {
@@ -49,6 +50,22 @@ export interface DetectorMetaData {
     authors: string;
     supportTopicList: SupportTopic[];
     category: string;
+}
+
+export interface DataProviderMetadata {
+    providerName:string;
+    propertyBag: PropertyBag[];
+
+}
+
+export interface PropertyBag {
+    key: string;
+    value: any; 
+}
+
+export interface KustoPropertyBagValue{
+    text: string;
+    url: string;
 }
 
 export interface SupportTopic {

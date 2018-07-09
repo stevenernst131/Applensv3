@@ -46,16 +46,20 @@
             </split-area>
             <split-area size="40">
                 <div class="invocation-output-title-container">
-
-                    <div class="invocation-title">
+                    <div class="invocation-title" [ngClass]="[!showDataSources ? 'active' : '']"  (click)="queryResponse ? showDataSources=false : false">
                         Detector Output
                     </div>
-
+                    <div class="invocation-title" [ngClass]="[showDataSources ? 'active' : '']" (click)="queryResponse ? showDataSources=true : false">
+                        Data Sources
+                    </div>
                 </div>
 
                 <div style="padding:10px">
-                    <detector-view *ngIf="queryResponse" [detectorResponse]="queryResponse.invocationOutput" [startTime]="queryParamsService.startTime"
+                    <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="queryParamsService.startTime"
                         [endTime]="queryParamsService.endTime" [error]="errorState" [showEdit]="false"></detector-view>
+
+                    <tab-data-sources *ngIf="queryResponse && showDataSources">
+                    </tab-data-sources>
                 </div>
 
             </split-area>
