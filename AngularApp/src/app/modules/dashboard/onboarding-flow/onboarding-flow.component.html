@@ -58,7 +58,7 @@
                     <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="queryParamsService.startTime"
                         [endTime]="queryParamsService.endTime" [error]="errorState" [showEdit]="false"></detector-view>
 
-                    <tab-data-sources *ngIf="queryResponse && showDataSources">
+                    <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true" [detectorResponse]="queryResponse.invocationOutput">
                     </tab-data-sources>
                 </div>
 
