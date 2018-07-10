@@ -99,6 +99,8 @@ export class SideNavComponent implements OnInit {
           categoryMenuItem.subItems.push(menuItem);
         });
 
+        this.categories = this.categories.sort((a,b) => a.label === 'Uncategorized' ? 1 : (a.label > b.label ? 1 : -1));
+
         this.detectorsLoading = false;
       }
     },
