@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { StatusStyles } from '../../models/styles';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { LoadingStatus } from '../../models/loading';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 @Component({
   selector: 'detector-list',
@@ -32,8 +33,8 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   errorDetectors: any[] = [];
 
-  constructor(private _diagnosticService: DiagnosticService) {
-    super();
+  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService) {
+    super(telemetryService);
   }
 
   protected processData(data: DiagnosticData) {

@@ -25,6 +25,9 @@ import { MarkdownComponent } from './components/markdown/markdown.component';
 import { DetectorListComponent, DetectorOrderPipe } from './components/detector-list/detector-list.component';
 import { DiagnosticService } from './services/diagnostic.service';
 import { ClipboardService } from './services/clipboard.service';
+import { KustoTelemetryService } from './services/telemetry/kusto-telemetry.service';
+import { AppInsightsTelemetryService } from './services/telemetry/appinsights-telemetry.service';
+import { TelemetryService } from './services/telemetry/telemetry.service';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -55,7 +58,10 @@ export class DiagnosticDataModule {
       ngModule: DiagnosticDataModule,
       providers: [
         DiagnosticService,
-        { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config }
+        { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config },
+        KustoTelemetryService,
+        AppInsightsTelemetryService,
+        TelemetryService
       ]
     }
   }

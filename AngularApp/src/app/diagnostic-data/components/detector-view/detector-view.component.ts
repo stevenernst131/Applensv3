@@ -41,7 +41,7 @@ export class DetectorViewComponent implements OnInit {
       this.detectorDataLocalCopy = data;
     });
 
-    this.errorSubject.subscribe((data: any) => {
+    this.errorSubject.subscribe((data: any) => { 
       this.errorState = data;
     });
   }

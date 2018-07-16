@@ -5,7 +5,7 @@
   <div *ngFor="let insight of insights" class="insight-container">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h5 class="panel-title" [class.clickable-header]="insight.hasData()" (click)="insight.showDetails = insight.hasData() && !insight.showDetails">
+        <h5 class="panel-title" [class.clickable-header]="insight.hasData()" (click)="insight.showDetails = insight.hasData() && !insight.showDetails;logInsightClickEvent(insight.title, insight.showDetails);">
           <span class="fa status-icon" [class.fa-exclamation-circle]="insight.status === InsightStatus.Critical" [class.fa-exclamation-triangle]="insight.status === InsightStatus.Warning"
             [class.fa-check-circle]="insight.status === InsightStatus.Success" [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
           {{insight.title}}
