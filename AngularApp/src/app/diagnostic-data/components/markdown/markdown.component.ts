@@ -4,6 +4,7 @@ import { DataRenderBaseComponent } from '../data-render-base/data-render-base.co
 import { MarkdownService } from 'ngx-markdown';
 import { ClipboardService } from '../../services/clipboard.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 @Component({
   selector: 'markdown-view',
@@ -16,9 +17,10 @@ export class MarkdownComponent extends DataRenderBaseComponent {
 
   markdown: string;
   isPublic: boolean;
+  markdownEventProps: any;
 
-  constructor(private _markdownService: MarkdownService, private _clipboard: ClipboardService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
-    super();
+  constructor(private _markdownService: MarkdownService, private _clipboard: ClipboardService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService) {
+    super(telemetryService);
     this.isPublic = config && config.isPublic;
   }
 
@@ -34,6 +36,9 @@ export class MarkdownComponent extends DataRenderBaseComponent {
     if(rows.length > 0 && rows[0].length > 0) {
       this.markdown = rows[0][0];
     }
+    this.markdownEventProps = {
+      Markdown: this.renderingProperties.title,
+    };
   }
 
   copyMarkdown() {

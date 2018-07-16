@@ -4,6 +4,7 @@ import { Rendering, RenderingType, DiagnosticData, InsightsRendering } from '../
 import { Dictionary } from '../../utilities/extensions';
 import { Insight, InsightStatus } from '../../models/insight';
 import { DiagnosticService } from '../../services/diagnostic.service';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 @Component({
   selector: 'insights',
@@ -19,6 +20,10 @@ export class InsightsComponent extends DataRenderBaseComponent {
   private insights: Insight[];
 
   InsightStatus = InsightStatus;
+
+  constructor(protected telemetryService: TelemetryService) {
+    super(telemetryService);
+  }
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -62,6 +67,21 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   getMarkdown(str: string) {
     return str.trim().replace('<markdown>','').replace('</markdown>','');
+  }
+
+  logInsightClickEvent(insightName: string, showDetails: boolean) {
+    var eventProps = {
+      Title: insightName,
+      IsExpand: showDetails
+    };
+
+    if (showDetails) {
+      this.logEvent("Expand detector insight: " + insightName, eventProps);
+    }
+    else {
+      this.logEvent("Collapse detector insight: " + insightName, eventProps);
+    }
+
   }
 }
 
