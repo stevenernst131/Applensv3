@@ -28,6 +28,10 @@ import { ClipboardService } from './services/clipboard.service';
 import { KustoTelemetryService } from './services/telemetry/kusto-telemetry.service';
 import { AppInsightsTelemetryService } from './services/telemetry/appinsights-telemetry.service';
 import { TelemetryService } from './services/telemetry/telemetry.service';
+import { StarRatingComponent } from './components/star-rating/star-rating.component';
+import { StarRatingFeedbackComponent } from './components/star-rating-feedback/star-rating-feedback.component';
+import { DetectorRatingComponent } from './components/detector-star-rating/detector-rating/detector-rating.component';
+import { FormsModule } from '@angular/forms';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -41,15 +45,16 @@ import { TelemetryService } from './services/telemetry/telemetry.service';
     CommonModule,
     NvD3Module,
     NgxDatatableModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    FormsModule
   ],
   providers: [
     ClipboardService
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe],
-  exports: [TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, DetectorRatingComponent],
+  exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
 export class DiagnosticDataModule {
