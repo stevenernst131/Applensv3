@@ -11,6 +11,9 @@
   <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
     <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
   </div>
+
+  <star-rating></star-rating>
+  <star-rating-feedback></star-rating-feedback>
 </div>
 
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>
