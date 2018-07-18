@@ -7,5 +7,6 @@ export interface CompilerResponse {
 
 export interface QueryResponse<T> {
     compilationOutput: CompilerResponse;
+    runtimeSucceeded: boolean;
     invocationOutput: T;
 }
