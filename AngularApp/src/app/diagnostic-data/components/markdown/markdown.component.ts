@@ -33,18 +33,18 @@ export class MarkdownComponent extends DataRenderBaseComponent {
 
   private createViewModel() {
     let rows = this.diagnosticData.table.rows;
-    if(rows.length > 0 && rows[0].length > 0) {
+    if (rows.length > 0 && rows[0].length > 0) {
       this.markdown = rows[0][0];
     }
   }
 
   copyMarkdown() {
     let markdownHtml = this._markdownService.compile(this.markdown);
-    this._clipboard.copyAsHtml(markdownHtml);    
+    this._clipboard.copyAsHtml(markdownHtml);
   }
 
   logCopyMarkdown() {
-    let copytoEmailEventProps: {[name: string]: string} = {
+    let copytoEmailEventProps: { [name: string]: string } = {
       "Title": this.renderingProperties.title,
       "ButtonClicked": "Copy to Email"
     };
@@ -54,14 +54,14 @@ export class MarkdownComponent extends DataRenderBaseComponent {
   openEmail() {
     let markdownHtml = this._markdownService.compile(this.markdown);
     let mailto = this.emailTemplate.replace('{body}', markdownHtml);
-    let data = new Blob([mailto], {type: 'text/plain'});
+    let data = new Blob([mailto], { type: 'text/plain' });
     let textFile = window.URL.createObjectURL(data);
 
     this.download('CaseEmail.eml', textFile);
   }
 
   logOpenEmail() {
-    let openOutlookEventProps: {[name: string]:string} = {
+    let openOutlookEventProps: { [name: string]: string } = {
       "Title": this.renderingProperties.title,
       "ButtonClicked": "Open in Outlook"
     };
@@ -72,12 +72,12 @@ export class MarkdownComponent extends DataRenderBaseComponent {
     var element = document.createElement('a');
     element.setAttribute('href', text);
     element.setAttribute('download', filename);
-  
+
     element.style.display = 'none';
     document.body.appendChild(element);
-  
+
     element.click();
-  
+
     document.body.removeChild(element);
   }
 

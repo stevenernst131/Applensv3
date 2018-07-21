@@ -46,7 +46,7 @@ export class DetectorViewComponent implements OnInit {
     this.detectorResponseSubject.subscribe((data: DetectorResponse) => {
       this.detectorDataLocalCopy = data;
       if (data) {
-        let detectorEventProps: {[name:string] : string} = {
+        let detectorEventProps: { [name: string]: string } = {
           "StartTime": String(this.startTime),
           "EndTime": String(this.endTime),
           "DetectorId": data.metadata.id
@@ -54,12 +54,12 @@ export class DetectorViewComponent implements OnInit {
         this.telemetryService.setDetectEventProperties(detectorEventProps);
       }
     });
-    
-    this.errorSubject.subscribe((data: any) => { 
+
+    this.errorSubject.subscribe((data: any) => {
       this.errorState = data;
     });
 
-    // The detector name can be retrieved from url attribute of url column of application insights pageviews table.
+    // The detector name can be retrieved from  url column of application insight resource pageviews table.
     if (!this.insideDetectorList) {
       this.telemetryService.logPageView(TelemetryEventNames.DetectorViewLoaded);
     }

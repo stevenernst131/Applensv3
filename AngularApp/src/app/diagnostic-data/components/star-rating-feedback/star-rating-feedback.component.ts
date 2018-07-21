@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'star-rating-feedback',
@@ -6,9 +6,8 @@ import { Component, OnInit} from '@angular/core';
   styleUrls: ['./star-rating-feedback.component.css']
 })
 export class StarRatingFeedbackComponent implements OnInit {
-
   starList: boolean[] = [false, false, false, false, false];
-  rating:number;
+  rating: number;
   isSubmitted: boolean = false;
   isRated: boolean = false;
 
@@ -25,9 +24,9 @@ export class StarRatingFeedbackComponent implements OnInit {
     this.isRated = true;
   }
 
-  setStar(data:any) {
-    this.rating = data+1;
-    for (var i = 0; i <=4; i++) {
+  setStar(data: any) {
+    this.rating = data + 1;
+    for (var i = 0; i <= 4; i++) {
       if (i <= data) {
         this.starList[i] = false;
       }

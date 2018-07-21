@@ -10,7 +10,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 })
 export class StarRatingComponent extends DataRenderBaseComponent {
 
-  constructor(protected telemetryService: TelemetryService) { 
+  constructor(protected telemetryService: TelemetryService) {
     super(telemetryService);
   }
 
@@ -19,16 +19,16 @@ export class StarRatingComponent extends DataRenderBaseComponent {
 
   @Input() isModal: boolean = false;
   @Output() submit: EventEmitter<boolean> = new EventEmitter<boolean>();
-  
+
   showThanksMessage: boolean = false;
-  rating:number = 0;
-  comments:string = "Start your rating.";
-  feedbackText:string;
+  rating: number = 0;
+  comments: string = "Start your rating.";
+  feedbackText: string;
 
 
   hideWholeForm: boolean;
 
-  setStar(data:any, comments?:any) {
+  setStar(data: any, comments?: any) {
     this.rating = data;
     this.comments = comments;
   }
@@ -40,8 +40,6 @@ export class StarRatingComponent extends DataRenderBaseComponent {
     };
 
     this.telemetryService.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
-    console.log("writing" + this.feedbackText);
-    
     this.showThanksMessage = true;
     this.submit.emit(this.showThanksMessage);
   }
