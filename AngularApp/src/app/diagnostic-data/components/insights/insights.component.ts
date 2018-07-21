@@ -5,6 +5,7 @@ import { Dictionary } from '../../utilities/extensions';
 import { Insight, InsightStatus } from '../../models/insight';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 @Component({
   selector: 'insights',
@@ -70,17 +71,12 @@ export class InsightsComponent extends DataRenderBaseComponent {
   }
 
   logInsightClickEvent(insightName: string, showDetails: boolean) {
-    var eventProps = {
-      Title: insightName,
-      IsExpand: showDetails
+    let eventProps: { [name: string]: string } = {
+      "Title": insightName,
+      "IsExpanded": String(showDetails)
     };
 
-    if (showDetails) {
-      this.logEvent("Expand detector insight: " + insightName, eventProps);
-    }
-    else {
-      this.logEvent("Collapse detector insight: " + insightName, eventProps);
-    }
+    this.telemetryService.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);
 
   }
 }

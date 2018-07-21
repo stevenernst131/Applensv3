@@ -1,16 +1,16 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, OnInit, Inject, Input } from '@angular/core';
 import { AppInsights } from 'applicationinsights-js';
 import { ITelemetryProvider } from './telemetry.common';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { environment } from '../../../../environments/environment';
 
-
 @Injectable()
-export class AppInsightsTelemetryService implements ITelemetryProvider{
+export class AppInsightsTelemetryService implements ITelemetryProvider {
+
     constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
         if (!AppInsights.config) {
             AppInsights.downloadAndSetup({
-                instrumentationKey: environment.production ? config.productionInstrumentationKey: config.developingInstrumentationKey,
+                instrumentationKey: environment.production ? config.productionInstrumentationKey : config.developingInstrumentationKey,
                 maxBatchSizeInBytes: 1,
                 maxBatchInterval: 1
             });
@@ -21,7 +21,7 @@ export class AppInsightsTelemetryService implements ITelemetryProvider{
         AppInsights.trackPageView(name, url, properties, measurements, duration);
     }
 
-    public logEvent(message?: string, properties?: any, measurements?: any){
+    public logEvent(message?: string, properties?: any, measurements?: any) {
         AppInsights.trackEvent(message, properties, measurements);
     }
 
@@ -33,7 +33,7 @@ export class AppInsightsTelemetryService implements ITelemetryProvider{
         AppInsights.trackTrace(message, customProperties);
     }
 
-    public logMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: any){
+    public logMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: any) {
         AppInsights.trackMetric(name, average, sampleCount, min, max, properties);
     }
 

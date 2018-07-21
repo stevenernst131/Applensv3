@@ -1,16 +1,67 @@
 fieldset, label { margin: 0; padding: 0; }
 body{ margin: 20px; }
-h1 { font-size: 1.5em; margin: 10px; }
+h1 { font-size: 1.2em; margin: 10px; }
 
 /****** Style Star Rating Widget *****/
+.review-container {
+  max-width: 630px;
+  /* border-color: solid rgb(169, 169, 169); */
+    border: 1px solid rgb(223, 223, 223);
+    /* rgb(169, 169, 169); */
+    
+    border-top: none;
+}
 
-.rating { 
+/* .review-container:focus {
+  border:1px solid #719ECE!important;
+  box-shadow: 0 0 10px #719ECE;
+} */
+
+textarea {
+  border: none;
+  overflow: auto;
+  outline: none;
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  padding: 0px;
+}
+
+textarea:focus {
+  box-shadow: 0 0 10px #719ECE;
+}
+
+.rating-container {
+  border: 1px solid rgb(169, 169, 169);
+  /* border-color: rgb(204, 204, 204); */
+}
+
+.review-header {
+  background-color: #3c8dbc;
+  /* #7287b7; */
+  border: 1px solid #3c8dbc;
+  /* #5d6f98; */
+  color:white;
+  min-height: 42px;
+  max-width: 630px;
+}
+
+.review-container > h1 {
+  color:  #3c8dbc;
+}
+
+.feedback-response {
+  font: 800;
+}
+
+.rating {
   border: none;
   float: left;
 }
 
-.rating > input { display: none; } 
-.rating > label:before { 
+.rating > input { display: none; }
+.rating > label:before {
   margin: 5px;
   font-size: 1.5em;
   font-family: FontAwesome;
@@ -18,28 +69,30 @@ h1 { font-size: 1.5em; margin: 10px; }
   content: "\f005";
 }
 
-.rating > .half:before { 
+.rating > .half:before {
   font-size: 1.5em;
   content: "\f089";
   position: absolute;
 }
 
-.rating > label { 
-  color: #ddd; 
- float: right; 
+.rating > label {
+  color: #ddd;
+ float: right;
 }
 
 /***** CSS Magic to Highlight Stars on Hover *****/
 
 
-.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:hover) > input:checked ~ label  { color: #FFD700;  } /* show gold star when clicked */
 
-.rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+.rating:not(:checked) > label:hover ~ label { color: #FFED85;  } /* hover previous stars in list */
 
 .rating:not(:checked) > label:hover { color: #FFED85;  } /* hover current star */
 
-/* .rating > input:checked + label:hover,   hover current star when changing rating 
+/* .rating > input:checked + label:hover,   hover current star when changing rating
 
- .rating > input:checked ~ label:hover, 
-.rating > label:hover ~ input:checked ~ label,  lighten current selection 
+ .rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label,  lighten current selection
 .rating > input:checked ~ label:hover ~ label { color: #FFED85;  }  */
+
+

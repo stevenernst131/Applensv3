@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'star-rating-feedback',
@@ -7,12 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StarRatingFeedbackComponent implements OnInit {
 
-  starList: boolean[] = [true, true, true, true, true, true, true, true, true, true];
+  starList: boolean[] = [false, false, false, false, false];
   rating:number;
+  isSubmitted: boolean = false;
+  isRated: boolean = false;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  submitFeedback($event) {
+    this.isSubmitted = $event;
+  }
+
+  setLinkVisited() {
+    this.isRated = true;
   }
 
   setStar(data:any) {
