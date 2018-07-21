@@ -8,10 +8,9 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class TelemetryService {
     private telemetryProviders: ITelemetryProvider[] = [];
-    private commonDetectorEventProperties: {[name : string] : string};
+    private commonDetectorEventProperties: { [name: string]: string };
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     eventPropertiesLocalCopy: { [name: string]: string };
-
 
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService, @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
         if (config.useKustoForTelemetry) {
@@ -26,7 +25,7 @@ export class TelemetryService {
         });
     }
 
-    public setDetectEventProperties(eventProperties: {[name : string] : string}) {
+    public setDetectEventProperties(eventProperties: { [name: string]: string }) {
         this.commonDetectorEventProperties = eventProperties;
     }
 

@@ -54,7 +54,7 @@ export class InsightsComponent extends DataRenderBaseComponent {
       }
 
       let nameColumnValue = row[nameColumnIndex];
-      if(nameColumnValue && nameColumnValue.length > 0) {
+      if (nameColumnValue && nameColumnValue.length > 0) {
         insight.data[nameColumnValue] = row[valueColumnIndex];
       }
     }
@@ -67,7 +67,7 @@ export class InsightsComponent extends DataRenderBaseComponent {
   }
 
   getMarkdown(str: string) {
-    return str.trim().replace('<markdown>','').replace('</markdown>','');
+    return str.trim().replace('<markdown>', '').replace('</markdown>', '');
   }
 
   logInsightClickEvent(insightName: string, showDetails: boolean) {
@@ -77,7 +77,6 @@ export class InsightsComponent extends DataRenderBaseComponent {
     };
 
     this.telemetryService.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);
-
   }
 }
 

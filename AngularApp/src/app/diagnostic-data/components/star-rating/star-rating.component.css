@@ -5,17 +5,9 @@ h1 { font-size: 1.2em; margin: 10px; }
 /****** Style Star Rating Widget *****/
 .review-container {
   max-width: 630px;
-  /* border-color: solid rgb(169, 169, 169); */
     border: 1px solid rgb(223, 223, 223);
-    /* rgb(169, 169, 169); */
-    
     border-top: none;
 }
-
-/* .review-container:focus {
-  border:1px solid #719ECE!important;
-  box-shadow: 0 0 10px #719ECE;
-} */
 
 textarea {
   border: none;
@@ -34,14 +26,11 @@ textarea:focus {
 
 .rating-container {
   border: 1px solid rgb(169, 169, 169);
-  /* border-color: rgb(204, 204, 204); */
 }
 
 .review-header {
   background-color: #3c8dbc;
-  /* #7287b7; */
   border: 1px solid #3c8dbc;
-  /* #5d6f98; */
   color:white;
   min-height: 42px;
   max-width: 630px;
@@ -77,20 +66,15 @@ textarea:focus {
 
 .rating > label {
   color: #ddd;
- float: right;
+  float: right;
 }
 
 /***** CSS Magic to Highlight Stars on Hover *****/
-
-
 .rating:not(:hover) > input:checked ~ label  { color: #FFD700;  } /* show gold star when clicked */
-
 .rating:not(:checked) > label:hover ~ label { color: #FFED85;  } /* hover previous stars in list */
-
 .rating:not(:checked) > label:hover { color: #FFED85;  } /* hover current star */
 
 /* .rating > input:checked + label:hover,   hover current star when changing rating
-
  .rating > input:checked ~ label:hover,
 .rating > label:hover ~ input:checked ~ label,  lighten current selection
 .rating > input:checked ~ label:hover ~ label { color: #FFED85;  }  */

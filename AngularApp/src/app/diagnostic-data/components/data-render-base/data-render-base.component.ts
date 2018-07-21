@@ -26,16 +26,6 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
 
 
   constructor(protected telemetryService: TelemetryService) {
-    // var dataEventProperties: { [name: string]: string } = {
-    //   StartTime: String(this.startTime),
-    //   EndTime: String(this.endTime)
-    // }
-
-    // console.log("StartTime: " + this.startTime + "End: " + this.endTime);
-    // this.telemetryService.eventPropertiesSubject.next(dataEventProperties);
-    // for (let key in dataEventProperties) {
-    //   console.log("rendering base with eventProperties key: " + key + "Value: " + dataEventProperties[key]);
-    // }
   }
 
   ngOnChanges() {
