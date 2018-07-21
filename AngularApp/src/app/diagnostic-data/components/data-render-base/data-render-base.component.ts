@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ReflectiveInjector } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { DiagnosticData, RenderingType } from '../../models/detector';
 import * as momentNs from 'moment-timezone';
@@ -26,31 +26,18 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
 
 
   constructor(protected telemetryService: TelemetryService) {
-    this.logPageView("Detector Base rendering type");
+    // var dataEventProperties: { [name: string]: string } = {
+    //   StartTime: String(this.startTime),
+    //   EndTime: String(this.endTime)
+    // }
+
+    // console.log("StartTime: " + this.startTime + "End: " + this.endTime);
+    // this.telemetryService.eventPropertiesSubject.next(dataEventProperties);
+    // for (let key in dataEventProperties) {
+    //   console.log("rendering base with eventProperties key: " + key + "Value: " + dataEventProperties[key]);
+    // }
   }
 
-
-  public logEvent(message?: string, properties?: any, measurements?: any) {
-    this.telemetryService.logEvent(message, properties, measurements);
-  }
-
-  public logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number) {
-    this.telemetryService.logPageView(name, url, properties, measurements, duration);
-  }
-
-
-  public logException(exception: Error, handledAt?: string, properties?: any, measurements?: any, severityLevel?: AI.SeverityLevel) {
-    this.telemetryService.logException(exception, handledAt, properties, measurements, severityLevel);
-  }
-
-  public logTrace(message: string, customProperties?: any, customMetrics?: any) {
-    this.telemetryService.logTrace(message, customProperties);
-  }
-
-  public logMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: any) {
-    this.telemetryService.logMetric(name, average, sampleCount, min, max, properties);
-  }
-  
   ngOnChanges() {
   }
 

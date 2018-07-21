@@ -1,20 +1,33 @@
-import {Injectable, Inject} from '@angular/core';
-import { ITelemetryProvider} from './telemetry.common';
+import { Injectable, OnInit, Inject } from '@angular/core';
+import { TelemetryEventNames, ITelemetryProvider } from './telemetry.common';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { AppInsightsTelemetryService } from './appinsights-telemetry.service';
 import { KustoTelemetryService } from './kusto-telemetry.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class TelemetryService {
     private telemetryProviders: ITelemetryProvider[] = [];
+    private commonDetectorEventProperties: {[name : string] : string};
+    eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    eventPropertiesLocalCopy: { [name: string]: string };
+
 
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService, @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
         if (config.useKustoForTelemetry) {
             this.telemetryProviders.push(this._kustoService);
         }
         if (config.useAppInsightsForTelemetry) {
-            this.telemetryProviders.push(this._appInsightsService)
+            this.telemetryProviders.push(this._appInsightsService);
         }
+
+        this.eventPropertiesSubject.subscribe((data: any) => {
+            this.eventPropertiesLocalCopy = data;
+        });
+    }
+
+    public setDetectEventProperties(eventProperties: {[name : string] : string}) {
+        this.commonDetectorEventProperties = eventProperties;
     }
 
     /**
@@ -22,12 +35,26 @@ export class TelemetryService {
      */
     public logEvent(
         eventMessage: string,
-        measurements?: any,
-        properties?: any) {
+        properties: { [name: string]: string },
+        measurements?: any) {
+        if (this.eventPropertiesLocalCopy) {
+            for (let id in this.eventPropertiesLocalCopy) {
+                properties[id] = String(this.eventPropertiesLocalCopy[id]);
+            }
+        }
+
+        if (this.commonDetectorEventProperties) {
+            for (let id in this.commonDetectorEventProperties) {
+                properties[id] = String(this.commonDetectorEventProperties[id]);
+            }
+        }
 
         try {
             for (var telemetryProvider of this.telemetryProviders) {
-                telemetryProvider.logEvent(eventMessage, measurements, properties);
+                telemetryProvider.logEvent(eventMessage, properties, measurements);
+                for (let iter in properties) {
+                    console.log("Event tracking properties key: " + iter + " value: " + properties[iter]);
+                }
             }
         } catch (error) {
             try {
@@ -37,7 +64,7 @@ export class TelemetryService {
         }
     }
 
-    public logPageView(name: string, url?: string, properties?: string, measurements?: string, duration?: number) {
+    public logPageView(name: string, properties?: any, measurements?: any, url?: string, duration?: number) {
         for (var telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logPageView(name, url, properties, measurements, duration);
         }
@@ -47,14 +74,14 @@ export class TelemetryService {
         for (var telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logException(exception, handledAt, properties, measurements, severityLevel);
         }
-      }
-  
+    }
+
     public logTrace(message: string, customProperties?: any, customMetrics?: any) {
         for (var telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logTrace(message, customProperties);
         }
-      }
-  
+    }
+
     public logMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: any) {
         for (var telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logMetric(name, average, sampleCount, min, max, properties);

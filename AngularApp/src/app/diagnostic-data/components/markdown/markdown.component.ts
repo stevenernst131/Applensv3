@@ -5,6 +5,7 @@ import { MarkdownService } from 'ngx-markdown';
 import { ClipboardService } from '../../services/clipboard.service';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 @Component({
   selector: 'markdown-view',
@@ -17,7 +18,6 @@ export class MarkdownComponent extends DataRenderBaseComponent {
 
   markdown: string;
   isPublic: boolean;
-  markdownEventProps: any;
 
   constructor(private _markdownService: MarkdownService, private _clipboard: ClipboardService, @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, protected telemetryService: TelemetryService) {
     super(telemetryService);
@@ -36,14 +36,19 @@ export class MarkdownComponent extends DataRenderBaseComponent {
     if(rows.length > 0 && rows[0].length > 0) {
       this.markdown = rows[0][0];
     }
-    this.markdownEventProps = {
-      Markdown: this.renderingProperties.title,
-    };
   }
 
   copyMarkdown() {
     let markdownHtml = this._markdownService.compile(this.markdown);
     this._clipboard.copyAsHtml(markdownHtml);    
+  }
+
+  logCopyMarkdown() {
+    let copytoEmailEventProps: {[name: string]: string} = {
+      "Title": this.renderingProperties.title,
+      "ButtonClicked": "Copy to Email"
+    };
+    this.telemetryService.logEvent(TelemetryEventNames.MarkdownClicked, copytoEmailEventProps);
   }
 
   openEmail() {
@@ -53,6 +58,14 @@ export class MarkdownComponent extends DataRenderBaseComponent {
     let textFile = window.URL.createObjectURL(data);
 
     this.download('CaseEmail.eml', textFile);
+  }
+
+  logOpenEmail() {
+    let openOutlookEventProps: {[name: string]:string} = {
+      "Title": this.renderingProperties.title,
+      "ButtonClicked": "Open in Outlook"
+    };
+    this.telemetryService.logEvent(TelemetryEventNames.MarkdownClicked, openOutlookEventProps);
   }
 
   download(filename, text) {

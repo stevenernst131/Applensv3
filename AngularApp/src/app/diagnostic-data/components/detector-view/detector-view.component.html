@@ -5,15 +5,24 @@
         <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
         <small>{{detectorDataLocalCopy.metadata.description}}</small>
       </h1>
+      <div class="description" *ngIf="!isPublic">By
+        <span style="padding:2px; color: #0066c0;">
+          <a *ngIf="detectorDataLocalCopy.metadata && detectorDataLocalCopy.metadata.author; else unknownAuthor" href="mailto:{{detectorDataLocalCopy.metadata.author}}">
+            {{detectorDataLocalCopy.metadata.author}}
+          </a>
+          <ng-template #unknownAuthor>
+            Unknown
+          </ng-template>
+        </span>
+      </div>
+      <!-- <star-rating-feedback *ngIf="!insideDetectorList"></star-rating-feedback> -->
     </section>
   </div>
-
+  <hr style="margin: 5px 0px 25px 0px"/>
   <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
     <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
   </div>
-
-  <star-rating></star-rating>
-  <star-rating-feedback></star-rating-feedback>
+  <!-- <star-rating *ngIf="!insideDetectorList"></star-rating> -->
 </div>
 
 <loader-view style="margin-top:300px" *ngIf="!detectorDataLocalCopy && !errorState" message="Loading Detector..."></loader-view>

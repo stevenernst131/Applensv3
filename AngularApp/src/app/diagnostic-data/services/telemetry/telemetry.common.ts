@@ -1,13 +1,8 @@
-/*
-    eventId - Event identifier. Globally unique number across the applications.
-    eventMessage - The message that describes event in human friendly way.
-    properties - The event additional properties.
-*/
-export class LoggingEvent {
-    id: number;
-    message: string;
-    measurements: any;
-    properties: any;
+export const TelemetryEventNames = {
+    DetectorViewLoaded: 'DetectorViewLoaded',
+    InsightsTitleClicked: 'InsightsTitleClicked',
+    MarkdownClicked: 'MarkdownClicked',
+    StarRatingSubmitted: 'StarRatingSubmitted'
 }
 
 export interface ITelemetryProvider {
