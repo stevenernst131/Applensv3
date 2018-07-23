@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'star-rating-feedback',
   templateUrl: './star-rating-feedback.component.html',
   styleUrls: ['./star-rating-feedback.component.css']
 })
-export class StarRatingFeedbackComponent implements OnInit {
+
+export class StarRatingFeedbackComponent {
   starList: boolean[] = [false, false, false, false, false];
   rating: number;
   isSubmitted: boolean = false;
   isRated: boolean = false;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
 
   submitFeedback($event) {
     this.isSubmitted = $event;

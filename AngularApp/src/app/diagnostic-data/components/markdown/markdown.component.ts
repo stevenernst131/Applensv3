@@ -41,9 +41,8 @@ export class MarkdownComponent extends DataRenderBaseComponent {
   copyMarkdown() {
     let markdownHtml = this._markdownService.compile(this.markdown);
     this._clipboard.copyAsHtml(markdownHtml);
-  }
 
-  logCopyMarkdown() {
+    // Send telemetry event for clicking copyMarkdown
     let copytoEmailEventProps: { [name: string]: string } = {
       "Title": this.renderingProperties.title,
       "ButtonClicked": "Copy to Email"
@@ -58,9 +57,8 @@ export class MarkdownComponent extends DataRenderBaseComponent {
     let textFile = window.URL.createObjectURL(data);
 
     this.download('CaseEmail.eml', textFile);
-  }
 
-  logOpenEmail() {
+    // Send telemetry event for clicking openEmail
     let openOutlookEventProps: { [name: string]: string } = {
       "Title": this.renderingProperties.title,
       "ButtonClicked": "Open in Outlook"

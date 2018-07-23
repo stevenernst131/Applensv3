@@ -70,6 +70,11 @@ export class InsightsComponent extends DataRenderBaseComponent {
     return str.trim().replace('<markdown>', '').replace('</markdown>', '');
   }
 
+  toggleInsightStatus(insight: any) {
+    insight.showDetails = insight.hasData() && !insight.showDetails;
+    this.logInsightClickEvent(insight.title, insight.showDetails);
+  }
+
   logInsightClickEvent(insightName: string, showDetails: boolean) {
     let eventProps: { [name: string]: string } = {
       "Title": insightName,
