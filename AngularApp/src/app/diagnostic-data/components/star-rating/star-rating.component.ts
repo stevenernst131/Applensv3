@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
@@ -8,16 +7,16 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
   templateUrl: './star-rating.component.html',
   styleUrls: ['./star-rating.component.css']
 })
-export class StarRatingComponent extends DataRenderBaseComponent {
 
+export class StarRatingComponent {
   constructor(protected telemetryService: TelemetryService) {
-    super(telemetryService);
   }
 
   ngOnInit() {
   }
 
-  @Input() isModal: boolean = false;
+  @Input() isModal: boolean;
+  @Input() ratingEventProperties: any;
   @Output() submit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   showThanksMessage: boolean = false;
@@ -33,14 +32,22 @@ export class StarRatingComponent extends DataRenderBaseComponent {
     this.comments = comments;
   }
 
-  feedbackMessageSubmitted() {
+  protected feedbackMessageSubmitted() {
     var eventProps = {
       Rating: String(this.rating),
       Feedback: this.feedbackText
     };
 
-    this.telemetryService.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
+    this.logEvent(TelemetryEventNames.StarRatingSubmitted, eventProps);
     this.showThanksMessage = true;
     this.submit.emit(this.showThanksMessage);
   }
+
+  protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
+    for (let id in this.ratingEventProperties) {
+      eventProperties[id] = String(this.ratingEventProperties[id]);
+    }
+    this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
+  }
+  
 }

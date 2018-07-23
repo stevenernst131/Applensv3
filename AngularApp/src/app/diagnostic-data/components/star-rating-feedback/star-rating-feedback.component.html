@@ -20,7 +20,7 @@
       </div>
 
       <div class="modal-body" style="padding:0px;">
-        <star-rating [isModal]="true" (submit)='submitFeedback($event)' *ngIf="!isSubmitted"></star-rating>
+        <star-rating [isModal]="true" [ratingEventProperties]="ratingEventProperties" (submit)='submitFeedback($event)' *ngIf="!isSubmitted"></star-rating>
       </div>
     </div>
     <!-- /.modal-content -->

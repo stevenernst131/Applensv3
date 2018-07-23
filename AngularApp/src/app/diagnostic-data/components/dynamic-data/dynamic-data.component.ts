@@ -31,6 +31,7 @@ export class DynamicDataComponent implements OnInit {
 
   @Input() startTime: momentNs.Moment;
   @Input() endTime: momentNs.Moment;
+  @Input() detectorEventProperties: any;
 
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
 
@@ -49,6 +50,7 @@ export class DynamicDataComponent implements OnInit {
       instance.diagnosticDataInput = diagnosticData;
       instance.startTime = this.startTime;
       instance.endTime = this.endTime;
+      instance.detectorEventProperties = this.detectorEventProperties;
     });
   }
 
