@@ -16,7 +16,7 @@ export class DetectorViewComponent implements OnInit {
 
   detectorDataLocalCopy: DetectorResponse;
   errorState: any;
-  isPublic: boolean = true;
+  isPublic: boolean;
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -51,7 +51,8 @@ export class DetectorViewComponent implements OnInit {
           "EndTime": String(this.endTime),
           "DetectorId": data.metadata.id
         }
-        this.telemetryService.setDetectEventProperties(detectorEventProps);
+
+        this.telemetryService.eventPropertiesSubject.next(detectorEventProps);
       }
     });
 

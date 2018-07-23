@@ -10,7 +10,7 @@ export class TelemetryService {
     private telemetryProviders: ITelemetryProvider[] = [];
     private commonDetectorEventProperties: { [name: string]: string };
     eventPropertiesSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-    eventPropertiesLocalCopy: { [name: string]: string };
+    private eventPropertiesLocalCopy: { [name: string]: string } = {};
 
     constructor(private _appInsightsService: AppInsightsTelemetryService, private _kustoService: KustoTelemetryService, @Inject(DIAGNOSTIC_DATA_CONFIG) private config: DiagnosticDataConfig) {
         if (config.useKustoForTelemetry) {
@@ -21,12 +21,10 @@ export class TelemetryService {
         }
 
         this.eventPropertiesSubject.subscribe((data: any) => {
-            this.eventPropertiesLocalCopy = data;
+            for (let id in data) {
+                this.eventPropertiesLocalCopy[id] = String(data[id]);
+            }
         });
-    }
-
-    public setDetectEventProperties(eventProperties: { [name: string]: string }) {
-        this.commonDetectorEventProperties = eventProperties;
     }
 
     /**
@@ -42,24 +40,8 @@ export class TelemetryService {
             }
         }
 
-        if (this.commonDetectorEventProperties) {
-            for (let id in this.commonDetectorEventProperties) {
-                properties[id] = String(this.commonDetectorEventProperties[id]);
-            }
-        }
-
-        try {
-            for (var telemetryProvider of this.telemetryProviders) {
-                telemetryProvider.logEvent(eventMessage, properties, measurements);
-                for (let iter in properties) {
-                    console.log("Event tracking properties key: " + iter + " value: " + properties[iter]);
-                }
-            }
-        } catch (error) {
-            try {
-                console.error('Unexpected error occured while trying to write log entry:', error);
-            } catch (_) {
-            }
+        for (var telemetryProvider of this.telemetryProviders) {
+            telemetryProvider.logEvent(eventMessage, properties, measurements);
         }
     }
 
