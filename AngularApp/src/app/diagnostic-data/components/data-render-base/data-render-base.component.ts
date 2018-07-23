@@ -23,6 +23,7 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() startTime: momentNs.Moment;
   @Input() endTime: momentNs.Moment;
   @Input() timeGrainInMinutes: number = 5;
+  @Input() detectorEventProperties: any;
 
 
   constructor(protected telemetryService: TelemetryService) {
@@ -41,6 +42,13 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
     if (data) {
       this.diagnosticData = data;
     }
+  }
+
+  protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
+    for (let id in this.detectorEventProperties) {
+      eventProperties[id] = String(this.detectorEventProperties[id]);
+    }
+    this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
 }
 

@@ -15,12 +15,12 @@
           </ng-template>
         </span>
       </div>
-      <!-- <star-rating-feedback *ngIf="!insideDetectorList"></star-rating-feedback> -->
+      <!-- <star-rating-feedback *ngIf="!insideDetectorList"[ratingEventProperties] = "ratingEventProperties"></star-rating-feedback> -->
     </section>
   </div>
   <hr style="margin: 5px 0px 25px 0px"/>
   <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
-    <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime"></dynamic-data>
+    <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [detectorEventProperties] = "detectorEventProperties"></dynamic-data>
   </div>
   <!-- <star-rating *ngIf="!insideDetectorList"></star-rating> -->
 </div>

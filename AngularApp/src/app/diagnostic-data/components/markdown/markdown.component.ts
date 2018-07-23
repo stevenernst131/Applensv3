@@ -47,7 +47,7 @@ export class MarkdownComponent extends DataRenderBaseComponent {
       "Title": this.renderingProperties.title,
       "ButtonClicked": "Copy to Email"
     };
-    this.telemetryService.logEvent(TelemetryEventNames.MarkdownClicked, copytoEmailEventProps);
+    this.logEvent(TelemetryEventNames.MarkdownClicked, copytoEmailEventProps);
   }
 
   openEmail() {
@@ -63,7 +63,7 @@ export class MarkdownComponent extends DataRenderBaseComponent {
       "Title": this.renderingProperties.title,
       "ButtonClicked": "Open in Outlook"
     };
-    this.telemetryService.logEvent(TelemetryEventNames.MarkdownClicked, openOutlookEventProps);
+    this.logEvent(TelemetryEventNames.MarkdownClicked, openOutlookEventProps);
   }
 
   download(filename, text) {

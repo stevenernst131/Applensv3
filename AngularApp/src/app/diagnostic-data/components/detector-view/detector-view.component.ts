@@ -20,6 +20,8 @@ export class DetectorViewComponent implements OnInit {
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private detectorEventProperties: {[name: string]: string};
+  private ratingEventProperties: {[name: string]: string};
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -46,13 +48,15 @@ export class DetectorViewComponent implements OnInit {
     this.detectorResponseSubject.subscribe((data: DetectorResponse) => {
       this.detectorDataLocalCopy = data;
       if (data) {
-        let detectorEventProps: { [name: string]: string } = {
+        this.detectorEventProperties = {
           "StartTime": String(this.startTime),
           "EndTime": String(this.endTime),
           "DetectorId": data.metadata.id
         }
 
-        this.telemetryService.eventPropertiesSubject.next(detectorEventProps);
+        this.ratingEventProperties = {
+          "DetectorId": data.metadata.id
+        }
       }
     });
 

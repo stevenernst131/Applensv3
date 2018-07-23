@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'star-rating-feedback',
@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 })
 
 export class StarRatingFeedbackComponent {
+  @Input() ratingEventProperties: any;
   starList: boolean[] = [false, false, false, false, false];
   rating: number;
   isSubmitted: boolean = false;

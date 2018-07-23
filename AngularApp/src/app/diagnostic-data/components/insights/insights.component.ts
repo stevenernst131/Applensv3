@@ -81,7 +81,7 @@ export class InsightsComponent extends DataRenderBaseComponent {
       "IsExpanded": String(showDetails)
     };
 
-    this.telemetryService.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);
+    this.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);
   }
 }
 

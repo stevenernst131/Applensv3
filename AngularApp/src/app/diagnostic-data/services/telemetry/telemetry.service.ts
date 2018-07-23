@@ -39,7 +39,7 @@ export class TelemetryService {
                 properties[id] = String(this.eventPropertiesLocalCopy[id]);
             }
         }
-
+        
         for (var telemetryProvider of this.telemetryProviders) {
             telemetryProvider.logEvent(eventMessage, properties, measurements);
         }
