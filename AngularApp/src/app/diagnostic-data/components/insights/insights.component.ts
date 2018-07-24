@@ -4,6 +4,8 @@ import { Rendering, RenderingType, DiagnosticData, InsightsRendering } from '../
 import { Dictionary } from '../../utilities/extensions';
 import { Insight, InsightStatus } from '../../models/insight';
 import { DiagnosticService } from '../../services/diagnostic.service';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 @Component({
   selector: 'insights',
@@ -19,6 +21,10 @@ export class InsightsComponent extends DataRenderBaseComponent {
   private insights: Insight[];
 
   InsightStatus = InsightStatus;
+
+  constructor(protected telemetryService: TelemetryService) {
+    super(telemetryService);
+  }
 
   protected processData(data: DiagnosticData) {
     super.processData(data);
@@ -48,7 +54,7 @@ export class InsightsComponent extends DataRenderBaseComponent {
       }
 
       let nameColumnValue = row[nameColumnIndex];
-      if(nameColumnValue && nameColumnValue.length > 0) {
+      if (nameColumnValue && nameColumnValue.length > 0) {
         insight.data[nameColumnValue] = row[valueColumnIndex];
       }
     }
@@ -61,7 +67,21 @@ export class InsightsComponent extends DataRenderBaseComponent {
   }
 
   getMarkdown(str: string) {
-    return str.trim().replace('<markdown>','').replace('</markdown>','');
+    return str.trim().replace('<markdown>', '').replace('</markdown>', '');
+  }
+
+  toggleInsightStatus(insight: any) {
+    insight.showDetails = insight.hasData() && !insight.showDetails;
+    this.logInsightClickEvent(insight.title, insight.showDetails);
+  }
+
+  logInsightClickEvent(insightName: string, showDetails: boolean) {
+    let eventProps: { [name: string]: string } = {
+      "Title": insightName,
+      "IsExpanded": String(showDetails)
+    };
+
+    this.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);
   }
 }
 

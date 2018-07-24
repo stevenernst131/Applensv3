@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { DiagnosticData, RenderingType } from '../../models/detector';
 import * as momentNs from 'moment-timezone';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 const moment = momentNs;
 
 @Component({
@@ -22,12 +23,14 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
   @Input() startTime: momentNs.Moment;
   @Input() endTime: momentNs.Moment;
   @Input() timeGrainInMinutes: number = 5;
+  @Input() detectorEventProperties: any;
 
-  constructor() {
-   }
 
-   ngOnChanges() {
-   }
+  constructor(protected telemetryService: TelemetryService) {
+  }
+
+  ngOnChanges() {
+  }
 
   ngOnInit() {
     this._diagnosticDataSubject.subscribe((data: DiagnosticData) => {
@@ -39,6 +42,13 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
     if (data) {
       this.diagnosticData = data;
     }
+  }
+
+  protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
+    for (let id in this.detectorEventProperties) {
+      eventProperties[id] = String(this.detectorEventProperties[id]);
+    }
+    this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
   }
 }
 

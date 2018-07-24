@@ -3,6 +3,7 @@ import { DynamicInsightRendering, DiagnosticData } from '../../models/detector';
 import { DynamicInsight, InsightStatus } from '../../models/insight';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { MarkdownService } from 'ngx-markdown';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 @Component({
   selector: 'dynamic-insight',
@@ -17,8 +18,8 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
 
   InsightStatus = InsightStatus;
 
-  constructor(private _markdownService: MarkdownService){
-    super();
+  constructor(private _markdownService: MarkdownService, protected telemetryService: TelemetryService){
+    super(telemetryService);
   }
 
   protected processData(data: DiagnosticData) {
