@@ -121,6 +121,11 @@ export class OnboardingFlowComponent implements OnInit {
           this.publishingPackage = null;
           this.buildOutput.push("========== Build: 0 succeeded, 1 failed ==========");
         }
+
+        if (this.queryResponse.runtimeSucceeded != null  && this.queryResponse.runtimeSucceeded === false) {
+          this.publishButtonDisabled = true;
+        }
+
       }, ((error: any) => {
         this.runButtonDisabled = false;
         this.publishingPackage = null;
