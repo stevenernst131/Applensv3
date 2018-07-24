@@ -25,6 +25,12 @@ import { MarkdownComponent } from './components/markdown/markdown.component';
 import { DetectorListComponent, DetectorOrderPipe } from './components/detector-list/detector-list.component';
 import { DiagnosticService } from './services/diagnostic.service';
 import { ClipboardService } from './services/clipboard.service';
+import { KustoTelemetryService } from './services/telemetry/kusto-telemetry.service';
+import { AppInsightsTelemetryService } from './services/telemetry/appinsights-telemetry.service';
+import { TelemetryService } from './services/telemetry/telemetry.service';
+import { StarRatingComponent } from './components/star-rating/star-rating.component';
+import { StarRatingFeedbackComponent } from './components/star-rating-feedback/star-rating-feedback.component';
+import { FormsModule } from '@angular/forms';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -38,15 +44,16 @@ import { ClipboardService } from './services/clipboard.service';
     CommonModule,
     NvD3Module,
     NgxDatatableModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    FormsModule
   ],
   providers: [
     ClipboardService
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe],
-  exports: [TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent],
+  exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
 export class DiagnosticDataModule {
@@ -55,7 +62,10 @@ export class DiagnosticDataModule {
       ngModule: DiagnosticDataModule,
       providers: [
         DiagnosticService,
-        { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config }
+        { provide: DIAGNOSTIC_DATA_CONFIG, useValue: config },
+        KustoTelemetryService,
+        AppInsightsTelemetryService,
+        TelemetryService
       ]
     }
   }

@@ -1,7 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import * as moment from 'moment';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+
 
 @Component({
   selector: 'detector-view',
@@ -12,9 +16,12 @@ export class DetectorViewComponent implements OnInit {
 
   detectorDataLocalCopy: DetectorResponse;
   errorState: any;
+  isPublic: boolean;
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private detectorEventProperties: {[name: string]: string};
+  private ratingEventProperties: {[name: string]: string};
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -33,16 +40,33 @@ export class DetectorViewComponent implements OnInit {
   @Input() insideDetectorList: boolean = false;
 
 
-  constructor() {
+  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService) {
+    this.isPublic = config && config.isPublic;
   }
 
   ngOnInit() {
     this.detectorResponseSubject.subscribe((data: DetectorResponse) => {
       this.detectorDataLocalCopy = data;
+      if (data) {
+        this.detectorEventProperties = {
+          "StartTime": String(this.startTime),
+          "EndTime": String(this.endTime),
+          "DetectorId": data.metadata.id
+        }
+
+        this.ratingEventProperties = {
+          "DetectorId": data.metadata.id
+        }
+      }
     });
 
     this.errorSubject.subscribe((data: any) => {
       this.errorState = data;
     });
+
+    // The detector name can be retrieved from  url column of application insight resource pageviews table.
+    if (!this.insideDetectorList) {
+      this.telemetryService.logPageView(TelemetryEventNames.DetectorViewLoaded);
+    }
   }
 }
