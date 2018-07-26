@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
+import { DiagnosticService } from '../../../diagnostic-data/services/diagnostic.service';
+import { DetectorMetaData, SupportTopic } from '../../../diagnostic-data/models/detector';
 
 @Component({
   selector: 'resource-home',
@@ -11,7 +13,11 @@ export class ResourceHomeComponent implements OnInit {
   resource: any;
   keys: string[];
 
-  constructor(private _resourceService: ResourceService) { }
+  detectorsWithSupportTopics: DetectorMetaData[];
+
+  supportTopicIdMapping: any[] = [];
+
+  constructor(private _resourceService: ResourceService,private _diagnosticService:  DiagnosticService) { }
 
   ngOnInit() {
     this._resourceService.getCurrentResource().subscribe(resource => {
@@ -20,6 +26,19 @@ export class ResourceHomeComponent implements OnInit {
         this.keys = Object.keys(this.resource);
       }
     });
+
+    this._diagnosticService.getDetectors().subscribe(detectors => {
+      this.detectorsWithSupportTopics = detectors.filter(detector => detector.supportTopicList && detector.supportTopicList.length > 0);
+
+      this.detectorsWithSupportTopics.forEach(detector => {
+        detector.supportTopicList.forEach(supportTopic => {
+          this.supportTopicIdMapping.push({ supportTopic : supportTopic, detectorName: detector.name });
+        });
+      });
+    });
   }
 
+  getSupportTopicIdFormatted(supportTopicList: SupportTopic[]) {
+    return supportTopicList.map(supportTopic => `${supportTopic.pesId} - ${supportTopic.id}`).join('/r/n');
+  }
 }

@@ -53,11 +53,15 @@ export const Routes = RouterModule.forRoot([
     loadChildren: 'app/modules/ase/ase.module#AseModule'
   },
   {
+    path:'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/:resourceTypeName/:resourceName',
+    redirectTo: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/Microsoft.Web/:resourceTypeName/:resourceName'
+  },
+  {
     path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/:resourceTypeName/:resourceName',
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
     resolve: { validResources: ValidResourceResolver }
   }
-]);
+], { enableTracing: true});
 
 @NgModule({
   declarations: [
