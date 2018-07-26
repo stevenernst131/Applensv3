@@ -9,6 +9,8 @@ import { time } from 'd3';
 import { TimeSeries, TablePoint } from '../../models/time-series';
 import * as momentNs from 'moment-timezone';
 import { TimeUtilities, TimeZones } from '../../utilities/time-utilities';
+import { TelemetryService } from '../../services/telemetry/telemetry.service';
+
 const moment = momentNs;
 
 @Component({
@@ -20,8 +22,8 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
   DataRenderingType = RenderingType.TimeSeries;
 
-  constructor() {
-    super();
+  constructor(protected telemetryService: TelemetryService) {
+    super(telemetryService);
   }
 
   allSeries: TimeSeries[] = [];
