@@ -2,8 +2,7 @@
   <div class="detector-container" *ngFor="let viewModel of detectorViewModels">
     <div class="detector-header"  (click)="viewModel.expanded = viewModel.loadingStatus == LoadingStatus.Success && !viewModel.expanded">
       <div class="status-icon">
-          <i class="fa fa-circle-o-notch fa-spin" *ngIf="viewModel.loadingStatus == LoadingStatus.Loading"></i>
-        <i class="fa"  *ngIf="viewModel.loadingStatus == LoadingStatus.Success" [ngClass]="viewModel.statusIcon" [style.color]="viewModel.statusColor"></i>
+          <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status" [size]="20"></status-icon>
       </div>
       <div class="detector-title">
         {{viewModel.title}} <span style="margin-left: 20px;font-size: 16px" *ngIf="viewModel.loadingStatus == LoadingStatus.Failed">Error: Click to retry</span>

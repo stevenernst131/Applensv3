@@ -1,6 +1,6 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { DetectorListRendering, DiagnosticData, DetectorResponse, DetectorStatus, DetectorMetaData } from '../../models/detector';
+import { DetectorListRendering, DiagnosticData, DetectorResponse, HealthStatus, DetectorMetaData } from '../../models/detector';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { Observable } from 'rxjs/Observable';
 import { StatusStyles } from '../../models/styles';
@@ -29,7 +29,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   detectorMetaData: DetectorMetaData[];
   detectorViewModels: any[];
 
-  DetectorStatus = DetectorStatus;
+  DetectorStatus = HealthStatus;
 
   errorDetectors: any[] = [];
 

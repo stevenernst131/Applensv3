@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { DynamicInsightRendering, DiagnosticData } from '../../models/detector';
-import { DynamicInsight, InsightStatus } from '../../models/insight';
+import { DynamicInsightRendering, DiagnosticData, HealthStatus } from '../../models/detector';
+import { DynamicInsight } from '../../models/insight';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { MarkdownService } from 'ngx-markdown';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
@@ -16,7 +16,7 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
 
   insight: DynamicInsight;
 
-  InsightStatus = InsightStatus;
+  InsightStatus = HealthStatus;
 
   constructor(private _markdownService: MarkdownService, protected telemetryService: TelemetryService){
     super(telemetryService);
