@@ -84,7 +84,8 @@ export enum RenderingType {
     Insights,
     DynamicInsight,
     Markdown,
-    DetectorList
+    DetectorList,
+    DropDown
 }
 
 export enum TimeSeriesType {

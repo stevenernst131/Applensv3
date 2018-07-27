@@ -31,6 +31,7 @@ import { TelemetryService } from './services/telemetry/telemetry.service';
 import { StarRatingComponent } from './components/star-rating/star-rating.component';
 import { StarRatingFeedbackComponent } from './components/star-rating-feedback/star-rating-feedback.component';
 import { FormsModule } from '@angular/forms';
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -52,7 +53,7 @@ import { FormsModule } from '@angular/forms';
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, DropdownComponent],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent],
 })
