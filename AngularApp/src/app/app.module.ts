@@ -61,7 +61,7 @@ export const Routes = RouterModule.forRoot([
     loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
     resolve: { validResources: ValidResourceResolver }
   }
-], { enableTracing: true});
+]);
 
 @NgModule({
   declarations: [
