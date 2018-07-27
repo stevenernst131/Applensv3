@@ -6,7 +6,6 @@ import * as moment from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
-
 @Component({
   selector: 'detector-view',
   templateUrl: './detector-view.component.html',
