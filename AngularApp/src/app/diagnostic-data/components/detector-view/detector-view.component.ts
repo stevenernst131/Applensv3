@@ -21,6 +21,7 @@ export class DetectorViewComponent implements OnInit {
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private detectorEventProperties: {[name: string]: string};
   private ratingEventProperties: {[name: string]: string};
+  private authorEmails: string;
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -56,6 +57,12 @@ export class DetectorViewComponent implements OnInit {
         this.ratingEventProperties = {
           "DetectorId": data.metadata.id
         }
+      
+        let authors = data.metadata.author.split(",");
+        let authorsArray: string[] = [];
+        authors.forEach(author => {authorsArray.push(`${author}@microsoft.com`)});
+
+        this.authorEmails  = authorsArray.join(";");
       }
     });
 
@@ -69,3 +76,5 @@ export class DetectorViewComponent implements OnInit {
     }
   }
 }
+
+

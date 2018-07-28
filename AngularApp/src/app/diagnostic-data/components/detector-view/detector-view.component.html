@@ -7,7 +7,7 @@
       </h1>
       <div class="description" *ngIf="!isPublic">By
         <span style="padding:2px; color: #0066c0;">
-          <a *ngIf="detectorDataLocalCopy.metadata && detectorDataLocalCopy.metadata.author; else unknownAuthor" href="mailto:{{detectorDataLocalCopy.metadata.author}}">
+          <a *ngIf="detectorDataLocalCopy.metadata && detectorDataLocalCopy.metadata.author; else unknownAuthor" href="mailto:{{authorEmails}}">
             {{detectorDataLocalCopy.metadata.author}}
           </a>
           <ng-template #unknownAuthor>
