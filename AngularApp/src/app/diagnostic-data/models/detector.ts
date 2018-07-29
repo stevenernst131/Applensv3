@@ -47,7 +47,7 @@ export interface DetectorMetaData {
     id: string;
     name: string;
     description: string;
-    authors: string;
+    author: string;
     supportTopicList: SupportTopic[];
     category: string;
 }
