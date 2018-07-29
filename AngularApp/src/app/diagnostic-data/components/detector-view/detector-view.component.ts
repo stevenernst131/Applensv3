@@ -57,11 +57,16 @@ export class DetectorViewComponent implements OnInit {
         this.ratingEventProperties = {
           "DetectorId": data.metadata.id
         }
-      
-        let authors = data.metadata.author.split(",");
-        let authorsArray: string[] = [];
-        authors.forEach(author => {authorsArray.push(`${author}@microsoft.com`)});
 
+        let separators = [' ', ',', ';', ':'];
+        let authors = data.metadata.author.split(new RegExp(separators.join('|'), 'g'));
+        let authorsArray: string[] = [];
+        authors.forEach(author => {
+          if (author && author.length > 0)
+          {
+            authorsArray.push(`${author}@microsoft.com`);
+          }
+        });
         this.authorEmails  = authorsArray.join(";");
       }
     });
