@@ -76,7 +76,7 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)) && !path.ToLower().Contains("statistics"))
+                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)) && !path.ToLower().Contains("/statistics"))
                 {
                     switch (method.ToUpper())
                     {
