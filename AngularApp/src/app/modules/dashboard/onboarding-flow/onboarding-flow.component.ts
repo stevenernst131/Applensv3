@@ -11,7 +11,9 @@ import { ApplensDiagnosticService } from '../services/applens-diagnostic.service
 
 export enum DevelopMode {
   Create,
-  Edit
+  Edit,
+  EditMonitoring,
+  EditAnalytics
 }
 
 @Component({
@@ -23,6 +25,9 @@ export class OnboardingFlowComponent implements OnInit {
 
   @Input() mode: DevelopMode = DevelopMode.Create;
   @Input() detectorId: string = '';
+  @Input() systemInvokerId: string = '';
+  @Input() dataSource: string = '';
+  @Input() timeRange: string = '';
   fileName: string;
   editorOptions: any;
   code: string;
@@ -76,10 +81,24 @@ export class OnboardingFlowComponent implements OnInit {
       });
       this.fileName = "new.csx";
     }
-    else {
+    else if (this.mode == DevelopMode.Edit){
       // EDIT FLOW
       this.fileName = `${this.detectorId}.csx`;
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
+        this.code = data;
+      });
+    }
+    else if (this.mode == DevelopMode.EditMonitoring){
+      // SYSTEM MONITORING FLOW
+      this.fileName = '__monitoring.csx';
+      this.githubService.getDetectorFile("__monitoring").subscribe(data => {
+        this.code = data;
+      });
+    }
+    else if (this.mode == DevelopMode.EditAnalytics){
+      // SYSTEM ANALYTICS FLOW
+      this.fileName = '__analytics.csx';
+      this.githubService.getDetectorFile("__analytics").subscribe(data => {
         this.code = data;
       });
     }
@@ -100,7 +119,9 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Running";
     this.runButtonIcon = "fa fa-circle-o-notch fa-spin";
 
-    this.diagnosticApiService.getCompilerResponse(body)
+    let isSystemInvoker: boolean = this.mode == DevelopMode.EditMonitoring || this.mode == DevelopMode.EditAnalytics;
+
+    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.dataSource, this.timeRange)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;
