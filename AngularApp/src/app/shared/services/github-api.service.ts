@@ -4,6 +4,7 @@ import { DiagnosticApiService } from './diagnostic-api.service';
 import {Package} from '../models/package';
 import { Observable } from 'rxjs';
 import { ResourceService } from './resource.service';
+import { StringifyOptions } from 'querystring';
 
 @Injectable()
 export class GithubApiService {
@@ -16,6 +17,14 @@ export class GithubApiService {
 
   public getDetectorFile(id: string): Observable<string> {
     return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`, true);
+  }
+
+  public getSystemInvokerFile(id: string): Observable<string> {
+    return this._diagnosticApiService.get<string>(`api/github/detectors/${id}`, true);
+  }
+
+  public getSystemMonitoringFile(detectorId: string, invokerId: string): Observable<string> {
+    return this._diagnosticApiService.get<string>(`api/github/detectors/${detectorId}/statistics/${invokerId}`, true);
   }
 
   public publishPackage(packageToPublish: Package): Observable<any> {
