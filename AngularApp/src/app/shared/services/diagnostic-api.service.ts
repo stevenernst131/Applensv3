@@ -69,7 +69,6 @@ export class DiagnosticApiService {
 
     var url: string = `${this.getDiagnosticApi()}${path}`;
 
-    console.log(`git hub url: ${url}`);
     let request = this._http.get(url, {
       headers: this._getHeaders()
     })

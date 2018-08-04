@@ -43,13 +43,11 @@ export class TabMonitoringDevelopComponent implements OnInit {
   setDataSource(selectedDataSource: string) {
     this.selectedDataSource = selectedDataSource;
     this.dataSourceFlag = this.dataSourceMapping.get(selectedDataSource);
-    console.log(`selectedDataSource: ${this.selectedDataSource}, dataSourceFlag: ${this.dataSourceFlag} `);
   }
 
   setTimeRange(selectedTimeRange: string) {
     this.selectedTimeRange = selectedTimeRange;
     this.timeRangeInHours = this.timeRangeMapping.get(selectedTimeRange);
-    console.log(`selectedTimeRange: ${this.selectedTimeRange}, timeRangeInHours: ${this.timeRangeInHours} `);
   }
 
 }
