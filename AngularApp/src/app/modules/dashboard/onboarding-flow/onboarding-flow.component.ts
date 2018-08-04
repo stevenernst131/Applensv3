@@ -121,7 +121,7 @@ export class OnboardingFlowComponent implements OnInit {
 
     let isSystemInvoker: boolean = this.mode == DevelopMode.EditMonitoring || this.mode == DevelopMode.EditAnalytics;
 
-    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.systemInvokerId, this.dataSource, this.timeRange)
+    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.dataSource, this.timeRange)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;
