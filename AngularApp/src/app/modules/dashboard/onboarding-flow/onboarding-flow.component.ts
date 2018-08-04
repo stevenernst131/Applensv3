@@ -81,21 +81,21 @@ export class OnboardingFlowComponent implements OnInit {
       });
       this.fileName = "new.csx";
     }
-    else if (this.mode == DevelopMode.Edit){
+    else if (this.mode == DevelopMode.Edit) {
       // EDIT FLOW
       this.fileName = `${this.detectorId}.csx`;
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
         this.code = data;
       });
     }
-    else if (this.mode == DevelopMode.EditMonitoring){
+    else if (this.mode == DevelopMode.EditMonitoring) {
       // SYSTEM MONITORING FLOW
       this.fileName = '__monitoring.csx';
       this.githubService.getDetectorFile("__monitoring").subscribe(data => {
         this.code = data;
       });
     }
-    else if (this.mode == DevelopMode.EditAnalytics){
+    else if (this.mode == DevelopMode.EditAnalytics) {
       // SYSTEM ANALYTICS FLOW
       this.fileName = '__analytics.csx';
       this.githubService.getDetectorFile("__analytics").subscribe(data => {
@@ -121,7 +121,7 @@ export class OnboardingFlowComponent implements OnInit {
 
     let isSystemInvoker: boolean = this.mode == DevelopMode.EditMonitoring || this.mode == DevelopMode.EditAnalytics;
 
-    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.dataSource, this.timeRange)
+    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.systemInvokerId, this.dataSource, this.timeRange)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;
@@ -143,7 +143,7 @@ export class OnboardingFlowComponent implements OnInit {
           this.buildOutput.push("========== Build: 0 succeeded, 1 failed ==========");
         }
 
-        if (this.queryResponse.runtimeSucceeded != null  && this.queryResponse.runtimeSucceeded === false) {
+        if (this.queryResponse.runtimeSucceeded != null && this.queryResponse.runtimeSucceeded === false) {
           this.publishButtonDisabled = true;
         }
 
