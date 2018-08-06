@@ -119,7 +119,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Running";
     this.runButtonIcon = "fa fa-circle-o-notch fa-spin";
 
-    let isSystemInvoker: boolean = this.mode == DevelopMode.EditMonitoring || this.mode == DevelopMode.EditAnalytics;
+    let isSystemInvoker: boolean = this.mode === DevelopMode.EditMonitoring || this.mode === DevelopMode.EditAnalytics;
 
     this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.dataSource, this.timeRange)
       .subscribe((response: QueryResponse<DetectorResponse>) => {

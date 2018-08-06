@@ -39,7 +39,7 @@ export class ApplensDiagnosticService {
 
   getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
     body.resource = this._resourceService.getRequestBody();
-    if (isSystemInvoker == false)
+    if (isSystemInvoker === false)
     {
       return this._diagnosticApi.getCompilerResponse(
         this._resourceService.versionPrefix,
