@@ -77,7 +77,7 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)) && new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
+                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)) && !new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
                 {
                     switch (method.ToUpper())
                     {
