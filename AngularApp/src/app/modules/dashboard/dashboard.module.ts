@@ -92,12 +92,12 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           }
           ,
           {
-            path: 'statisticsQuery/monitoringEdit',
+            path: 'statisticsQuery/monitoring/edit',
             component: TabMonitoringDevelopComponent
           }
           ,
           {
-            path: 'statisticsQuery/analyticsEdit',
+            path: 'statisticsQuery/analytics/edit',
             component: TabAnalyticsDevelopComponent
           }
         ]
