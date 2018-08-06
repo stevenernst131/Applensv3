@@ -74,28 +74,28 @@ export class OnboardingFlowComponent implements OnInit {
   ngOnInit() {
     this.resourceId = this.resourceService.getCurrentResourceId();
 
-    if (this.mode == DevelopMode.Create) {
+    if (this.mode === DevelopMode.Create) {
       // CREATE FLOW
       this.githubService.getDetectorTemplate(this.resourceService.templateFileName).subscribe(data => {
         this.code = data;
       });
       this.fileName = "new.csx";
     }
-    else if (this.mode == DevelopMode.Edit) {
+    else if (this.mode === DevelopMode.Edit) {
       // EDIT FLOW
       this.fileName = `${this.detectorId}.csx`;
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
         this.code = data;
       });
     }
-    else if (this.mode == DevelopMode.EditMonitoring) {
+    else if (this.mode === DevelopMode.EditMonitoring) {
       // SYSTEM MONITORING FLOW
       this.fileName = '__monitoring.csx';
       this.githubService.getDetectorFile("__monitoring").subscribe(data => {
         this.code = data;
       });
     }
-    else if (this.mode == DevelopMode.EditAnalytics) {
+    else if (this.mode === DevelopMode.EditAnalytics) {
       // SYSTEM ANALYTICS FLOW
       this.fileName = '__analytics.csx';
       this.githubService.getDetectorFile("__analytics").subscribe(data => {
