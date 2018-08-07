@@ -1,0 +1,16 @@
+<div class="container-fluid" [style.height.px]="contentHeight" style="background-color: #e4e4e4;">
+  <div class="row" style="padding-top: 200px">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title" *ngIf="!error">Logging In...</h3>
+          <h3 class="box-title" *ngIf="error">AAD Login Error</h3>
+        </div>
+        <div style="padding: 10px" *ngIf="error">
+          <h4></h4>
+          <p>{{error}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

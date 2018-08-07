@@ -10,6 +10,8 @@ import { StartupService } from './shared/services/startup.service';
 import { ArmResource, ResourceServiceInputs } from './shared/models/resources';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
+import { AadAuthGuard } from './shared/auth/aad-auth-guard.service';
+import { LoginComponent } from './shared/components/login/login.component';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -42,24 +44,39 @@ export class ValidResourceResolver implements Resolve<void>{
 export const Routes = RouterModule.forRoot([
   {
     path: '',
-    component: MainComponent
+    canActivate: [AadAuthGuard],
+    children: [
+      {
+        path: '',
+        children: [
+          {
+            path: '',
+            loadChildren: 'app/modules/main/main.module#MainModule'
+          },
+          {
+            path: 'sites/:site',
+            loadChildren: 'app/modules/site/site.module#SiteModule'
+          },
+          {
+            path: 'hostingEnvironments/:hostingEnvironment',
+            loadChildren: 'app/modules/ase/ase.module#AseModule'
+          },
+          {
+            path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/:resourceTypeName/:resourceName',
+            redirectTo: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/Microsoft.Web/:resourceTypeName/:resourceName'
+          },
+          {
+            path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/:resourceTypeName/:resourceName',
+            loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
+            resolve: { validResources: ValidResourceResolver }
+          }
+        ]
+      }
+    ]
   },
   {
-    path: 'sites/:site',
-    loadChildren: 'app/modules/site/site.module#SiteModule'
-  },
-  {
-    path: 'hostingEnvironments/:hostingEnvironment',
-    loadChildren: 'app/modules/ase/ase.module#AseModule'
-  },
-  {
-    path:'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/:resourceTypeName/:resourceName',
-    redirectTo: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/Microsoft.Web/:resourceTypeName/:resourceName'
-  },
-  {
-    path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/:resourceTypeName/:resourceName',
-    loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
-    resolve: { validResources: ValidResourceResolver }
+    path: 'login',
+    component: LoginComponent
   }
 ]);
 
@@ -71,7 +88,6 @@ export const Routes = RouterModule.forRoot([
     BrowserModule,
     BrowserAnimationsModule,
     Routes,
-    MainModule,
     SharedModule.forRoot()
   ],
   providers: [
