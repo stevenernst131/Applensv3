@@ -4,6 +4,7 @@ import { ResourceService } from '../../../shared/services/resource.service';
 import { DetectorResponse, DetectorMetaData } from '../../../diagnostic-data/models/detector';
 import { Observable } from 'rxjs/Observable';
 import { QueryResponse } from '../../../diagnostic-data/models/compiler-response';
+import { DevelopMode } from '../onboarding-flow/onboarding-flow.component';
 
 @Injectable()
 export class ApplensDiagnosticService {
@@ -16,6 +17,16 @@ export class ApplensDiagnosticService {
       this._resourceService.versionPrefix, 
       this._resourceService.getCurrentResourceId(true), 
       detector,
+      this._resourceService.getRequestBody(),);
+  }
+
+  getSystemInvoker(detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string): Observable<DetectorResponse> {
+    return this._diagnosticApi.getSystemInvoker(
+      this._resourceService.getCurrentResourceId(true), 
+      detector,
+      systemInvokerId,
+      dataSource,
+      timeRange,
       this._resourceService.getRequestBody());
   }
 
@@ -26,11 +37,23 @@ export class ApplensDiagnosticService {
       this._resourceService.getRequestBody());
   }
 
-  getCompilerResponse(body: any): Observable<QueryResponse<DetectorResponse>> {
+  getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
     body.resource = this._resourceService.getRequestBody();
-    return this._diagnosticApi.getCompilerResponse(
-      this._resourceService.versionPrefix,
-      this._resourceService.getCurrentResourceId(true),
-      body);
+    if (isSystemInvoker === false)
+    {
+      return this._diagnosticApi.getCompilerResponse(
+        this._resourceService.versionPrefix,
+        this._resourceService.getCurrentResourceId(true),
+        body);
+    }
+    else
+    {
+      return this._diagnosticApi.getSystemCompilerResponse(
+        this._resourceService.getCurrentResourceId(true),
+        body,
+        detectorId,
+        dataSource,
+        timeRange);
+    }
   }
 }

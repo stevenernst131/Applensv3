@@ -27,6 +27,12 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
   }
 
+  public getSystemInvoker(resourceId: string, detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string, body?: any): Observable<DetectorResponse> {
+    let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
+    let path = `/${resourceId}/detectors/${detector}/statistics/${systemInvokerId}?${invokerParameters}`;
+    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
+  }
+
   public getDetectors(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
     let path = `${version}/${resourceId}/detectors`;
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).map(response => response.map(detector => detector.metadata));
@@ -35,6 +41,12 @@ export class DiagnosticApiService {
   public getCompilerResponse(version: string, resourceId: string, body: any): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters();
     let path = `${version}/${resourceId}/diagnostics/query?${timeParameters}`;
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
+  }
+
+  public getSystemCompilerResponse(resourceId: string, body: any, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
+    let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
+    let path = `/${resourceId}/detectors/${detectorId}/statisticsQuery?${invokerParameters}`;
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
 
@@ -83,5 +95,9 @@ export class DiagnosticApiService {
   private _getTimeQueryParameters() {
     let format = 'YYYY-MM-DDTHH:mm'
     return `&startTime=${this._queryParamsService.startTime.format(format)}&endTime=${this._queryParamsService.endTime.format(format)}`;
+  }
+
+  private _getSystemInvokerParameters(systemDataSource: string, timeRange: string) {
+    return `&dataSource=${systemDataSource}&timeRange=${timeRange}`;
   }
 }
