@@ -7,8 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TabAnalyticsDashboardComponent implements OnInit {
 
-  private systemInvokerId: string = "__analytics";
-  private reportName: string = "Business Analytics 👻 ";
+  systemInvokerId: string = "__analytics";
+  reportName: string = "Business Analytics 👻";
   constructor() { }
 
   ngOnInit() {

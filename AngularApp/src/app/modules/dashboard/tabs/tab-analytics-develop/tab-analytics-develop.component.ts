@@ -11,24 +11,24 @@ import { OnboardingFlowComponent, DevelopMode } from '../../onboarding-flow/onbo
 export class TabAnalyticsDevelopComponent implements OnInit {
 
   DevelopMode = DevelopMode;
-  private detectorId: string;
+  detectorId: string;
   private dataSourceMapping: Map<string, string> = new Map<string, string>([
     ["All", "0"],
     ["Applens",  "1"],
     ["Azure Portal", "2"]
   ]);
-  private dataSourceKeys: string[];
-  private selectedDataSource: string = "All";
-  private dataSourceFlag: string = "0";
+  dataSourceKeys: string[];
+  selectedDataSource: string = "All";
+  dataSourceFlag: string = "0";
 
   private timeRangeMapping: Map<string, string> = new Map<string, string>([
     ["Last 24 hours", "24"],
     ["Last 3 days",  "72"],
     ["Last 7 days", "168"]
   ]);
-  private timeRangeKeys: string[];
-  private selectedTimeRange: string = "Last 7 days";
-  private timeRangeInHours: string = "168";
+  timeRangeKeys: string[];
+  selectedTimeRange: string = "Last 7 days";
+  timeRangeInHours: string = "168";
 
 
   constructor(private _route: ActivatedRoute) {

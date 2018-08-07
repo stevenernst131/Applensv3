@@ -23,8 +23,8 @@ export class TabMonitoringComponent implements OnInit {
     ["Applens",  "1"],
     ["Azure Portal", "2"]
   ]);
-  private dataSourceKeys: string[];
-  private selectedDataSource: string = "All";
+  dataSourceKeys: string[];
+  selectedDataSource: string = "All";
   private dataSourceFlag: string = "0";
 
   private timeRangeMapping: Map<string, string> = new Map<string, string>([
@@ -32,8 +32,8 @@ export class TabMonitoringComponent implements OnInit {
     ["Last 3 days",  "72"],
     ["Last 7 days", "168"]
   ]);
-  private timeRangeKeys: string[];
-  private selectedTimeRange: string = "Last 7 days";
+  timeRangeKeys: string[];
+  selectedTimeRange: string = "Last 7 days";
   private timeRangeInHours: string = "168";
 
   error: any;
