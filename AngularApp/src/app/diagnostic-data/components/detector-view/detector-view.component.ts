@@ -38,6 +38,7 @@ export class DetectorViewComponent implements OnInit {
 
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;
+  @Input() isSystemInvoker: boolean = false;
 
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService) {

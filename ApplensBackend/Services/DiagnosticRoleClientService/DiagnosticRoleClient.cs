@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace AppLensV3
 {
@@ -76,7 +77,7 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)))
+                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)) && !new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
                 {
                     switch (method.ToUpper())
                     {
