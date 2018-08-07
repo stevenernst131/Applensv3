@@ -14,3 +14,9 @@ li .reportlink {
     color : rgb(108, 2, 247)!important;
     background-color: white
 }
+
+.titleElements {
+    padding-left: 0px;
+    padding-right: 0px;
+    height: 35px;
+}
