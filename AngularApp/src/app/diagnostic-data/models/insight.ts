@@ -1,13 +1,13 @@
 import { Dictionary } from "../utilities/extensions";
-import { Rendering, DiagnosticData } from "./detector";
+import { Rendering, DiagnosticData, HealthStatus } from "./detector";
 
 export class InsightBase {
-    status: InsightStatus;
+    status: HealthStatus;
     title: string;
 
     constructor(status: string, title: string) {
         this.title = title;
-        this.status = InsightStatus[status];
+        this.status = HealthStatus[status];
     }
 }
 
@@ -36,12 +36,4 @@ export class DynamicInsight extends InsightBase {
     description: string;
     innerDiagnosticData: DiagnosticData;
     expanded: boolean;
-}
-
-export enum InsightStatus {
-    Critical,
-    Warning,
-    Success,
-    Info,
-    None
 }

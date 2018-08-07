@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
-import { Rendering, RenderingType, DiagnosticData, InsightsRendering } from '../../models/detector';
+import { Rendering, RenderingType, DiagnosticData, InsightsRendering, HealthStatus } from '../../models/detector';
 import { Dictionary } from '../../utilities/extensions';
-import { Insight, InsightStatus } from '../../models/insight';
+import { Insight } from '../../models/insight';
 import { DiagnosticService } from '../../services/diagnostic.service';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
@@ -20,7 +20,7 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   private insights: Insight[];
 
-  InsightStatus = InsightStatus;
+  InsightStatus = HealthStatus;
 
   constructor(protected telemetryService: TelemetryService) {
     super(telemetryService);

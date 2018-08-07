@@ -1,4 +1,4 @@
-import { DetectorStatus } from "./detector";
+import { HealthStatus } from "./detector";
 
 export class StatusStyles {
     public static Critical: string = "#ff0000";
@@ -11,30 +11,30 @@ export class StatusStyles {
     public static HealthyIcon: string = "fa-check-circle";
     public static InfoIcon: string = "fa-info-circle";
 
-    public static getColorByStatus(status: DetectorStatus) {
+    public static getColorByStatus(status: HealthStatus) {
         switch (status) {
-            case DetectorStatus.Critical:
+            case HealthStatus.Critical:
                 return StatusStyles.Critical;
-            case DetectorStatus.Warning:
+            case HealthStatus.Warning:
                 return StatusStyles.Warning;
-            case DetectorStatus.Healthy:
+            case HealthStatus.Success:
                 return StatusStyles.Healthy;
-            case DetectorStatus.Info:
+            case HealthStatus.Info:
                 return StatusStyles.Info;
             default:
                 return '';
         }
     }
 
-    public static getIconByStatus(status: DetectorStatus) {
+    public static getIconByStatus(status: HealthStatus) {
         switch (status) {
-            case DetectorStatus.Critical:
+            case HealthStatus.Critical:
                 return StatusStyles.CriticalIcon;
-            case DetectorStatus.Warning:
+            case HealthStatus.Warning:
                 return StatusStyles.WarningIcon;
-            case DetectorStatus.Healthy:
+            case HealthStatus.Success:
                 return StatusStyles.HealthyIcon;
-            case DetectorStatus.Info:
+            case HealthStatus.Info:
                 return StatusStyles.InfoIcon;
             default:
                 return '';
