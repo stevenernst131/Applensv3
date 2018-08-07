@@ -1,9 +1,12 @@
 <div style="margin:5px 0px 0px 20px">
-  <div class=" container" style="margin-left: 0px; padding-left: 0px">
-    <div class="col-sm-1" style="padding-left: 0px; padding-right: 0px">
+  <div class=" container" style="margin-left: 0px; padding-left: 0px; width: 100%">
+    <div class="col-sm-6" style="padding-left: 0px; padding-right: 0px">
+        <h3 style="margin-top:8px">{{reportName}}</h3>
+      </div>
+    <div class="col-sm-1" style="padding-left: 0px; padding-right: 0px; height: 40px;">
       <label>Filtered by </label>
     </div>
-    <div class="col-sm-8" style="padding-left: 0px;">
+    <div class="col-sm-5" style="padding-left: 0px;padding-right: 0px">
       <ul class="nav nav-pills">
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{selectedTimeRange}}
@@ -32,6 +35,6 @@
       </ul>
     </div>
   </div>
-  <detector-view [detectorResponse]="detectorResponse" [error]="error" [startTime]="queryParamsService.startTime" [endTime]="queryParamsService.endTime">
+  <detector-view [detectorResponse]="detectorResponse" [error]="error" [startTime]="queryParamsService.startTime" [endTime]="queryParamsService.endTime" [isSystemInvoker]="true">
   </detector-view>
 </div>
