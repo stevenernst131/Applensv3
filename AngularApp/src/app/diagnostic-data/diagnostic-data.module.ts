@@ -32,6 +32,7 @@ import { StarRatingComponent } from './components/star-rating/star-rating.compon
 import { StarRatingFeedbackComponent } from './components/star-rating-feedback/star-rating-feedback.component';
 import { FormsModule } from '@angular/forms';
 import { StatusIconComponent } from './components/status-icon/status-icon.component';
+import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -53,7 +54,8 @@ import { StatusIconComponent } from './components/status-icon/status-icon.compon
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, StatusIconComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, 
+    DropdownComponent, StatusIconComponent],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent, StatusIconComponent],
 })

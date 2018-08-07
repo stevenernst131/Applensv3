@@ -30,7 +30,7 @@ export class DynamicInsightComponent extends DataRenderBaseComponent {
   }
 
   private parseInsight() {
-
+    
     // Make sure that we don't render a box within the insight
     this.renderingProperties.innerRendering.title = "";
 

@@ -46,7 +46,7 @@ export interface DetectorMetaData {
     id: string;
     name: string;
     description: string;
-    authors: string;
+    author: string;
     supportTopicList: SupportTopic[];
     category: string;
 }
@@ -83,7 +83,8 @@ export enum RenderingType {
     Insights,
     DynamicInsight,
     Markdown,
-    DetectorList
+    DetectorList,
+    DropDown
 }
 
 export enum TimeSeriesType {
