@@ -16,6 +16,7 @@ export class TabMonitoringComponent implements OnInit {
   detectorResponse: DetectorResponse;
 
   @Input() systemInvokerId: string = "__monitoring";
+  @Input() reportName: string = "Monitoring Report 📈";
   private detectorId: string;
   private dataSourceMapping: Map<string, string> = new Map<string, string>([
     ["All", "0"],
