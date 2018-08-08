@@ -42,7 +42,7 @@ export class TabMonitoringComponent implements OnInit {
 
   endTime: moment.Moment = moment.tz(TimeZones.UTC);
   startTime: moment.Moment = this.endTime.clone().subtract(7, 'days');
-  timeGrainInMinutes: number = 35;
+  timeGrainInMinutes: number = 60;
 
   error: any;
 
@@ -76,9 +76,15 @@ export class TabMonitoringComponent implements OnInit {
   setTimeRange(selectedTimeRange: string) {
     this.selectedTimeRange = selectedTimeRange;
     this.timeRangeInHours = this.timeRangeMapping.get(selectedTimeRange);
+
+    // Update startTime and timeGrain for rendering purpose
     let timeRangeInDays: number = parseInt(this.timeRangeInHours)/24;
     this.startTime = this.endTime.clone().subtract(timeRangeInDays, 'days');
-    this.timeGrainInMinutes = 5*timeRangeInDays;
-    console.log(`selectedTimeRange: ${selectedTimeRange}, timeRangeInhours: ${selectedTimeRange}, starttime: ${this.startTime}; EndTime: ${this.endTime}, TimeGrainInMins: ${this.timeGrainInMinutes}`);
+    if (timeRangeInDays === 1)
+      this.timeGrainInMinutes = 5;
+    else if (timeRangeInDays === 3)
+      this.timeGrainInMinutes = 15;
+    else if (timeRangeInDays === 7)
+      this.timeGrainInMinutes = 60;
   }
 }
