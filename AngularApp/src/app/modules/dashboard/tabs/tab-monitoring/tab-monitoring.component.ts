@@ -3,6 +3,10 @@ import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '@angular/router';
 import { QueryParamsService } from '../../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
+import * as moment from 'moment';
+import 'moment-timezone';
+import { TimeZones } from '../../../../shared/models/datetime';
+
 
 @Component({
   selector: 'tab-monitoring',
@@ -36,6 +40,10 @@ export class TabMonitoringComponent implements OnInit {
   selectedTimeRange: string = "Last 7 days";
   private timeRangeInHours: string = "168";
 
+  endTime: moment.Moment = moment.tz(TimeZones.UTC);
+  startTime: moment.Moment = this.endTime.clone().subtract(7, 'days');
+  timeGrainInMinutes: number = 35;
+
   error: any;
 
   ngOnInit() {
@@ -68,5 +76,9 @@ export class TabMonitoringComponent implements OnInit {
   setTimeRange(selectedTimeRange: string) {
     this.selectedTimeRange = selectedTimeRange;
     this.timeRangeInHours = this.timeRangeMapping.get(selectedTimeRange);
+    let timeRangeInDays: number = parseInt(this.timeRangeInHours)/24;
+    this.startTime = this.endTime.clone().subtract(timeRangeInDays, 'days');
+    this.timeGrainInMinutes = 5*timeRangeInDays;
+    console.log(`selectedTimeRange: ${selectedTimeRange}, timeRangeInhours: ${selectedTimeRange}, starttime: ${this.startTime}; EndTime: ${this.endTime}, TimeGrainInMins: ${this.timeGrainInMinutes}`);
   }
 }

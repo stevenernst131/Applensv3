@@ -35,6 +35,7 @@ export class DetectorViewComponent implements OnInit {
 
   @Input() startTime: moment.Moment;
   @Input() endTime: moment.Moment;
+  @Input() timeGrainInMinutes: number = 5;
 
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;
