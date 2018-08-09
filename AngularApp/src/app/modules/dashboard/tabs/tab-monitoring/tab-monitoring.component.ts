@@ -8,6 +8,11 @@ import 'moment-timezone';
 import { TimeZones } from '../../../../shared/models/datetime';
 
 
+export enum StatisticsType{
+  Monitoring,
+  Analytics
+}
+
 @Component({
   selector: 'tab-monitoring',
   templateUrl: './tab-monitoring.component.html',
@@ -20,7 +25,9 @@ export class TabMonitoringComponent implements OnInit {
   detectorResponse: DetectorResponse;
 
   @Input() systemInvokerId: string = "__monitoring";
-  @Input() reportName: string = "Monitoring Report 📈";
+  @Input() statisticsType: StatisticsType = StatisticsType.Monitoring;
+
+  reportName: string = "";
   private detectorId: string;
   private dataSourceMapping: Map<string, string> = new Map<string, string>([
     ["All", "0"],
@@ -47,8 +54,8 @@ export class TabMonitoringComponent implements OnInit {
   error: any;
 
   ngOnInit() {
-
     this.getMonitoringResponse();
+    this.reportName = this.statisticsType === StatisticsType.Monitoring ? `Detector Monitoring Report 📈(${this.detectorId})`: `Detector Business Analytics 👻(${this.detectorId})`
     this.dataSourceKeys = Array.from(this.dataSourceMapping.keys());
     this.timeRangeKeys = Array.from(this.timeRangeMapping.keys());
   }
