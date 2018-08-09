@@ -55,7 +55,7 @@ export class TabMonitoringComponent implements OnInit {
 
   ngOnInit() {
     this.getMonitoringResponse();
-    this.reportName = this.statisticsType === StatisticsType.Monitoring ? `Detector Monitoring Report 📈(${this.detectorId})`: `Detector Business Analytics 👻(${this.detectorId})`
+    this.reportName = this.statisticsType === StatisticsType.Monitoring ? `Detector Monitoring Report 📈`: `Detector Business Analytics 👻`
     this.dataSourceKeys = Array.from(this.dataSourceMapping.keys());
     this.timeRangeKeys = Array.from(this.timeRangeMapping.keys());
   }
