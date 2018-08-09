@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StatisticsType } from '../tab-monitoring/tab-monitoring.component';
 
 @Component({
   selector: 'tab-analytics-dashboard',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class TabAnalyticsDashboardComponent implements OnInit {
 
   systemInvokerId: string = "__analytics";
-  reportName: string = "Business Analytics 👻";
+  statisticsType: StatisticsType = StatisticsType.Analytics;
   constructor() { }
 
   ngOnInit() {
