@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as AuthenticationContext from 'adal-angular'
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject } from '../../../../node_modules/rxjs';
-import { Http } from '@angular/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Http, Response } from '@angular/http';
+import { DiagnosticApiService } from './diagnostic-api.service';
+
+const ProductionClientId = '192bd8f2-c844-4977-aefd-77407619e80c';
+const SteveTestClientId = '3c7756c4-a776-46cc-81f3-dd9e5ad5c98b';
+const LocalhostClientId = '0128de1e-8cb3-480c-8c65-9b08be97dd40';
 
 @Injectable()
 export class AuthService {
@@ -13,19 +18,17 @@ export class AuthService {
   private error: string;
 
   public returnUrl: string;
-
   public logInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
   constructor(private http: Http) {
     this.config = {
-      clientId: environment.production ? '192bd8f2-c844-4977-aefd-77407619e80c' : '0128de1e-8cb3-480c-8c65-9b08be97dd40',
+      clientId: environment.production ? ProductionClientId : LocalhostClientId,
       callback: this.tokenCallback,
       popUp: true,
       redirectUri: window.location.origin
     }
 
     this.authContext = new AuthenticationContext(this.config);
-    console.log(this.authContext.config.redirectUri);
   }
 
   login() {
@@ -38,22 +41,15 @@ export class AuthService {
 
   tokenCallback: AuthenticationContext.TokenCallback = (errorDesc, token, error) => {
     this.error = errorDesc;
-    console.log('tokenCallback');
-    console.log(this.config.clientId);
-      console.log(this.accessToken);
-    if (environment.production) {
-      this.http.post('/.auth/login/aad',
+    this.logInSubject.next(!errorDesc);
+  }
+
+  registerWithAppServiceAuth(): Observable<Response> {
+    return this.http.post('/.auth/login/aad',
         {
-          id_token: this.config.clientId,
-          access_token: this.accessToken
-        }
-      ).subscribe(response => {
-        this.logInSubject.next(errorDesc == null);
-      })
-    }
-    else {
-      this.logInSubject.next(errorDesc == null);
-    }
+            id_token: this.config.clientId,
+            access_token: this.accessToken
+        });
   }
 
   public get errorDescription() {
@@ -71,5 +67,4 @@ export class AuthService {
   public get isAuthenticated(): boolean {
     return this.userInfo !== null && this.accessToken !== null;
   }
-
 }

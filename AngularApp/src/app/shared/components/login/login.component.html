@@ -6,9 +6,10 @@
           <h3 class="box-title" *ngIf="!error">Logging In...</h3>
           <h3 class="box-title" *ngIf="error">AAD Login Error</h3>
         </div>
-        <div style="padding: 10px" *ngIf="error">
-          <h4></h4>
-          <p>{{error}}</p>
+        <div style="padding: 10px">
+          <p *ngIf="error">{{error}}</p>
+          <p>Make sure your browser allows pop ups for this site. You may not be able to log in using Internet Explorer.</p>
+          <p>If you are having issues authenticating, <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to authenticate in a new tab</p>
         </div>
       </div>
     </div>

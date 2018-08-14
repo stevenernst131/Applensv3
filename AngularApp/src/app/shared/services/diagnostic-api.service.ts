@@ -9,13 +9,14 @@ import { CacheService } from './cache.service';
 import { QueryParamsService } from './query-params.service';
 import { HttpMethod } from '../models/http';
 import { QueryResponse } from '../../diagnostic-data/models/compiler-response';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
-  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService, private _authService: AuthService) { }
 
   public getDiagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
@@ -69,6 +70,7 @@ export class DiagnosticApiService {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
+    headers.append('Authorization', `Bearer ${this._authService.accessToken}`);
     if (path) {
       headers.append('x-ms-path-query', path);
     }
