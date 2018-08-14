@@ -1,6 +1,8 @@
 export const TelemetryEventNames = {
     DetectorViewLoaded: 'DetectorViewLoaded',
     InsightsTitleClicked: 'InsightsTitleClicked',
+    ChildDetectorClicked: 'ChildDetectorClicked',
+    LogInsights: 'LogInsights',
     MarkdownClicked: 'MarkdownClicked',
     StarRatingSubmitted: 'StarRatingSubmitted'
 }

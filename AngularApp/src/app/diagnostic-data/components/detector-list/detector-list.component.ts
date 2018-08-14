@@ -7,6 +7,7 @@ import { StatusStyles } from '../../models/styles';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { LoadingStatus } from '../../models/loading';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
 
 @Component({
   selector: 'detector-list',
@@ -96,6 +97,17 @@ export class DetectorListComponent extends DataRenderBaseComponent {
     return viewModel;
   }
 
+  toggleDetectorHeaderStatus(viewModel: any)
+  {
+    viewModel.expanded = viewModel.loadingStatus == LoadingStatus.Success && !viewModel.expanded;
+    let clickDetectorEventProperties = {
+      "ChildDetectorName": viewModel.title,
+      "ChildDetectorId": viewModel.metadata.id,
+      "IsExpanded": viewModel.expanded
+    }
+
+    this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);
+  }
 }
 
 @Pipe({
