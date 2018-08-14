@@ -35,9 +35,11 @@ export class DetectorViewComponent implements OnInit {
 
   @Input() startTime: moment.Moment;
   @Input() endTime: moment.Moment;
+  @Input() timeGrainInMinutes: number = 5;
 
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;
+  @Input() isSystemInvoker: boolean = false;
 
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService) {
@@ -57,17 +59,20 @@ export class DetectorViewComponent implements OnInit {
         this.ratingEventProperties = {
           "DetectorId": data.metadata.id
         }
-
-        let separators = [' ', ',', ';', ':'];
-        let authors = data.metadata.author.split(new RegExp(separators.join('|'), 'g'));
-        let authorsArray: string[] = [];
-        authors.forEach(author => {
-          if (author && author.length > 0)
-          {
-            authorsArray.push(`${author}@microsoft.com`);
-          }
-        });
-        this.authorEmails  = authorsArray.join(";");
+        
+        if (data.metadata && data.metadata.author)
+        {
+          let separators = [' ', ',', ';', ':'];
+          let authors = data.metadata.author.split(new RegExp(separators.join('|'), 'g'));
+          let authorsArray: string[] = [];
+          authors.forEach(author => {
+            if (author && author.length > 0)
+            {
+              authorsArray.push(`${author}@microsoft.com`);
+            }
+          });
+          this.authorEmails  = authorsArray.join(";");
+        }
       }
     });
 

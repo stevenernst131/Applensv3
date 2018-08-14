@@ -3,3 +3,7 @@ export { DiagnosticService } from './src/app/diagnostic-data/services/diagnostic
 export { TelemetryService } from './src/app/diagnostic-data/services/telemetry/telemetry.service';
 export * from './src/app/collapsible-menu/collapsible-menu.module';
 export { PUBLIC_CONFIGURATION, DiagnosticDataConfig } from './src/app/diagnostic-data/config/diagnostic-data-config';
+
+export * from './src/app/diagnostic-data/models/detector';
+export * from './src/app/diagnostic-data/models/insight';
+export * from './src/app/diagnostic-data/models/loading';

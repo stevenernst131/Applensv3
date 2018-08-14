@@ -1,4 +1,3 @@
-import { InsightStatus } from "./insight";
 
 export interface ArmObject {
     id: string;
@@ -14,15 +13,15 @@ export interface DetectorResponse {
 }
 
 export interface Status {
-    statusId: DetectorStatus,
+    statusId: HealthStatus,
     message: string
 }
 
-export enum DetectorStatus {
+export enum HealthStatus {
     Critical,
     Warning,
-    Healthy,
     Info,
+    Success,
     None
 }
 
@@ -150,7 +149,7 @@ export interface InsightsRendering extends Rendering {
 }
 
 export interface DynamicInsightRendering extends Rendering {
-    status: InsightStatus,
+    status: HealthStatus,
     innerRendering: Rendering,
     expanded: boolean
 }

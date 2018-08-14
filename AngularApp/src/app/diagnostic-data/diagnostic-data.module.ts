@@ -31,6 +31,7 @@ import { TelemetryService } from './services/telemetry/telemetry.service';
 import { StarRatingComponent } from './components/star-rating/star-rating.component';
 import { StarRatingFeedbackComponent } from './components/star-rating-feedback/star-rating-feedback.component';
 import { FormsModule } from '@angular/forms';
+import { StatusIconComponent } from './components/status-icon/status-icon.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 /**
@@ -53,9 +54,10 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, DropdownComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, 
+    DropdownComponent, StatusIconComponent],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
-    LoaderViewComponent],
+    LoaderViewComponent, StatusIconComponent],
 })
 export class DiagnosticDataModule {
   static forRoot(config: DiagnosticDataConfig = INTERNAL_CONFIGURATION): ModuleWithProviders {
