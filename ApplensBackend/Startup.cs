@@ -86,8 +86,6 @@ namespace AppLensV3
                 }
             });
 
-            
-
             app.UseDefaultFiles ();
             app.UseStaticFiles ();
         }
