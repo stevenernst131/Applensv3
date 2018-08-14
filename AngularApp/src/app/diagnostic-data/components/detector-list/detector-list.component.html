@@ -1,6 +1,6 @@
 <div>
   <div class="detector-container" *ngFor="let viewModel of detectorViewModels">
-    <div class="detector-header"  (click)="viewModel.expanded = viewModel.loadingStatus == LoadingStatus.Success && !viewModel.expanded">
+    <div class="detector-header"  (click)="toggleDetectorHeaderStatus(viewModel)">
       <div class="status-icon">
           <status-icon [loading]="viewModel.loadingStatus" [status]="viewModel.status" [size]="20"></status-icon>
       </div>
