@@ -13,7 +13,12 @@ export class LoginComponent implements OnInit {
 
   contentHeight: number;
 
-  constructor(private _authService: AuthService, private _router: Router, private _route: ActivatedRoute) { }
+  popUpsBlocked: boolean = false;
+  inIFrame: boolean = false;
+
+  constructor(private _authService: AuthService, private _router: Router, private _route: ActivatedRoute) { 
+    this.inIFrame = window.parent !== window;
+  }
 
   ngOnInit() {
     this.contentHeight = window.innerHeight;
@@ -25,9 +30,12 @@ export class LoginComponent implements OnInit {
         }
         else {
           this.error = this._authService.errorDescription;
+
+          if(this.error.indexOf('Popup Window is null') >= 0) {
+            this.popUpsBlocked = true;
+          }
         }
       }
     });
   }
-
 }

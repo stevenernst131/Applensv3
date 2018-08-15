@@ -36,8 +36,6 @@ export class AadAuthGuard implements CanActivate {
                 }
                 return true;
             }
-
-
         }
 
         return false;

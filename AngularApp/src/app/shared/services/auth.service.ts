@@ -25,7 +25,8 @@ export class AuthService {
       clientId: environment.production ? ProductionClientId : LocalhostClientId,
       callback: this.tokenCallback,
       popUp: true,
-      redirectUri: window.location.origin
+      redirectUri: window.location.origin,
+      cacheLocation: 'localStorage'
     }
 
     this.authContext = new AuthenticationContext(this.config);
