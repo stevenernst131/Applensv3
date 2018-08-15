@@ -96,7 +96,7 @@ export class DetectorViewComponent implements OnInit {
                     var insightInstance = {
                       "Name": row[insightColumnIndex],
                       "Status": row[statusColumnIndex],
-                      "isDefautExpanded": isExpanded
+                      "IsExpandedByDefault": isExpanded
                     }
                     insightsList.push(insightInstance);
                     insightsNameList.push(row[insightColumnIndex]);
