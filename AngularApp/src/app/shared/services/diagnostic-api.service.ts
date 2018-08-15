@@ -10,6 +10,7 @@ import { QueryParamsService } from './query-params.service';
 import { HttpMethod } from '../models/http';
 import { QueryResponse } from '../../diagnostic-data/models/compiler-response';
 import { AuthService } from './auth.service';
+import { Package } from '../models/package';
 
 @Injectable()
 export class DiagnosticApiService {
@@ -18,7 +19,7 @@ export class DiagnosticApiService {
 
   constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService, private _authService: AuthService) { }
 
-  public getDiagnosticApi(): string {
+  public get diagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
   }
 
@@ -51,8 +52,15 @@ export class DiagnosticApiService {
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
 
+  public publishDetector(packageToPublish: Package) {
+    let url: string = `${this.diagnosticApi}api/github/publishdetector`;
+    return this._http.post(url, packageToPublish, {
+      headers: this._getHeaders()
+    });
+  }
+
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, invalidateCache: boolean = false): Observable<T> {
-    var url: string = `${this.getDiagnosticApi()}api/invoke`
+    var url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._http.post(url, body, {
       headers: this._getHeaders(path, method)
@@ -68,7 +76,7 @@ export class DiagnosticApiService {
 
   public get<T>(path: string, invalidateCache: boolean = false): Observable<T> {
 
-    var url: string = `${this.getDiagnosticApi()}${path}`;
+    var url: string = `${this.diagnosticApi}${path}`;
 
     let request = this._http.get(url, {
       headers: this._getHeaders()
