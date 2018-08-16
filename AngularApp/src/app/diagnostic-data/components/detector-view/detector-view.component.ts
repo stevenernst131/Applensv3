@@ -121,6 +121,19 @@ export class DetectorViewComponent implements OnInit {
                 }
               });
             }
+
+            if (dataset.renderingProperties && dataset.renderingProperties.type == RenderingType.DetectorList) {
+              dataset.table.rows.forEach(row => {
+                
+    // console.log("***********");
+    // console.log(this._route.parent.parent.snapshot);
+    // console.log("Find name in site route");
+    // console.log(this._route.parent.parent.snapshot.params['resourceName']);
+    console.log("***********");
+              }
+
+              )
+            }
           });
 
           var insightSummary = {
