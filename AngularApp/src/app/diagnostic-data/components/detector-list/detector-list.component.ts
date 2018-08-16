@@ -57,6 +57,8 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       this.detectorViewModels.forEach((metaData, index) => {
         metaData.request.subscribe((response: DetectorResponse) => {
           this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
+
+          // Log all the children detectors
           var childDetector = {
             'ChildDetectorName': metaData.title,
             'ChildDetectorId': metaData.metadata.id,
@@ -121,6 +123,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       "IsExpanded": viewModel.expanded
     }
 
+    // Log children detector header event
     this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);
   }
 }
