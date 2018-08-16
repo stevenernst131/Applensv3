@@ -1,16 +1,16 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 
-namespace AppLensV3 {
+namespace AppLensV3
+{
     public class Startup {
         public Startup (IHostingEnvironment env) {
 
@@ -42,6 +42,14 @@ namespace AppLensV3 {
             services.AddSingleton<IGithubClientService, GithubClientService>();
 
             services.AddMvc ();
+
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultScheme = AzureADDefaults.BearerAuthenticationScheme;
+            })
+            .AddAzureADBearer(options => {
+                Configuration.Bind("AzureAd", options);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +69,8 @@ namespace AppLensV3 {
                   .AllowAnyOrigin()
                 );
             }
+
+            app.UseAuthentication();
 
             app.UseMvc ();
 

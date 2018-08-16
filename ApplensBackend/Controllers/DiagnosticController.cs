@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppLensV3.Controllers
 {
     [Route("api")]
+    [Authorize]
     public class DiagnosticController : Controller
     {
         IDiagnosticClientService _diagnosticClient;

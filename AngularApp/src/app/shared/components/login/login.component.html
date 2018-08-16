@@ -1,0 +1,30 @@
+<div class="container-fluid" [style.height.px]="contentHeight" style="background-color: #e4e4e4;">
+  <div class="row" style="padding-top: 200px">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title" *ngIf="!error && !popUpsBlocked">Logging In...</h3>
+          <h3 class="box-title" *ngIf="error && !popUpsBlocked">AAD Login Error</h3>
+          <h3 class="box-title" *ngIf="popUpsBlocked">Sign in requires the browser to allow pop ups for this domain</h3>
+        </div>
+        <div style="padding: 10px" >
+          <div *ngIf="!popUpsBlocked">
+              <p *ngIf="error">{{error}}</p>
+              <p>Make sure your browser allows pop ups for this site. You may not be able to log in using Internet Explorer.</p>
+              <p *ngIf="inIFrame">If you are having issues authenticating, <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to authenticate in a new tab</p>
+          </div>
+          <div *ngIf="popUpsBlocked">
+            <p>If you are using chrome you can enable pop ups by clicking the red icon in the right side of the address bar: </p>
+            <img src="/assets/img/popups_blocked_chrome.jpg"/>
+            <p>After enabling pop ups, refresh page for change to take effect. </p>
+
+            <br/> 
+
+            <p *ngIf="inIFrame">If you are having issues authenticating, <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to try authenticating directly with applens in a new tab</p>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

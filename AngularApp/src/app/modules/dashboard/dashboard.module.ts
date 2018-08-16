@@ -51,6 +51,10 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     resolve: { info: InitResolver },
     children: [
       {
+        path: '',
+        redirectTo: 'home'
+      },
+      {
         path: 'home',
         component: ResourceHomeComponent,
         pathMatch: 'full'

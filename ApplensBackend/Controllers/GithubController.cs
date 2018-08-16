@@ -6,11 +6,13 @@ using AppLensV3.Helpers;
 using AppLensV3.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppLensV3.Controllers
 {
     [Produces("application/json")]
     [Route("api/github")]
+    [Authorize]
     public class GithubController : Controller
     {
         private IGithubClientService _githubService;
