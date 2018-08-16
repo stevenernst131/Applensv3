@@ -123,7 +123,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       "IsExpanded": viewModel.expanded
     }
 
-    // Log children detector header event
+    // Log children detectors click
     this.logEvent(TelemetryEventNames.ChildDetectorClicked, clickDetectorEventProperties);
   }
 }
