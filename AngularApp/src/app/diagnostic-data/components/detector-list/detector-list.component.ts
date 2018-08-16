@@ -51,15 +51,15 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
     this._diagnosticService.getDetectors().subscribe(detectors => {
       this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >=0);
-
+      
       this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
 
       this.detectorViewModels.forEach((metaData, index) => {
         metaData.request.subscribe((response: DetectorResponse) => {
           this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
           var childDetector = {
-            'ChildDetectorName': metaData.name,
-            'ChildDetectorId': metaData.id,
+            'ChildDetectorName': metaData.title,
+            'ChildDetectorId': metaData.metadata.id,
             'ChildDetectorStatus': metaData.status
           }
 
@@ -67,7 +67,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
           if (index >= this.detectorViewModels.length-1) {
             this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(this.childDetectorsList);
-            this.logEvent(TelemetryEventNames.ListChildDetectors, this.childDetectorsEventProperties);
+            this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
           }
         },
         (error) => {
