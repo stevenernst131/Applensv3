@@ -149,7 +149,7 @@ export class DetectorViewComponent implements OnInit {
             "InsightsSummary": JSON.stringify(insightSummary)
           }
 
-          this.logEvent(TelemetryEventNames.LogInsights, this.insightsListEventProperties);
+          this.logEvent(TelemetryEventNames.ListInsights, this.insightsListEventProperties);
         }
       }
     });

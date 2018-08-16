@@ -34,6 +34,9 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   errorDetectors: any[] = [];
 
+  private childDetectorsList: any[] = [];
+  private childDetectorsEventProperties = {};
+
   constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService) {
     super(telemetryService);
   }
@@ -54,6 +57,18 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       this.detectorViewModels.forEach((metaData, index) => {
         metaData.request.subscribe((response: DetectorResponse) => {
           this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
+          var childDetector = {
+            'ChildDetectorName': metaData.name,
+            'ChildDetectorId': metaData.id,
+            'ChildDetectorStatus': metaData.status
+          }
+
+          this.childDetectorsList.push(childDetector);
+
+          if (index >= this.detectorViewModels.length-1) {
+            this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(this.childDetectorsList);
+            this.logEvent(TelemetryEventNames.ListChildDetectors, this.childDetectorsEventProperties);
+          }
         },
         (error) => {
           this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
