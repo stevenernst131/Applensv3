@@ -75,6 +75,7 @@ export class DetectorViewComponent implements OnInit {
 
         // Log all the insights from response
         if (data.dataset) {
+          let totalCount: number = 0;
           let successCount: number = 0;
           let criticalCount: number = 0;
           let warningCount: number = 0;
@@ -121,22 +122,12 @@ export class DetectorViewComponent implements OnInit {
                 }
               });
             }
-
-            if (dataset.renderingProperties && dataset.renderingProperties.type == RenderingType.DetectorList) {
-              dataset.table.rows.forEach(row => {
-                
-    // console.log("***********");
-    // console.log(this._route.parent.parent.snapshot);
-    // console.log("Find name in site route");
-    // console.log(this._route.parent.parent.snapshot.params['resourceName']);
-    console.log("***********");
-              }
-
-              )
-            }
           });
 
+          totalCount = insightsList.length;
+
           var insightSummary = {
+            "Total": totalCount,
             "Critical": criticalCount,
             "Warning": warningCount,
             "Success": successCount,
@@ -149,7 +140,7 @@ export class DetectorViewComponent implements OnInit {
             "InsightsSummary": JSON.stringify(insightSummary)
           }
 
-          this.logEvent(TelemetryEventNames.ListInsights, this.insightsListEventProperties);
+          this.logEvent(TelemetryEventNames.InsightsSummary, this.insightsListEventProperties);
         }
       }
     });
