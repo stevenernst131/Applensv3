@@ -13,6 +13,9 @@ import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
 import { QueryParamsService } from './services/query-params.service';
 import { ResourceService } from './services/resource.service';
+import { AadAuthGuard } from './auth/aad-auth-guard.service';
+import { AuthService } from './services/auth.service';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   imports: [
@@ -20,7 +23,7 @@ import { ResourceService } from './services/resource.service';
     HttpModule,
     FormsModule
   ],
-  declarations: [TreeViewComponent],
+  declarations: [TreeViewComponent, LoginComponent],
   exports: [TreeViewComponent]
 })
 export class SharedModule { 
@@ -36,7 +39,9 @@ export class SharedModule {
         ObserverService,
         GithubApiService,
         CacheService,
-        QueryParamsService
+        QueryParamsService,
+        AadAuthGuard,
+        AuthService
       ]
     }
   }

@@ -23,6 +23,8 @@
     "@angular/platform-browser-dynamic": "^5.2.7",
     "@angular/router": "^5.2.7",
     "@swimlane/ngx-datatable": "^11.1.7",
+    "@types/adal-angular": "^1.0.1",
+    "adal-angular": "^1.0.17",
     "admin-lte": "^2.4.3",
     "angular-split": "^1.0.0-rc.3",
     "applicationinsights-js": "^1.0.18",

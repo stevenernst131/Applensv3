@@ -4,6 +4,7 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
 import { Http } from '@angular/http';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -53,7 +54,7 @@ export class MainComponent implements OnInit {
 
   enabledResourceTypes: ResourceServiceInputs[];
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _authService: AuthService) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 

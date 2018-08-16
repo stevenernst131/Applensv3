@@ -5,9 +5,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppLensV3
 {
+    [Authorize]
     public class ResourceController : Controller
     {
         IObserverClientService _observerService;
