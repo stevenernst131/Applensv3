@@ -8,6 +8,8 @@ import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
 import { QueryParamsService } from '../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
+import { AuthService } from '../../../shared/services/auth.service';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 export enum DevelopMode {
   Create,
@@ -41,14 +43,18 @@ export class OnboardingFlowComponent implements OnInit {
   runButtonIcon: string;
   publishButtonText: string;
 
+  modalPublishingButtonText: string;
+  modalPublishingButtonDisabled: boolean;
+
   alertClass: string;
   alertMessage: string;
   showAlert: boolean;
 
   private publishingPackage: Package;
+  private userName: string;
 
   constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
-    public queryParamsService: QueryParamsService) {
+    public queryParamsService: QueryParamsService, private authService: AuthService, public ngxSmartModalService: NgxSmartModalService) {
 
     this.editorOptions = {
       theme: 'vs',
@@ -68,7 +74,11 @@ export class OnboardingFlowComponent implements OnInit {
     this.runButtonText = "Run";
     this.runButtonIcon = "fa fa-play";
     this.publishButtonText = "Publish";
+    this.modalPublishingButtonText = "Publish";
+    this.modalPublishingButtonDisabled = false;
     this.showAlert = false;
+
+    this.userName = this.authService.userInfo.userName.replace('@microsoft.com', '');
   }
 
   ngOnInit() {
@@ -157,6 +167,12 @@ export class OnboardingFlowComponent implements OnInit {
       }));
   }
 
+  confirmPublish() {
+    if (!this.publishButtonDisabled) {
+      this.ngxSmartModalService.getModal('publishModal').open();
+    }
+  }
+
   publish() {
 
     if (!this.publishingPackage || this.publishingPackage.codeString === '' || this.publishingPackage.id === '' || this.publishingPackage.dllBytes === '') {
@@ -165,25 +181,34 @@ export class OnboardingFlowComponent implements OnInit {
 
     this.publishButtonDisabled = true;
     this.runButtonDisabled = true;
-    this.publishButtonText = "Publishing";
+    this.modalPublishingButtonDisabled = true;
+    this.modalPublishingButtonText = "Publishing";
 
-    this.githubService.publishPackage(this.publishingPackage).subscribe(data => {
+    this.diagnosticApiService.publishDetector(this.publishingPackage).subscribe(data => {
       this.runButtonDisabled = false;
       this.publishButtonText = "Publish";
-      this.showAlertBox('alert-success', 'Detector pulished successfully. It will be live in next 5-10 minutes.');
+      this.modalPublishingButtonDisabled = false;
+      this.modalPublishingButtonText = "Publish";
+      this.ngxSmartModalService.getModal('publishModal').close();
+      this.showAlertBox('alert-success', 'Detector published successfully. Changes will be live shortly.');
     }, err => {
       this.runButtonDisabled = false;
       this.publishButtonText = "Publish";
+      this.modalPublishingButtonDisabled = false;
+      this.modalPublishingButtonText = "Publish";
+      this.ngxSmartModalService.getModal('publishModal').close();
       this.showAlertBox('alert-dander', 'Publishing failed. Please try again after some time.');
     });
   }
 
   private preparePublishingPackage(queryResponse: QueryResponse<DetectorResponse>, code: string) {
+
     this.publishingPackage = {
       codeString: code,
       id: queryResponse.invocationOutput.metadata.id,
       dllBytes: queryResponse.compilationOutput.assemblyBytes,
-      pdbBytes: queryResponse.compilationOutput.pdbBytes
+      pdbBytes: queryResponse.compilationOutput.pdbBytes,
+      committedByAlias: this.userName
     };
   }
 

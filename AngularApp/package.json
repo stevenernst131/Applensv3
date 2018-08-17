@@ -40,6 +40,7 @@
     "ng2-nvd3": "^2.0.0",
     "ngx-markdown": "1.5.2",
     "ngx-monaco-editor": "^4.0.1",
+    "ngx-smart-modal": "^7.0.3",
     "popper.js": "^1.12.9",
     "prismjs": "^1.14.0",
     "rxjs": "^5.5.6",

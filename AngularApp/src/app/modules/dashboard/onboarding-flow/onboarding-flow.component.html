@@ -1,4 +1,21 @@
 <div class="view-container">
+    
+        <ngx-smart-modal #publishModal identifier="publishModal">
+            <div>
+                <h4>Confirm?</h4>
+                <hr style="margin-top: 10px;margin-bottom: 10px;">
+                <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external customers if the detector is marked public.</span>
+                
+                <div style="margin-top:10px;margin-bottom: 10px">
+                    <button type="button" class="btn btn-primary" (click)="publish()" [class.disabled]="modalPublishingButtonDisabled">{{modalPublishingButtonText}}</button>
+                    <button type="button" class="btn btn-danger" (click)="publishModal.close()">Cancel</button>
+                </div>
+                
+            </div>
+            
+                
+        </ngx-smart-modal>
+
     <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
         {{alertMessage}}
     </div>
@@ -17,11 +34,7 @@
                                 {{fileName}}
                             </div>
 
-                            <div class="file-tab">
-                                wiki.md (coming soon)
-                            </div>
-
-                            <div (click)="publish()" class="action-button publish-button" [class.disabled]="publishButtonDisabled">
+                            <div (click)="confirmPublish()" class="action-button publish-button" [class.disabled]="publishButtonDisabled">
                                 <i class="fa fa-cloud-upload"></i>
                                 {{publishButtonText}}
                             </div>

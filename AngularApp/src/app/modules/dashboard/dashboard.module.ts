@@ -8,6 +8,7 @@ import { RouterModule, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } fr
 import { OwlDateTimeModule, OwlNativeDateTimeModule, OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
 import { AngularSplitModule } from 'angular-split';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { StartupService } from '../../shared/services/startup.service';
 import { Observable } from 'rxjs/Observable';
 import { SideNavComponent, SearchMenuPipe } from './side-nav/side-nav.component';
@@ -123,7 +124,8 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     OwlMomentDateTimeModule,
     MonacoEditorModule.forRoot(),
     AngularSplitModule,
-    CollapsibleMenuModule
+    CollapsibleMenuModule,
+    NgxSmartModalModule.forRoot()
   ],
   providers: [
     ApplensDiagnosticService,

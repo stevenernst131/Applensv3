@@ -1,6 +1,7 @@
 /* External Libraries */
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~ngx-smart-modal/ngx-smart-modal.css";
 
 /* @import "~startbootstrap-sb-admin/css/sb-admin.min.css"; */
 
