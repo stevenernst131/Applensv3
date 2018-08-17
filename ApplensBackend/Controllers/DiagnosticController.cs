@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace AppLensV3.Controllers
 {
     [Route("api")]
-    [Authorize]
+    //[Authorize]
     public class DiagnosticController : Controller
     {
         IDiagnosticClientService _diagnosticClient;

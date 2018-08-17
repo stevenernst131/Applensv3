@@ -23,8 +23,4 @@ export class GithubApiService {
   public getSystemMonitoringFile(detectorId: string, invokerId: string): Observable<string> {
     return this._diagnosticApiService.get<string>(`api/github/detectors/${detectorId}/statistics/${invokerId}`, true);
   }
-
-  public publishPackage(packageToPublish: Package): Observable<any> {
-    return this._diagnosticApiService.publishDetector(packageToPublish);
-  }
 }

@@ -5,6 +5,7 @@ import { DetectorResponse, DetectorMetaData } from '../../../diagnostic-data/mod
 import { Observable } from 'rxjs/Observable';
 import { QueryResponse } from '../../../diagnostic-data/models/compiler-response';
 import { DevelopMode } from '../onboarding-flow/onboarding-flow.component';
+import { Package } from '../../../shared/models/package';
 
 @Injectable()
 export class ApplensDiagnosticService {
@@ -55,5 +56,12 @@ export class ApplensDiagnosticService {
         dataSource,
         timeRange);
     }
+  }
+
+  publishDetector(pkg: Package) : Observable<any> {
+    return this._diagnosticApi.publishDetector(
+      this._resourceService.getCurrentResourceId(true),
+      pkg
+    );
   }
 }

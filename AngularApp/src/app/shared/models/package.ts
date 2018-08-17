@@ -3,4 +3,5 @@ export interface Package {
     dllBytes: string;
     pdbBytes: string;
     id: string;
+    committedByAlias: string;
 }

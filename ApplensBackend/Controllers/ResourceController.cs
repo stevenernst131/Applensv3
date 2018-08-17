@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AppLensV3
 {
-    [Authorize]
+    //[Authorize]
     public class ResourceController : Controller
     {
         IObserverClientService _observerService;

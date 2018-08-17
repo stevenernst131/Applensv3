@@ -52,11 +52,9 @@ export class DiagnosticApiService {
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
 
-  public publishDetector(packageToPublish: Package) {
-    let url: string = `${this.diagnosticApi}api/github/publishdetector`;
-    return this._http.post(url, packageToPublish, {
-      headers: this._getHeaders()
-    });
+  public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
+    let path = `${resourceId}/diagnostics/publish`;
+    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, true);
   }
 
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, invalidateCache: boolean = false): Observable<T> {
