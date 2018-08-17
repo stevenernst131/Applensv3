@@ -118,20 +118,33 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
       let pointToAdd = pointsForThisSeries.pop();
 
-      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
-        let value = this.defaultValue;
-
-        if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
-          value = pointToAdd.value;
-
-          pointToAdd = pointsForThisSeries.pop();
+      while (pointToAdd.timestamp.isBefore(this.startTime)) {
+        pointToAdd = pointsForThisSeries.pop();
+        if (!pointToAdd) {
+          console.error('No data returned within time range');
         }
-
-        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
       }
+
+      pointsForThisSeries.forEach(point => {
+        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: point.timestamp.clone(), y: point.value });
+      });
+
+      // for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
+      //   let value = this.defaultValue;
+
+      //   if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
+      //     value = pointToAdd.value;
+
+      //     pointToAdd = pointsForThisSeries.pop();
+      //   }
+
+      //   timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
+      // }
 
       this.allSeries.push(timeSeriesDictionary[key]);
     });
+
+    console.log(this.allSeries);
   }
 
   private _getSeriesName(column: string, countername: string) {
