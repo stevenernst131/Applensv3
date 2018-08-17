@@ -14,8 +14,6 @@ export class SiteService extends ResourceService {
 
   private _siteObject: ObserverSiteInfo;
 
-  private s = 'test';
-
   constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs, protected _observerApiService: ObserverService) {
     super(inputs);
   }

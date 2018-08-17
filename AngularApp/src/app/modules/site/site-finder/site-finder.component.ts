@@ -49,11 +49,6 @@ export class SiteFinderComponent implements OnInit {
       'providers', 'Microsoft.Web',
       'sites', matchingSite.SiteName];
 
-    if (matchingSite.SlotName && matchingSite.SlotName.length > 0) {
-      resourceArray.push('slots');
-      resourceArray.push(matchingSite.SlotName);
-    }
-
     resourceArray.push('home');
 
     this._router.navigate(resourceArray, { queryParamsHandling: 'preserve' });
