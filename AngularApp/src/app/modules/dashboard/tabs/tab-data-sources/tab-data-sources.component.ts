@@ -43,9 +43,8 @@ export class TabDataSourcesComponent {
       this.detector = this._route.snapshot.params['detector'];
     }
     else {
-      this.detector = this._route.parent.snapshot.params['detector'].toLowerCase();
+      this.detector = this._route.parent.snapshot.params['detector'];
     }
-
     this._diagnosticApiService.getDetector(this.detector)
       .subscribe((response: DetectorResponse) => {
         this.loadingDetector = false;
