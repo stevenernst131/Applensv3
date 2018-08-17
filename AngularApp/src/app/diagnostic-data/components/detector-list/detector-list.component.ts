@@ -34,7 +34,6 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   errorDetectors: any[] = [];
 
-  private childDetectorsList: any[] = [];
   private childDetectorsEventProperties = {};
 
   constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService) {
@@ -53,27 +52,29 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >=0);
       this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
 
-      let indexCount = 0;
+      let requests: Observable<any>[] = [];
       this.detectorViewModels.forEach((metaData, index) => {
-        metaData.request.subscribe((response: DetectorResponse) => {
+        requests.push(metaData.request.map((response: DetectorResponse) => {
           this.detectorViewModels[index] = this.updateDetectorViewModelSuccess(metaData, response);
-
-          // Log all the children detectors
-          var childDetector = {
-            'ChildDetectorName': metaData.title,
-            'ChildDetectorId': metaData.metadata.id,
-            'ChildDetectorStatus': metaData.status
-          }
-          this.childDetectorsList.push(childDetector);
-
-          indexCount++;
-          if (indexCount >= this.detectorViewModels.length) {
-            this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(this.childDetectorsList);
-            this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
-          }
+          return {
+            'ChildDetectorName': this.detectorViewModels[index].title,
+            'ChildDetectorId': this.detectorViewModels[index].metadata.id,
+            'ChildDetectorStatus': this.detectorViewModels[index].status
+          };
         },
         (error) => {
           this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
+          return {
+            'ChildDetectorName': this.detectorViewModels[index].title,
+            'ChildDetectorId': this.detectorViewModels[index].metadata.id,
+            'ChildDetectorStatus': this.detectorViewModels[index].status
+          };
+        }));
+
+        // Log all the children detectors
+        Observable.forkJoin(requests).subscribe(childDetectorData => {
+          this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
+          this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
         });
       });      
     })
