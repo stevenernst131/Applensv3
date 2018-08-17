@@ -12,7 +12,7 @@ namespace AppLensV3.Controllers
 {
     [Produces("application/json")]
     [Route("api/github")]
-    //[Authorize]
+    [Authorize]
     public class GithubController : Controller
     {
         private IGithubClientService _githubService;
