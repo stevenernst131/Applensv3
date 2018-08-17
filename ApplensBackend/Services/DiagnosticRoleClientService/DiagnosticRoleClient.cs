@@ -77,7 +77,7 @@ namespace AppLensV3
             try
             {
                 HttpResponseMessage response;
-                if (this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p)) && !new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
+                if (!hitPassThroughAPI(path))
                 {
                     switch (method.ToUpper())
                     {
@@ -108,6 +108,13 @@ namespace AppLensV3
             {
                 throw ex;
             }
+        }
+
+        private bool hitPassThroughAPI(string path)
+        {
+            return !this._nonPassThroughResourceProviderList.Exists(p => path.ToLower().Contains(p))
+                || (new Regex("/detectors/[^/]*/statistics").IsMatch(path.ToLower()))
+                || path.ToLower().Contains("/diagnostics/publish");
         }
 
         private X509Certificate2 GetMyX509Certificate()
