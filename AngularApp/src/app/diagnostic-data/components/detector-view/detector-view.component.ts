@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { DetectorResponse } from '../../../diagnostic-data/models/detector';
+import { DetectorResponse, RenderingType } from '../../models/detector';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import * as moment from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
@@ -19,9 +19,10 @@ export class DetectorViewComponent implements OnInit {
 
   private detectorResponseSubject: BehaviorSubject<DetectorResponse> = new BehaviorSubject<DetectorResponse>(null);
   private errorSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private detectorEventProperties: {[name: string]: string};
-  private ratingEventProperties: {[name: string]: string};
+  private detectorEventProperties: { [name: string]: string };
+  private ratingEventProperties: { [name: string]: string };
   private authorEmails: string;
+  private insightsListEventProperties = {};
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -59,19 +60,87 @@ export class DetectorViewComponent implements OnInit {
         this.ratingEventProperties = {
           "DetectorId": data.metadata.id
         }
-        
-        if (data.metadata && data.metadata.author)
-        {
+
+        if (data.metadata && data.metadata.author) {
           let separators = [' ', ',', ';', ':'];
           let authors = data.metadata.author.split(new RegExp(separators.join('|'), 'g'));
           let authorsArray: string[] = [];
           authors.forEach(author => {
-            if (author && author.length > 0)
-            {
+            if (author && author.length > 0) {
               authorsArray.push(`${author}@microsoft.com`);
             }
           });
-          this.authorEmails  = authorsArray.join(";");
+          this.authorEmails = authorsArray.join(";");
+        }
+
+        // Log all the insights from response
+        if (data.dataset) {
+          let totalCount: number = 0;
+          let successCount: number = 0;
+          let criticalCount: number = 0;
+          let warningCount: number = 0;
+          let infoCount: number = 0;
+          let defaultCount: number = 0;
+          let insightsList = [];
+          let insightsNameList: string[] = [];
+
+          let statusColumnIndex = 0;
+          let insightColumnIndex = 1;
+          let isExpandedIndex = 4;
+
+          data.dataset.forEach(dataset => {
+            if (dataset.renderingProperties && dataset.renderingProperties.type === RenderingType.Insights) {
+              dataset.table.rows.forEach(row => {
+                if ((insightsNameList.find(insightName => insightName === row[insightColumnIndex])) == null) {
+                  {
+                    let isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false
+                    var insightInstance = {
+                      "Name": row[insightColumnIndex],
+                      "Status": row[statusColumnIndex],
+                      "IsExpandedByDefault": isExpanded
+                    }
+                    insightsList.push(insightInstance);
+                    insightsNameList.push(row[insightColumnIndex]);
+
+                    switch (row[statusColumnIndex]) {
+                      case "Critical":
+                        criticalCount++;
+                        break;
+                      case "Warning":
+                        warningCount++;
+                        break;
+                      case "Success":
+                        successCount++;
+                        break;
+                      case "Info":
+                        infoCount++;
+                        break;
+                      default:
+                        defaultCount++;
+                    }
+                  }
+                }
+              });
+            }
+          });
+
+          totalCount = insightsList.length;
+
+          var insightSummary = {
+            "Total": totalCount,
+            "Critical": criticalCount,
+            "Warning": warningCount,
+            "Success": successCount,
+            "Info": infoCount,
+            "Default": defaultCount
+          }
+
+          this.insightsListEventProperties = {
+            "InsightsList": JSON.stringify(insightsList),
+            "InsightsSummary": JSON.stringify(insightSummary)
+          }
+
+          this.logEvent(TelemetryEventNames.InsightsSummary, this.insightsListEventProperties);
         }
       }
     });
@@ -85,6 +154,12 @@ export class DetectorViewComponent implements OnInit {
       this.telemetryService.logPageView(TelemetryEventNames.DetectorViewLoaded);
     }
   }
-}
 
+  protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
+    for (let id in this.detectorEventProperties) {
+      eventProperties[id] = String(this.detectorEventProperties[id]);
+    }
+    this.telemetryService.logEvent(eventMessage, eventProperties, measurements);
+  }
+}
 
