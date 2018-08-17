@@ -43,13 +43,13 @@ namespace AppLensV3
 
             services.AddMvc ();
 
-            /*services.AddAuthentication(auth =>
+            services.AddAuthentication(auth =>
             {
                 auth.DefaultScheme = AzureADDefaults.BearerAuthenticationScheme;
             })
             .AddAzureADBearer(options => {
                 Configuration.Bind("AzureAd", options);
-            });*/
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,7 +70,7 @@ namespace AppLensV3
                 );
             }
 
-            //app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseMvc ();
 
