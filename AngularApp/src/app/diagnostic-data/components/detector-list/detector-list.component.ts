@@ -15,7 +15,7 @@ import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
   styleUrls: ['./detector-list.component.css'],
   animations: [
     trigger('expand', [
-      state('shown' , style({ height: '*' })),
+      state('shown', style({ height: '*' })),
       state('hidden', style({ height: '0px' })),
       transition('* => *', animate('.25s'))
     ])
@@ -49,7 +49,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
   private getDetectorResponses() {
 
     this._diagnosticService.getDetectors().subscribe(detectors => {
-      this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >=0);
+      this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >= 0);
       this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
 
       let requests: Observable<any>[] = [];
@@ -59,24 +59,27 @@ export class DetectorListComponent extends DataRenderBaseComponent {
           return {
             'ChildDetectorName': this.detectorViewModels[index].title,
             'ChildDetectorId': this.detectorViewModels[index].metadata.id,
-            'ChildDetectorStatus': this.detectorViewModels[index].status
+            'ChildDetectorStatus': this.detectorViewModels[index].status,
+            'ChildDetectorLoadingStatus': this.detectorViewModels[index].loadingStatus
           };
-        },
-        (error) => {
-          this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
-          return {
-            'ChildDetectorName': this.detectorViewModels[index].title,
-            'ChildDetectorId': this.detectorViewModels[index].metadata.id,
-            'ChildDetectorStatus': this.detectorViewModels[index].status
-          };
-        }));
+        })
+          .catch((res) => {
+            this.detectorViewModels[index].loadingStatus = LoadingStatus.Failed;
+            return {
+              'ChildDetectorName': metaData.title,
+              'ChildDetectorId': metaData.metadata.id,
+              'ChildDetectorStatus': null,
+              'ChildDetectorLoadingStatus': LoadingStatus.Failed
+            };
+          })
+        );
 
         // Log all the children detectors
         Observable.forkJoin(requests).subscribe(childDetectorData => {
           this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
           this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
         });
-      });      
+      });
     })
   }
 
@@ -85,9 +88,9 @@ export class DetectorListComponent extends DataRenderBaseComponent {
     metaData.request.subscribe((response: DetectorResponse) => {
       metaData = this.updateDetectorViewModelSuccess(metaData, response);
     },
-    (error) => {
-      metaData.loadingStatus = LoadingStatus.Failed;
-    });
+      (error) => {
+        metaData.loadingStatus = LoadingStatus.Failed;
+      });
   }
 
   private getDetectorViewModel(detector: DetectorMetaData) {
@@ -108,15 +111,14 @@ export class DetectorListComponent extends DataRenderBaseComponent {
     let status = res.status.statusId;
 
     viewModel.loadingStatus = LoadingStatus.Success,
-    viewModel.status = status;
+      viewModel.status = status;
     viewModel.statusColor = StatusStyles.getColorByStatus(status),
-    viewModel.statusIcon = StatusStyles.getIconByStatus(status),
-    viewModel.response = res;
+      viewModel.statusIcon = StatusStyles.getIconByStatus(status),
+      viewModel.response = res;
     return viewModel;
   }
 
-  toggleDetectorHeaderStatus(viewModel: any)
-  {
+  toggleDetectorHeaderStatus(viewModel: any) {
     viewModel.expanded = viewModel.loadingStatus == LoadingStatus.Success && !viewModel.expanded;
     let clickDetectorEventProperties = {
       "ChildDetectorName": viewModel.title,
@@ -130,12 +132,12 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 }
 
 @Pipe({
-  name:'detectorOrder',
+  name: 'detectorOrder',
   pure: false
 })
 export class DetectorOrderPipe implements PipeTransform {
   transform(items: any[]) {
-    return items.sort((a,b) => {     
+    return items.sort((a, b) => {
       return a.status > b.status ? 1 : -1;
     });
   }
