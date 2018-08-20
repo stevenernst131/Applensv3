@@ -22,9 +22,7 @@ export class DataRenderBaseComponent implements OnInit, DataRenderer {
 
   @Input() startTime: momentNs.Moment;
   @Input() endTime: momentNs.Moment;
-  @Input() timeGrainInMinutes: number = 5;
   @Input() detectorEventProperties: any;
-
 
   constructor(protected telemetryService: TelemetryService) {
   }

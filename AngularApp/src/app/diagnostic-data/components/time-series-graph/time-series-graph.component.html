@@ -1,5 +1,6 @@
 <ng-template #graphView>
-        <nvd3-graph [chartData]="selectedSeries" [chartType]="renderingProperties.graphType" [chartOptions]="graphOptions" *ngIf="selectedSeries"></nvd3-graph>
+        <nvd3-graph [chartData]="selectedSeries" [chartType]="renderingProperties.graphType" [chartOptions]="graphOptions" *ngIf="selectedSeries"
+                [startTime]="startTime" [endTime]="endTime"></nvd3-graph>
         <div *ngIf="!selectedSeries">Loading Data...</div>
 </ng-template>
 

@@ -37,6 +37,8 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
   error: string;
   warning: string;
 
+  timeGrainInMinutes: number = 5;
+
   processData(data: DiagnosticData) {
     super.processData(data);
 

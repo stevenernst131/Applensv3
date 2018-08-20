@@ -7,11 +7,9 @@ import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
 import { TimeSeries, TablePoint } from '../../models/time-series';
-import * as momentNs from 'moment-timezone';
+import * as moment from 'moment-timezone';
 import { TimeUtilities, TimeZones } from '../../utilities/time-utilities';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-
-const moment = momentNs;
 
 @Component({
   selector: 'time-series-graph',
@@ -36,21 +34,13 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   defaultValue: number = 0;
   graphOptions: any;
 
+  timeGrainInMinutes: number;
+
   processData(data: DiagnosticData) {
     super.processData(data);
 
     if (data) {
-
-      let start = this.startTime;
-      let end = this.endTime;
-      let timeGrain = this.timeGrainInMinutes;
-
-      TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
-      TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
-      end.minute(end.minute() - end.minute() % timeGrain).second(0);
-      this.startTime = start;
-      this.endTime = end;
-
+      this.timeGrainInMinutes = this._getDefaultTimegrain();
       this.renderingProperties = <TimeSeriesRendering>data.renderingProperties;
       this.graphOptions = this.renderingProperties.graphOptions;
       this.dataTable = data.table;
@@ -91,12 +81,26 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     let tablePoints: TablePoint[] = [];
 
-    data.table.rows.forEach(row => {
+    let smallestDiffBetweenPoints: number = this.timeGrainInMinutes;
+    let greatestCommonFactor: number = smallestDiffBetweenPoints;
+    let lastTimeStamp: moment.Moment = this.startTime;
 
+    data.table.rows.forEach(row => {
       numberValueColumns.forEach(column => {
         let columnIndex: number = data.table.columns.indexOf(column);
 
         let timestamp = moment.tz(row[timestampColumn], TimeZones.UTC);
+
+        let currentDiff: number;
+        let currentGcf: number;
+        if (timestamp.isAfter(lastTimeStamp)) {
+          if((currentDiff = timestamp.diff(lastTimeStamp, 'minutes')) < this.timeGrainInMinutes) {
+            smallestDiffBetweenPoints = currentDiff;
+          }
+          if((currentGcf = this._getGreatestCommonFactor(timestamp)) < greatestCommonFactor) {
+            greatestCommonFactor = currentGcf;
+          }          
+        }
 
         let point: TablePoint = <TablePoint>{
           timestamp: timestamp,
@@ -105,9 +109,14 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           counterName: counterNameColumnIndex >= 0 ? row[counterNameColumnIndex] : null
         };
 
+        lastTimeStamp = timestamp;
+
         tablePoints.push(point);
       });
     });
+
+    this.timeGrainInMinutes = this._gcd(smallestDiffBetweenPoints, greatestCommonFactor);
+    this._prepareStartAndEndTime();
 
     Object.keys(timeSeriesDictionary).forEach(key => {
 
@@ -115,6 +124,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
         tablePoints
           .filter(point => this._getSeriesName(point.column, point.counterName) === key)
           .sort((b, a) => { return a.timestamp.diff(b.timestamp) });
+
 
       let pointToAdd = pointsForThisSeries.pop();
 
@@ -125,30 +135,61 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
         }
       }
 
-      pointsForThisSeries.forEach(point => {
-        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: point.timestamp.clone(), y: point.value });
-      });
+      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
+        let value = this.defaultValue;
 
-      // for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
-      //   let value = this.defaultValue;
+        if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
+          value = pointToAdd.value;
 
-      //   if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
-      //     value = pointToAdd.value;
+          pointToAdd = pointsForThisSeries.pop();
+        }
 
-      //     pointToAdd = pointsForThisSeries.pop();
-      //   }
-
-      //   timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
-      // }
+        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
+      }
 
       this.allSeries.push(timeSeriesDictionary[key]);
     });
+  }
 
-    console.log(this.allSeries);
+  private _getGreatestCommonFactor(timestamp: moment.Moment) {
+    return this._gcd(timestamp.minutes(), 60)
+  }
+
+  private _gcd(a: number, b: number) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+    if (b > a) {var temp = a; a = b; b = temp;}
+    while (true) {
+        if (b == 0) return a;
+        a %= b;
+        if (a == 0) return b;
+        b %= a;
+    }
+  }
+
+  private _getDefaultTimegrain() {
+    let range = Math.abs(this.startTime.diff(this.endTime, 'hours'));
+    // > 7 days: 1 day
+    if (range > 168) {
+      return 24 * 60;
+    }
+    // else 1 hr
+    return 60;
+  }
+
+  private _prepareStartAndEndTime() {
+    let start = this.startTime;
+    let end = this.endTime;
+
+    TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
+    TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
+    end.minute(end.minute() - end.minute() % this.timeGrainInMinutes).second(0);
+    this.startTime = start;
+    this.endTime = end;
   }
 
   private _getSeriesName(column: string, countername: string) {
-    return countername ? `${countername}-${column}`: column;
+    return countername ? `${countername}-${column}` : column;
   }
 
   private _getTimeStampColumnIndex(): number {

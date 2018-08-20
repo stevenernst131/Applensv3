@@ -32,7 +32,6 @@ export class DynamicDataComponent implements OnInit {
 
   @Input() startTime: momentNs.Moment;
   @Input() endTime: momentNs.Moment;
-  @Input() timeGrainInMinutes: number = 5;
   @Input() detectorEventProperties: any;
 
   @ViewChild('dynamicDataContainer', { read: ViewContainerRef }) dynamicDataContainer: ViewContainerRef;
@@ -52,7 +51,6 @@ export class DynamicDataComponent implements OnInit {
       instance.diagnosticDataInput = diagnosticData;
       instance.startTime = this.startTime;
       instance.endTime = this.endTime;
-      instance.timeGrainInMinutes = this.timeGrainInMinutes;
       instance.detectorEventProperties = this.detectorEventProperties;
     });
   }

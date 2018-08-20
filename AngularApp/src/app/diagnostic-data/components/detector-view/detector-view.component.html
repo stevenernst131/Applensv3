@@ -20,7 +20,7 @@
   </div>
   <hr style="margin: 5px 0px 25px 0px"/>
   <div *ngFor="let data of detectorDataLocalCopy.dataset" class="dynamic-data-container">
-    <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [timeGrainInMinutes]="timeGrainInMinutes" [detectorEventProperties] = "detectorEventProperties"></dynamic-data>
+    <dynamic-data [diagnosticData]="data" [startTime]="startTime" [endTime]="endTime" [detectorEventProperties] = "detectorEventProperties"></dynamic-data>
   </div>
   <!-- <star-rating *ngIf="!insideDetectorList"></star-rating> -->
 </div>
