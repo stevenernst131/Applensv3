@@ -48,7 +48,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   private getDetectorResponses() {
 
-    this._diagnosticService.getDetectors().subscribe(detectors => {
+      this._diagnosticService.getDetectors().subscribe(detectors => {
       this.detectorMetaData = detectors.filter(detector => this.renderingProperties.detectorIds.indexOf(detector.id) >= 0);
       this.detectorViewModels = this.detectorMetaData.map(detector => this.getDetectorViewModel(detector));
 
@@ -73,12 +73,12 @@ export class DetectorListComponent extends DataRenderBaseComponent {
             };
           })
         );
-
-        // Log all the children detectors
-        Observable.forkJoin(requests).subscribe(childDetectorData => {
-          this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
-          this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
-        });
+      });
+      
+      // Log all the children detectors
+      Observable.forkJoin(requests).subscribe(childDetectorData => {
+        this.childDetectorsEventProperties['ChildDetectorsList'] = JSON.stringify(childDetectorData);
+        this.logEvent(TelemetryEventNames.ChildDetectorsSummary, this.childDetectorsEventProperties);
       });
     })
   }
