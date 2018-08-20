@@ -10,11 +10,11 @@
             [class.fa-check-circle]="insight.status === InsightStatus.Success" [class.fa-info-circle]="insight.status === InsightStatus.Info"></span>
           {{insight.title}}
 
-          <span *ngIf="insight.hasData()" class="fa expand-icon" [class.fa-angle-down]="!insight.showDetails" [class.fa-angle-up]="insight.showDetails"></span>
+          <span *ngIf="insight.hasData()" class="fa expand-icon" [class.fa-angle-down]="!insight.isExpanded" [class.fa-angle-up]="insight.isExpanded"></span>
         </h5>
       </div>
 
-      <div class="panel-body" *ngIf="insight.showDetails">
+      <div class="panel-body" *ngIf="insight.isExpanded">
         <table>
           <tbody>
             <tr *ngFor="let key of insight.getKeys()">
