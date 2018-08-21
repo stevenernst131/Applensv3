@@ -35,6 +35,20 @@
       </ul>
     </div>
   </div>
+<<<<<<< HEAD
   <detector-view [detectorResponse]="detectorResponse" [error]="error" [startTime]="startTime" [endTime]="endTime" [isSystemInvoker]="true">
+=======
+  <div class="description">By
+    <span style="padding:2px; color: #0066c0;">
+      <a *ngIf="detectorAuthor; else unknownAuthor" href="mailto:{{authorEmails}}">
+        {{detectorAuthor}}
+      </a>
+      <ng-template #unknownAuthor>
+        Unknown
+      </ng-template>
+    </span>
+  </div>
+  <detector-view [detectorResponse]="systemInvokerResponse" [error]="error" [startTime]="startTime" [endTime]="endTime" [timeGrainInMinutes]="timeGrainInMinutes" [isSystemInvoker]="true">
+>>>>>>> 7421f9642f95330ffcebd6b4939a5327f5d1801e
   </detector-view>
 </div>

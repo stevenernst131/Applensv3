@@ -5,7 +5,7 @@
         <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
         <small>{{detectorDataLocalCopy.metadata.description}}</small>
       </h1>
-      <div class="description" *ngIf="!isPublic">By
+      <div class="description" *ngIf="!isPublic && !isSystemInvoker">By
         <span style="padding:2px; color: #0066c0;">
           <a *ngIf="detectorDataLocalCopy.metadata && detectorDataLocalCopy.metadata.author; else unknownAuthor" href="mailto:{{authorEmails}}">
             {{detectorDataLocalCopy.metadata.author}}
