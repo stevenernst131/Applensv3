@@ -22,7 +22,9 @@ export enum StatisticsType{
 export class TabMonitoringComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService) { }
 
-  detectorResponse: DetectorResponse;
+  systemInvokerResponse: DetectorResponse;
+  detectorAuthor: String = "";
+  private authorEmails: string;
 
   @Input() systemInvokerId: string = "__monitoring";
   @Input() statisticsType: StatisticsType = StatisticsType.Monitoring;
@@ -55,7 +57,7 @@ export class TabMonitoringComponent implements OnInit {
 
   ngOnInit() {
     this.getMonitoringResponse();
-    this.reportName = this.statisticsType === StatisticsType.Monitoring ? `Detector Monitoring Report 📈`: `Detector Business Analytics 👻`
+    this.getDetectorResponse();
     this.dataSourceKeys = Array.from(this.dataSourceMapping.keys());
     this.timeRangeKeys = Array.from(this.timeRangeMapping.keys());
   }
@@ -65,11 +67,38 @@ export class TabMonitoringComponent implements OnInit {
   }
 
   getMonitoringResponse() {
-    this.detectorResponse = null;
+    this.systemInvokerResponse = null;
     this.detectorId = this._route.parent.snapshot.params['detector'].toLowerCase();
     this._diagnosticApiService.getSystemInvoker(this.detectorId, this.systemInvokerId, this.dataSourceFlag, this.timeRangeInHours)
       .subscribe((response: DetectorResponse) => {
-        this.detectorResponse = response;
+        this.systemInvokerResponse = response;
+      }, (error: any) => {
+        this.error = error;
+      });
+  }
+
+  getDetectorResponse() {
+    this.detectorId = this._route.parent.snapshot.params['detector'].toLowerCase();
+
+    this._diagnosticApiService.getDetector(this.detectorId)
+      .subscribe((response: DetectorResponse) => {
+        if (response && response.metadata) {
+          if (response.metadata.name) {
+            this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${response.metadata.name} Monitoring Report 📈`: `${response.metadata.name} Analytics 📊`;
+          }
+          if (response.metadata.author) {
+            this.detectorAuthor = response.metadata.author;
+            let separators = [' ', ',', ';', ':'];
+            let authors = response.metadata.author.split(new RegExp(separators.join('|'), 'g'));
+            let authorsArray: string[] = [];
+            authors.forEach(author => {
+              if (author && author.length > 0) {
+                authorsArray.push(`${author}@microsoft.com`);
+              }
+            });
+            this.authorEmails = authorsArray.join(";");
+          }
+        }
       }, (error: any) => {
         this.error = error;
       });
