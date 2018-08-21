@@ -23,7 +23,6 @@ export class StatusIconComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes && changes['status'] && this.status !== null) {
-      console.log(this.status);
       this.statusColor = StatusStyles.getColorByStatus(this.status);
       this.statusIcon = StatusStyles.getIconByStatus(this.status);
     }

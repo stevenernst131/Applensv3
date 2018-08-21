@@ -22,7 +22,7 @@ export class AadAuthGuard implements CanActivate {
                 return this._authService.registerWithAppServiceAuth().map(
                     response => {
                         if (this._authService.returnUrl) {
-                            this._router.navigate([this._authService.returnUrl]);
+                            this._router.navigateByUrl(this._authService.returnUrl);
                             this._authService.returnUrl = null;
                         }
                         return true;
@@ -31,7 +31,7 @@ export class AadAuthGuard implements CanActivate {
             }
             else {
                 if (this._authService.returnUrl) {
-                    this._router.navigate([this._authService.returnUrl]);
+                    this._router.navigateByUrl(this._authService.returnUrl);
                     this._authService.returnUrl = null;
                 }
                 return true;

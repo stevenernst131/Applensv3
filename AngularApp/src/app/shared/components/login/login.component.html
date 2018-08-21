@@ -5,24 +5,26 @@
         <div class="box-header with-border">
           <h3 class="box-title" *ngIf="!error && !popUpsBlocked">Logging In...</h3>
           <h3 class="box-title" *ngIf="error && !popUpsBlocked">AAD Login Error</h3>
-          <h3 class="box-title" *ngIf="popUpsBlocked">Sign in requires the browser to allow pop ups for this domain</h3>
+          <h3 class="box-title" *ngIf="popUpsBlocked">Allow Pop Ups or Authenticate</h3>
         </div>
-        <div style="padding: 10px" >
+        <div style="padding: 10px">
           <div *ngIf="!popUpsBlocked">
-              <p *ngIf="error">{{error}}</p>
-              <p>Make sure your browser allows pop ups for this site. You may not be able to log in using Internet Explorer.</p>
-              <p *ngIf="inIFrame">If you are having issues authenticating, <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to authenticate in a new tab</p>
+            <p *ngIf="error">{{error}}</p>
+            <p>Make sure your browser allows pop ups for this site. You may not be able to log in using Internet Explorer.</p>
+            <p *ngIf="inIFrame">If you are having issues authenticating,
+              <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to authenticate in a new tab</p>
           </div>
           <div *ngIf="popUpsBlocked">
-            <p>If you are using chrome you can enable pop ups by clicking the red icon in the right side of the address bar: </p>
-            <img src="/assets/img/popups_blocked_chrome.jpg"/>
-            <p>After enabling pop ups, refresh page for change to take effect. </p>
-
-            <br/> 
-
-            <p *ngIf="inIFrame">If you are having issues authenticating, <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to try authenticating directly with applens in a new tab</p>
+            <!-- <p>If you are using chrome you can enable pop ups by clicking the red icon in the right side of the address bar:
+              </p>
+            <img src="/assets/img/popups_blocked_chrome.jpg" />
+            <br/>
+            <p>After enabling pop ups, click Login below. </p> -->
+            <div style="text-align: center">
+              <button class="btn btn-primary" (click)="login()">Authenticate</button>
+            </div>
           </div>
-          
+
         </div>
       </div>
     </div>

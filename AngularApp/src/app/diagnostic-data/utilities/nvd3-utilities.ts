@@ -5,6 +5,9 @@ export class nvd3Utilities {
         let type: string;
 
         switch (chartType as TimeSeriesType) {
+            case TimeSeriesType.StackedAreaGraph: 
+                type = 'stackedAreaChart';
+                break;
             case TimeSeriesType.BarGraph:
                 type = 'multiBarChart';
                 break;
