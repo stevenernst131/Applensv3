@@ -34,13 +34,21 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   defaultValue: number = 0;
   graphOptions: any;
 
-  timeGrainInMinutes: number;
+  _timeGrain: moment.Duration;
+  set timeGrain(value) {
+    console.log(value);
+    this._timeGrain = value;
+  }
+
+  get timeGrain(): moment.Duration {
+    return this._timeGrain;
+  }
 
   processData(data: DiagnosticData) {
     super.processData(data);
 
     if (data) {
-      this.timeGrainInMinutes = this._getDefaultTimegrain();
+      this.timeGrain = this._getInitialTimegrain();
       this.renderingProperties = <TimeSeriesRendering>data.renderingProperties;
       this.graphOptions = this.renderingProperties.graphOptions;
       this.dataTable = data.table;
@@ -81,8 +89,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     let tablePoints: TablePoint[] = [];
 
-    let smallestDiffBetweenPoints: number = this.timeGrainInMinutes;
-    let greatestCommonFactor: number = smallestDiffBetweenPoints;
     let lastTimeStamp: moment.Moment = this.startTime;
 
     data.table.rows.forEach(row => {
@@ -91,16 +97,14 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
         let timestamp = moment.tz(row[timestampColumn], TimeZones.UTC);
 
-        let currentDiff: number;
-        let currentGcf: number;
         if (timestamp.isAfter(lastTimeStamp)) {
-          if((currentDiff = timestamp.diff(lastTimeStamp, 'minutes')) < this.timeGrainInMinutes) {
-            smallestDiffBetweenPoints = currentDiff;
+          let currentGcf = this._getGreatestCommonFactor(timestamp)
+          if(currentGcf.asMilliseconds() < this.timeGrain.asMilliseconds()) {
+            this.timeGrain = currentGcf;
           }
-          if((currentGcf = this._getGreatestCommonFactor(timestamp)) < greatestCommonFactor) {
-            greatestCommonFactor = currentGcf;
-          }          
         }
+
+        lastTimeStamp = timestamp;
 
         let point: TablePoint = <TablePoint>{
           timestamp: timestamp,
@@ -109,13 +113,14 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           counterName: counterNameColumnIndex >= 0 ? row[counterNameColumnIndex] : null
         };
 
-        lastTimeStamp = timestamp;
-
         tablePoints.push(point);
       });
     });
 
-    this.timeGrainInMinutes = this._gcd(smallestDiffBetweenPoints, greatestCommonFactor);
+    // If there is only 1 or 0 points, fallback on no data defaults
+    if (data.table.rows.length <= 1) {
+      this.timeGrain = this._getNoDataTimegrain();
+    }
     this._prepareStartAndEndTime();
 
     Object.keys(timeSeriesDictionary).forEach(key => {
@@ -135,7 +140,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
         }
       }
 
-      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
+      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
         let value = this.defaultValue;
 
         if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
@@ -151,8 +156,19 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     });
   }
 
-  private _getGreatestCommonFactor(timestamp: moment.Moment) {
-    return this._gcd(timestamp.minutes(), 60)
+  private _getGreatestCommonFactor(timestamp: moment.Moment): moment.Duration {
+    let minuteGcf = this._gcd(timestamp.minutes(), 60);
+    if (minuteGcf !== 60) return moment.duration(minuteGcf, 'minutes'); 
+
+    let hourGcf = this._gcd(timestamp.hours(), 24);
+    if (hourGcf !== 24) return moment.duration(hourGcf, 'hours');
+
+    let daysInMonth = timestamp.daysInMonth();
+    let daysGcf = hourGcf === 24 ? this._gcd(timestamp.days(), daysInMonth): 0;
+    if (daysGcf !== daysInMonth) return moment.duration(daysGcf, 'days');
+
+    return moment.duration(1, 'month');
+
   }
 
   private _gcd(a: number, b: number) {
@@ -167,25 +183,63 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     }
   }
 
-  private _getDefaultTimegrain() {
-    let range = Math.abs(this.startTime.diff(this.endTime, 'hours'));
-    // > 7 days: 1 day
-    if (range > 168) {
-      return 24 * 60;
+  // Initial Time Grain: The max allowed for each range
+  private _getInitialTimegrain(): moment.Duration {
+    let rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
+    let rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
+
+    // Greater than 1 month: 1 month
+    if (rangeInMonths > 1) {
+      return moment.duration(1, 'months');
     }
+    // 7 days -> 1 month: 1 day
+    if (rangeInHours >= 168) {
+      return moment.duration(7, 'days');
+    }
+    
+    // 1 days -> 7 days
+    if (rangeInHours > 24) {
+      return moment.duration(1, 'days');
+    }
+
     // else 1 hr
-    return 60;
+    return moment.duration(1, 'hours');
+  }
+
+  // No data time grain: The default in the case of one or no data points
+  private _getNoDataTimegrain() {
+    let rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
+    let rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
+
+    // Greater than 1 month: 1 month
+    if (rangeInMonths > 1) {
+      return moment.duration(1, 'months');
+    }
+    // 7 days -> 1 month: 1 day
+    if (rangeInHours >= 168) {
+      return moment.duration(1, 'days');
+    }
+    
+    // 1 days -> 7 days
+    if (rangeInHours > 24) {
+      return moment.duration(1, 'hours');
+    }
+
+    // else 1 hr
+    return moment.duration(5, 'minutes');
   }
 
   private _prepareStartAndEndTime() {
     let start = this.startTime;
     let end = this.endTime;
 
-    TimeUtilities.roundDownByMinute(start, this.timeGrainInMinutes);
-    TimeUtilities.roundDownByMinute(end, this.timeGrainInMinutes);
-    end.minute(end.minute() - end.minute() % this.timeGrainInMinutes).second(0);
+    TimeUtilities.roundDown(start, this.timeGrain);
+    TimeUtilities.roundDown(end, this.timeGrain);
+    end.minute(end.minute() - end.minute() % this.timeGrain.minutes()).second(0);
     this.startTime = start;
     this.endTime = end;
+    console.log(this.startTime);
+    console.log(this.endTime);
   }
 
   private _getSeriesName(column: string, countername: string) {
