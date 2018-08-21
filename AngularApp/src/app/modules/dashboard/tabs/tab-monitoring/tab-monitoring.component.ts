@@ -84,7 +84,7 @@ export class TabMonitoringComponent implements OnInit {
       .subscribe((response: DetectorResponse) => {
         if (response && response.metadata) {
           if (response.metadata.name) {
-            this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${response.metadata.name} Monitoring Report 📈`: `${response.metadata.name} Analytics 📊`;
+            this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${response.metadata.name} Monitoring 📈`: `${response.metadata.name} Analytics 📊`;
           }
           if (response.metadata.author) {
             this.detectorAuthor = response.metadata.author;
