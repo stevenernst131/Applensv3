@@ -1,14 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
+import { DetectorResponse, DetectorMetaData } from '../../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '@angular/router';
 import { QueryParamsService } from '../../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
+import { DiagnosticService } from '../../../../diagnostic-data/services/diagnostic.service';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { TimeZones } from '../../../../shared/models/datetime';
 
 
-export enum StatisticsType{
+export enum StatisticsType {
   Monitoring,
   Analytics
 }
@@ -20,7 +21,7 @@ export enum StatisticsType{
 })
 
 export class TabMonitoringComponent implements OnInit {
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService, private _diagnosticService: DiagnosticService) { }
 
   systemInvokerResponse: DetectorResponse;
   detectorAuthor: String = "";
@@ -33,7 +34,7 @@ export class TabMonitoringComponent implements OnInit {
   private detectorId: string;
   private dataSourceMapping: Map<string, string> = new Map<string, string>([
     ["All", "0"],
-    ["Applens",  "1"],
+    ["Applens", "1"],
     ["Azure Portal", "2"]
   ]);
   dataSourceKeys: string[];
@@ -42,7 +43,7 @@ export class TabMonitoringComponent implements OnInit {
 
   private timeRangeMapping: Map<string, string> = new Map<string, string>([
     ["Last 24 hours", "24"],
-    ["Last 3 days",  "72"],
+    ["Last 3 days", "72"],
     ["Last 7 days", "168"]
   ]);
   timeRangeKeys: string[];
@@ -78,30 +79,27 @@ export class TabMonitoringComponent implements OnInit {
   }
 
   getDetectorResponse() {
-    this.detectorId = this._route.parent.snapshot.params['detector'].toLowerCase();
-
-    this._diagnosticApiService.getDetector(this.detectorId)
-      .subscribe((response: DetectorResponse) => {
-        if (response && response.metadata) {
-          if (response.metadata.name) {
-            this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${response.metadata.name} Monitoring 📈`: `${response.metadata.name} Analytics 📊`;
+    this.detectorId = this._route.parent.snapshot.params['detector'];
+    this._diagnosticService.getDetectors().subscribe(detectors => {
+      let detectorMetaData: DetectorMetaData = detectors.find(detector => this.detectorId === detector.id);
+      if (detectorMetaData.name) {
+        this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${detectorMetaData.name} Monitoring 📈` : `${detectorMetaData.name} Analytics 📊`;
+      }
+      if (detectorMetaData.author) {
+        this.detectorAuthor = detectorMetaData.author;
+        let separators = [' ', ',', ';', ':'];
+        let authors = detectorMetaData.author.split(new RegExp(separators.join('|'), 'g'));
+        let authorsArray: string[] = [];
+        authors.forEach(author => {
+          if (author && author.length > 0) {
+            authorsArray.push(`${author}@microsoft.com`);
           }
-          if (response.metadata.author) {
-            this.detectorAuthor = response.metadata.author;
-            let separators = [' ', ',', ';', ':'];
-            let authors = response.metadata.author.split(new RegExp(separators.join('|'), 'g'));
-            let authorsArray: string[] = [];
-            authors.forEach(author => {
-              if (author && author.length > 0) {
-                authorsArray.push(`${author}@microsoft.com`);
-              }
-            });
-            this.authorEmails = authorsArray.join(";");
-          }
-        }
-      }, (error: any) => {
-        this.error = error;
-      });
+        });
+        this.authorEmails = authorsArray.join(";");
+      }
+    }, (error: any) => {
+      this.error = error;
+    });
   }
 
   setDataSource(selectedDataSource: string) {
@@ -114,7 +112,7 @@ export class TabMonitoringComponent implements OnInit {
     this.timeRangeInHours = this.timeRangeMapping.get(selectedTimeRange);
 
     // Update startTime and timeGrain for rendering purpose
-    let timeRangeInDays: number = parseInt(this.timeRangeInHours)/24;
+    let timeRangeInDays: number = parseInt(this.timeRangeInHours) / 24;
     this.startTime = this.endTime.clone().subtract(timeRangeInDays, 'days');
     if (timeRangeInDays === 1)
       this.timeGrainInMinutes = 5;
