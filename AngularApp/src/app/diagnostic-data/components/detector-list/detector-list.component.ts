@@ -123,7 +123,8 @@ export class DetectorListComponent extends DataRenderBaseComponent {
     let clickDetectorEventProperties = {
       "ChildDetectorName": viewModel.title,
       "ChildDetectorId": viewModel.metadata.id,
-      "IsExpanded": viewModel.expanded
+      "IsExpanded": viewModel.expanded,
+      "Status": viewModel.status
     }
 
     // Log children detectors click
