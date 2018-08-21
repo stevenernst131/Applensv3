@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import * as momentNs from 'moment-timezone';
-const moment = momentNs;
+import * as moment from 'moment-timezone';
 import { TimeSeriesType } from '../../models/detector';
 import { nvd3Utilities } from '../../utilities/nvd3-utilities';
 
@@ -20,6 +19,10 @@ export class Nvd3GraphComponent implements OnInit {
   @Input() chartType: TimeSeriesType;
 
   @Input() chartOptions: any;
+
+  @Input() startTime: moment.Moment;
+
+  @Input() endTime: moment.Moment;
 
   loading: boolean = true;
 
@@ -42,6 +45,10 @@ export class Nvd3GraphComponent implements OnInit {
 
     if (this.chartOptions) {
       this._updateObject(this.options.chart, this.chartOptions);
+    }
+
+    if (this.startTime && this.endTime) {
+      this.options.forceX = [this.startTime, this.endTime];
     }
   }
 
@@ -102,7 +109,7 @@ export class Nvd3GraphComponent implements OnInit {
 }
 
 export interface GraphPoint {
-  x: momentNs.Moment;
+  x: moment.Moment;
   y: number;
 }
 
