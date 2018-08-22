@@ -5,26 +5,22 @@
         <div class="box-header with-border">
           <h3 class="box-title" *ngIf="!error && !popUpsBlocked">Logging In...</h3>
           <h3 class="box-title" *ngIf="error && !popUpsBlocked">AAD Login Error</h3>
-          <h3 class="box-title" *ngIf="popUpsBlocked">Allow Pop Ups or Authenticate</h3>
+          <h3 class="box-title" *ngIf="popUpsBlocked">Click to Authenticate</h3>
         </div>
         <div style="padding: 10px">
           <div *ngIf="!popUpsBlocked">
-            <p *ngIf="error">{{error}}</p>
-            <p>Make sure your browser allows pop ups for this site. You may not be able to log in using Internet Explorer.</p>
-            <p *ngIf="inIFrame">If you are having issues authenticating,
-              <a href="https://applens.azurewebsites.net" target="_blank">click here</a> to authenticate in a new tab</p>
+            <p *ngIf="error">Error: {{error}}</p>
+            <p>Click below to retry</p>
+            <div style="text-align: center">
+                <button class="btn btn-primary" (click)="login()">Authenticate</button>
+              </div>
           </div>
           <div *ngIf="popUpsBlocked">
-            <!-- <p>If you are using chrome you can enable pop ups by clicking the red icon in the right side of the address bar:
-              </p>
-            <img src="/assets/img/popups_blocked_chrome.jpg" />
-            <br/>
-            <p>After enabling pop ups, click Login below. </p> -->
+            <p>You may allow pop ups for this site to skip this step in the future</p>
             <div style="text-align: center">
               <button class="btn btn-primary" (click)="login()">Authenticate</button>
             </div>
           </div>
-
         </div>
       </div>
     </div>
