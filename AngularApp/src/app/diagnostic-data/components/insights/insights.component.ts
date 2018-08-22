@@ -72,13 +72,14 @@ export class InsightsComponent extends DataRenderBaseComponent {
 
   toggleInsightStatus(insight: any) {
     insight.isExpanded = insight.hasData() && !insight.isExpanded;
-    this.logInsightClickEvent(insight.title, insight.isExpanded);
+    this.logInsightClickEvent(insight.title, insight.isExpanded, insight.status);
   }
 
-  logInsightClickEvent(insightName: string, isExpanded: boolean) {
+  logInsightClickEvent(insightName: string, isExpanded: boolean, status: string) {
     let eventProps: { [name: string]: string } = {
       "Title": insightName,
-      "IsExpanded": String(isExpanded)
+      "IsExpanded": String(isExpanded),
+      "Status": status
     };
 
     this.logEvent(TelemetryEventNames.InsightsTitleClicked, eventProps);

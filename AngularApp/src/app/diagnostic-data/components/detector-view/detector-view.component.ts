@@ -39,6 +39,7 @@ export class DetectorViewComponent implements OnInit {
 
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;
+  @Input() parentDetectorId: string = "";
   @Input() isSystemInvoker: boolean = false;
 
 
@@ -53,7 +54,8 @@ export class DetectorViewComponent implements OnInit {
         this.detectorEventProperties = {
           "StartTime": String(this.startTime),
           "EndTime": String(this.endTime),
-          "DetectorId": data.metadata.id
+          "DetectorId": data.metadata.id,
+          "ParentDetectorId": this.parentDetectorId
         }
 
         this.ratingEventProperties = {
