@@ -54,11 +54,19 @@ export class MainComponent implements OnInit {
 
   enabledResourceTypes: ResourceServiceInputs[];
 
+  inIFrame: boolean = false;
+
   constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _authService: AuthService) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 
     this.contentHeight = window.innerHeight + 'px';
+
+    this.inIFrame = window.parent !== window;
+
+    if (this.inIFrame) {
+      this.resourceTypes = this.resourceTypes.filter(resourceType => !resourceType.caseId);
+    }
 
     // TODO: Use this to restrict access to routes that don't match a supported resource type
     this._http.get('assets/enabledResourceTypes.json').map(response => {
