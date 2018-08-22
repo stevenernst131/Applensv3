@@ -2,9 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DetectorResponse, RenderingType } from '../../models/detector';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
-import * as moment from 'moment';
+import * as momentNs from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+
+const moment = momentNs;
 
 @Component({
   selector: 'detector-view',
@@ -34,8 +36,8 @@ export class DetectorViewComponent implements OnInit {
     this.errorSubject.next(value);
   }
 
-  @Input() startTime: moment.Moment;
-  @Input() endTime: moment.Moment;
+  @Input() startTime: momentNs.Moment;
+  @Input() endTime: momentNs.Moment;
 
   @Input() showEdit: boolean = true;
   @Input() insideDetectorList: boolean = false;

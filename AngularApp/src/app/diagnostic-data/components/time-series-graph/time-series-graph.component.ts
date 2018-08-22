@@ -7,9 +7,11 @@ import { Timestamp } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { time } from 'd3';
 import { TimeSeries, TablePoint } from '../../models/time-series';
-import * as moment from 'moment-timezone';
+import * as momentNs from 'moment-timezone';
 import { TimeUtilities, TimeZones } from '../../utilities/time-utilities';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
+
+const moment = momentNs;
 
 @Component({
   selector: 'time-series-graph',
@@ -34,7 +36,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   defaultValue: number = 0;
   graphOptions: any;
 
-  timeGrain: moment.Duration;
+  timeGrain: momentNs.Duration;
 
   processData(data: DiagnosticData) {
     super.processData(data);
@@ -81,7 +83,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     let tablePoints: TablePoint[] = [];
 
-    let lastTimeStamp: moment.Moment = this.startTime;
+    let lastTimeStamp: momentNs.Moment = this.startTime;
 
     data.table.rows.forEach(row => {
       numberValueColumns.forEach(column => {
@@ -148,7 +150,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     });
   }
 
-  private _getGreatestCommonFactor(timestamp: moment.Moment): moment.Duration {
+  private _getGreatestCommonFactor(timestamp: momentNs.Moment): momentNs.Duration {
     let minuteGcf = this._gcd(timestamp.minutes(), 60);
     if (minuteGcf !== 60) return moment.duration(minuteGcf, 'minutes'); 
 
@@ -176,26 +178,26 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   // Initial Time Grain: The max allowed for each range
-  private _getInitialTimegrain(): moment.Duration {
+  private _getInitialTimegrain(): momentNs.Duration {
     let rangeInMonths = Math.abs(this.startTime.diff(this.endTime, 'months'));
     let rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
 
     // Greater than 1 month: 1 month
     if (rangeInMonths > 1) {
-      return moment.duration(1, 'months');
+      return momentNs.duration(1, 'months');
     }
     // 7 days -> 1 month: 1 day
     if (rangeInHours >= 168) {
-      return moment.duration(7, 'days');
+      return momentNs.duration(7, 'days');
     }
     
     // 1 days -> 7 days
     if (rangeInHours > 24) {
-      return moment.duration(1, 'days');
+      return momentNs.duration(1, 'days');
     }
 
     // else 1 hr
-    return moment.duration(1, 'hours');
+    return momentNs.duration(1, 'hours');
   }
 
   // No data time grain: The default in the case of one or no data points
@@ -205,20 +207,20 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     // Greater than 1 month: 1 month
     if (rangeInMonths > 1) {
-      return moment.duration(1, 'months');
+      return momentNs.duration(1, 'months');
     }
     // 7 days -> 1 month: 1 day
     if (rangeInHours >= 168) {
-      return moment.duration(1, 'days');
+      return momentNs.duration(1, 'days');
     }
     
     // 1 days -> 7 days
     if (rangeInHours > 24) {
-      return moment.duration(1, 'hours');
+      return momentNs.duration(1, 'hours');
     }
 
     // else 1 hr
-    return moment.duration(5, 'minutes');
+    return momentNs.duration(5, 'minutes');
   }
 
   private _prepareStartAndEndTime() {
