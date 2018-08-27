@@ -35,6 +35,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   dataTable: DataTableResponseObject;
   defaultValue: number = 0;
   graphOptions: any;
+  customizeXAxis: boolean;
 
   timeGrain: momentNs.Duration;
 
@@ -42,9 +43,10 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     super.processData(data);
 
     if (data) {
-      this.timeGrain = this._getInitialTimegrain();
       this.renderingProperties = <TimeSeriesRendering>data.renderingProperties;
       this.graphOptions = this.renderingProperties.graphOptions;
+      this.customizeXAxis = this.graphOptions && this.graphOptions.customizeX &&  this.graphOptions.customizeX === "true";
+      this.timeGrain = this._getInitialTimegrain();
       this.dataTable = data.table;
       this._processDiagnosticData(data);
       this.selectSeries();
@@ -91,7 +93,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
         let timestamp = moment.tz(row[timestampColumn], TimeZones.UTC);
 
-        if (timestamp.isAfter(lastTimeStamp)) {
+        if (!this.customizeXAxis && timestamp.isAfter(lastTimeStamp)) {
           let currentGcf = this._getGreatestCommonFactor(timestamp)
           if(currentGcf.asMilliseconds() < this.timeGrain.asMilliseconds()) {
             this.timeGrain = currentGcf;
@@ -115,7 +117,10 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     if (data.table.rows.length <= 1) {
       this.timeGrain = this._getNoDataTimegrain();
     }
-    this._prepareStartAndEndTime();
+
+    if (!this.customizeXAxis) {
+      this._prepareStartAndEndTime();
+    }
 
     Object.keys(timeSeriesDictionary).forEach(key => {
 
@@ -127,25 +132,34 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
       let pointToAdd = pointsForThisSeries.pop();
 
-      while (pointToAdd.timestamp.isBefore(this.startTime)) {
-        pointToAdd = pointsForThisSeries.pop();
-        if (!pointToAdd) {
-          console.error('No data returned within time range');
-        }
-      }
-
-      for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
-        let value = this.defaultValue;
-
-        if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
-          value = pointToAdd.value;
-
+      if (!this.customizeXAxis) {
+        while (pointToAdd.timestamp.isBefore(this.startTime)) {
           pointToAdd = pointsForThisSeries.pop();
+          if (!pointToAdd) {
+            console.error('No data returned within time range');
+          }
         }
-
-        timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
       }
 
+      if (this.customizeXAxis) {
+        pointsForThisSeries.forEach(pointToAdd => {
+          if (pointToAdd.timestamp.isBefore(this.startTime)) {
+            this.startTime = pointToAdd.timestamp;
+          }
+          timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: moment.tz(pointToAdd.timestamp, TimeZones.UTC), y: pointToAdd.value });
+        });
+      }
+      else {
+        for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
+          let value = this.defaultValue;
+          if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
+            value = pointToAdd.value;
+  
+            pointToAdd = pointsForThisSeries.pop();
+          }
+          timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
+        }
+      }
       this.allSeries.push(timeSeriesDictionary[key]);
     });
   }
@@ -183,7 +197,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     let rangeInHours = Math.abs(this.startTime.diff(this.endTime, 'hours'));
 
     // Greater than 1 month: 1 month
-    if (rangeInMonths > 1) {
+    if (rangeInMonths > 1 || this.customizeXAxis && rangeInMonths === 1) {
       return momentNs.duration(1, 'months');
     }
     // 7 days -> 1 month: 1 day
