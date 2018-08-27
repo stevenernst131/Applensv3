@@ -110,5 +110,7 @@ export class TabMonitoringComponent implements OnInit {
   setTimeRange(selectedTimeRange: string) {
     this.selectedTimeRange = selectedTimeRange;
     this.timeRangeInHours = this.timeRangeMapping.get(selectedTimeRange);
+    let timeRangeInDays: number = parseInt(this.timeRangeInHours) / 24;
+    this.startTime = this.endTime.clone().subtract(timeRangeInDays, 'days');
   }
 }
