@@ -129,27 +129,16 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           .filter(point => this._getSeriesName(point.column, point.counterName) === key)
           .sort((b, a) => { return a.timestamp.diff(b.timestamp) });
 
-
-      let pointToAdd = pointsForThisSeries.pop();
-
       if (!this.customizeXAxis) {
+        let pointToAdd = pointsForThisSeries.pop();
+
         while (pointToAdd.timestamp.isBefore(this.startTime)) {
           pointToAdd = pointsForThisSeries.pop();
           if (!pointToAdd) {
             console.error('No data returned within time range');
           }
         }
-      }
 
-      if (this.customizeXAxis) {
-        pointsForThisSeries.forEach(pointToAdd => {
-          if (pointToAdd.timestamp.isBefore(this.startTime)) {
-            this.startTime = pointToAdd.timestamp;
-          }
-          timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: moment.tz(pointToAdd.timestamp, TimeZones.UTC), y: pointToAdd.value });
-        });
-      }
-      else {
         for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
           let value = this.defaultValue;
           if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
@@ -160,6 +149,15 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: d.clone(), y: value });
         }
       }
+      else {
+        pointsForThisSeries.forEach(pointToAdd => {
+          if (pointToAdd.timestamp.isBefore(this.startTime)) {
+            this.startTime = pointToAdd.timestamp;
+          }
+          timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: moment.tz(pointToAdd.timestamp, TimeZones.UTC), y: pointToAdd.value });
+        });
+      }
+
       this.allSeries.push(timeSeriesDictionary[key]);
     });
   }
