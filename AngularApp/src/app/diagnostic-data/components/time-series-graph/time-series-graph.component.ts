@@ -127,7 +127,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       let pointsForThisSeries =
         tablePoints
           .filter(point => this._getSeriesName(point.column, point.counterName) === key)
-          .sort((b, a) => { return a.timestamp.diff(b.timestamp) });
+          .sort((b, a) => { return !this.customizeXAxis ? a.timestamp.diff(b.timestamp) : b.timestamp.diff(a.timestamp) }); 
 
       if (!this.customizeXAxis) {
         let pointToAdd = pointsForThisSeries.pop();
