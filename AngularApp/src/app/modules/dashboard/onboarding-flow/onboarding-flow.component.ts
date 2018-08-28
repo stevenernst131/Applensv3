@@ -10,6 +10,10 @@ import { QueryParamsService } from '../../../shared/services/query-params.servic
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import * as momentNs from 'moment';
+import { TimeZones } from '../../../shared/models/datetime';
+
+const moment = momentNs;
 
 export enum DevelopMode {
   Create,
@@ -27,9 +31,11 @@ export class OnboardingFlowComponent implements OnInit {
 
   @Input() mode: DevelopMode = DevelopMode.Create;
   @Input() detectorId: string = '';
-  @Input() systemInvokerId: string = '';
   @Input() dataSource: string = '';
   @Input() timeRange: string = '';
+  @Input() startTime: momentNs.Moment = moment.tz(TimeZones.UTC).subtract(1, 'days');
+  @Input() endTime: momentNs.Moment =  moment.tz(TimeZones.UTC);
+
   fileName: string;
   editorOptions: any;
   code: string;
@@ -83,13 +89,14 @@ export class OnboardingFlowComponent implements OnInit {
 
   ngOnInit() {
     this.resourceId = this.resourceService.getCurrentResourceId();
-
     if (this.mode === DevelopMode.Create) {
       // CREATE FLOW
       this.githubService.getDetectorTemplate(this.resourceService.templateFileName).subscribe(data => {
         this.code = data;
       });
       this.fileName = "new.csx";
+      this.startTime = this.queryParamsService.startTime;
+      this.endTime = this.queryParamsService.endTime;
     }
     else if (this.mode === DevelopMode.Edit) {
       // EDIT FLOW
@@ -97,6 +104,8 @@ export class OnboardingFlowComponent implements OnInit {
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
         this.code = data;
       });
+      this.startTime = this.queryParamsService.startTime;
+      this.endTime = this.queryParamsService.endTime;
     }
     else if (this.mode === DevelopMode.EditMonitoring) {
       // SYSTEM MONITORING FLOW

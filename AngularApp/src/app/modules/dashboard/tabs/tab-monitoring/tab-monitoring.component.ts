@@ -44,15 +44,15 @@ export class TabMonitoringComponent implements OnInit {
   private timeRangeMapping: Map<string, string> = new Map<string, string>([
     ["Last 24 hours", "24"],
     ["Last 3 days", "72"],
-    ["Last 7 days", "168"]
+    ["Last Week", "168"],
+    ["Last Month", "720"]
   ]);
   timeRangeKeys: string[];
-  selectedTimeRange: string = "Last 7 days";
+  selectedTimeRange: string = "Last Week";
   private timeRangeInHours: string = "168";
 
   endTime: moment.Moment = moment.tz(TimeZones.UTC);
   startTime: moment.Moment = this.endTime.clone().subtract(7, 'days');
-  timeGrainInMinutes: number = 60;
 
   error: any;
 
@@ -110,15 +110,7 @@ export class TabMonitoringComponent implements OnInit {
   setTimeRange(selectedTimeRange: string) {
     this.selectedTimeRange = selectedTimeRange;
     this.timeRangeInHours = this.timeRangeMapping.get(selectedTimeRange);
-
-    // Update startTime and timeGrain for rendering purpose
     let timeRangeInDays: number = parseInt(this.timeRangeInHours) / 24;
     this.startTime = this.endTime.clone().subtract(timeRangeInDays, 'days');
-    if (timeRangeInDays === 1)
-      this.timeGrainInMinutes = 5;
-    else if (timeRangeInDays === 3)
-      this.timeGrainInMinutes = 15;
-    else if (timeRangeInDays === 7)
-      this.timeGrainInMinutes = 60;
   }
 }
