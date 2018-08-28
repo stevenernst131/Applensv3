@@ -102,14 +102,16 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
         lastTimeStamp = timestamp;
 
-        let point: TablePoint = <TablePoint>{
-          timestamp: timestamp,
-          value: parseFloat(row[columnIndex]),
-          column: column.columnName,
-          counterName: counterNameColumnIndex >= 0 ? row[counterNameColumnIndex] : null
-        };
-
-        tablePoints.push(point);
+        if (row[columnIndex]) {
+          let point: TablePoint = <TablePoint>{
+            timestamp: timestamp,
+            value: parseFloat(row[columnIndex]),
+            column: column.columnName,
+            counterName: counterNameColumnIndex >= 0 ? row[counterNameColumnIndex] : null
+          };
+  
+          tablePoints.push(point);
+        }
       });
     });
 
