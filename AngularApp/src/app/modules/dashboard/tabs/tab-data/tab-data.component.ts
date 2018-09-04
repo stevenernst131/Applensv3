@@ -21,27 +21,31 @@ export class TabDataComponent implements OnInit {
 
   ngOnInit() {
 
+    console.log('tab data onInit');
+
     this._route.params.subscribe((params: Params) => {
-      this.getDetectorResponse();
+      this.refresh();
     });
 
-    this._route.queryParams.subscribe((queryParams: Params) => {
-      this.getDetectorResponse();
-    })
+    // this._route.queryParams.subscribe((queryParams: Params) => {
+    //   this.getDetectorResponse();
+    // });
+
+    
   }
 
   refresh() {
-    this.getDetectorResponse();
+    this.detector = this._route.snapshot.params['detector'];
   }
 
-  getDetectorResponse() {
-    this.detectorResponse = null;
-    this.detector = this._route.snapshot.params['detector'];
-    this._diagnosticApiService.getDetector(this.detector)
-      .subscribe((response: DetectorResponse) => {
-        this.detectorResponse = response;
-      }, (error: any) => {
-        this.error = error;
-      });
-  }
+  // getDetectorResponse() {
+  //   this.detectorResponse = null;
+  //   this.detector = this._route.snapshot.params['detector'];
+  //   this._diagnosticApiService.getDetector(this.detector)
+  //     .subscribe((response: DetectorResponse) => {
+  //       this.detectorResponse = response;
+  //     }, (error: any) => {
+  //       this.error = error;
+  //     });
+  // }
 }

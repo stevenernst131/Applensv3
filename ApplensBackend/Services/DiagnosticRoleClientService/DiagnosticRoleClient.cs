@@ -66,30 +66,28 @@ namespace AppLensV3
                 MaxResponseContentBufferSize = Int32.MaxValue
             };
 
-            client.DefaultRequestHeaders.Add("internal-applens", "true");
+            //client.DefaultRequestHeaders.Add("internal-applens", "true");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
         }
 
-        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null)
+        public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true)
         {
             try
             {
                 HttpResponseMessage response;
                 if (!hitPassThroughAPI(path))
                 {
-                    switch (method.ToUpper())
+                    HttpRequestMessage requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post: HttpMethod.Get, path);
+                    requestMessage.Headers.Add("internal-applens", internalView.ToString());
+
+                    if (method.ToUpper() == "POST")
                     {
-                        case "POST":
-                            var content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
-                            response = await _client.PostAsync(path, content);
-                            break;
-                        case "GET":
-                        default:
-                            response = await _client.GetAsync(path);
-                            break;
+                        requestMessage.Content = new StringContent(body ?? string.Empty, Encoding.UTF8, "application/json");
                     }
+
+                    response = await _client.SendAsync(requestMessage);
                 }
                 else
                 {

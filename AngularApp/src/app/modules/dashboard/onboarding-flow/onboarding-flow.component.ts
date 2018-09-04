@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 import { QueryResponse, CompilerResponse } from '../../../diagnostic-data/models/compiler-response';
@@ -27,7 +27,7 @@ export enum DevelopMode {
   templateUrl: './onboarding-flow.component.html',
   styleUrls: ['./onboarding-flow.component.css']
 })
-export class OnboardingFlowComponent implements OnInit {
+export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
   @Input() mode: DevelopMode = DevelopMode.Create;
   @Input() detectorId: string = '';
@@ -103,6 +103,7 @@ export class OnboardingFlowComponent implements OnInit {
       this.fileName = `${this.detectorId}.csx`;
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
         this.code = data;
+        this.retrieveProgress();
       });
       this.startTime = this.queryParamsService.startTime;
       this.endTime = this.queryParamsService.endTime;
@@ -112,6 +113,7 @@ export class OnboardingFlowComponent implements OnInit {
       this.fileName = '__monitoring.csx';
       this.githubService.getDetectorFile("__monitoring").subscribe(data => {
         this.code = data;
+        this.retrieveProgress();
       });
     }
     else if (this.mode === DevelopMode.EditAnalytics) {
@@ -119,8 +121,29 @@ export class OnboardingFlowComponent implements OnInit {
       this.fileName = '__analytics.csx';
       this.githubService.getDetectorFile("__analytics").subscribe(data => {
         this.code = data;
+        this.retrieveProgress();
       });
     }
+  }
+  
+  ngOnDestroy() {
+    console.log('ngOnDestroy');
+    this.saveProgress();
+  }
+
+  saveProgress() {
+    localStorage.setItem(`${this.detectorId}_code`, this.code);
+  }
+
+  retrieveProgress() {
+    let savedCode: string = localStorage.getItem(`${this.detectorId}_code`)
+    if (savedCode) {
+      this.code = savedCode;
+    }
+  }
+
+  deleteProgress() {
+    localStorage.removeItem(`${this.detectorId}_code`);
   }
 
   runCompilation() {
@@ -194,6 +217,7 @@ export class OnboardingFlowComponent implements OnInit {
     this.modalPublishingButtonText = "Publishing";
 
     this.diagnosticApiService.publishDetector(this.publishingPackage).subscribe(data => {
+      this.deleteProgress();
       this.runButtonDisabled = false;
       this.publishButtonText = "Publish";
       this.modalPublishingButtonDisabled = false;

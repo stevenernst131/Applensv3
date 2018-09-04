@@ -17,16 +17,16 @@ export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
-  constructor(private _http: Http, private _cacheService: CacheService, private _queryParamsService: QueryParamsService, private _authService: AuthService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _detectorControlService: QueryParamsService, private _authService: AuthService) { }
 
   public get diagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
   }
 
-  public getDetector(version: string, resourceId: string, detector: string, body?: any): Observable<DetectorResponse> {
-    let timeParameters = this._getTimeQueryParameters();
+  public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string, body?: any, refresh: boolean = false, internalView: boolean = false): Observable<DetectorResponse> {
+    let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/detectors/${detector}?${timeParameters}`;
-    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body);
+    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, refresh, internalView);
   }
 
   public getSystemInvoker(resourceId: string, detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string, body?: any): Observable<DetectorResponse> {
@@ -40,8 +40,8 @@ export class DiagnosticApiService {
     return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).map(response => response.map(detector => detector.metadata));
   }
 
-  public getCompilerResponse(version: string, resourceId: string, body: any): Observable<QueryResponse<DetectorResponse>> {
-    let timeParameters = this._getTimeQueryParameters();
+  public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string): Observable<QueryResponse<DetectorResponse>> {
+    let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/diagnostics/query?${timeParameters}`;
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
   }
@@ -57,11 +57,11 @@ export class DiagnosticApiService {
     return this.invoke<any>(path, HttpMethod.POST, packageToPublish, true);
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, invalidateCache: boolean = false): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
     var url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._http.post(url, body, {
-      headers: this._getHeaders(path, method)
+      headers: this._getHeaders(path, method, internalView)
     })
       .map((response: Response) => <T>(response.json()));
 
@@ -84,11 +84,12 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod): Headers {
+  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true): Headers {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
     headers.append('Authorization', `Bearer ${this._authService.accessToken}`);
+    headers.append('internal-applens', String(internalView))
     if (path) {
       headers.append('x-ms-path-query', path);
     }
@@ -100,9 +101,10 @@ export class DiagnosticApiService {
     return headers;
   }
 
-  private _getTimeQueryParameters() {
-    let format = 'YYYY-MM-DDTHH:mm'
-    return `&startTime=${this._queryParamsService.startTime.format(format)}&endTime=${this._queryParamsService.endTime.format(format)}`;
+  private _getTimeQueryParameters(startTime: string, endTime: string) {
+    // let format = 'YYYY-MM-DDTHH:mm'
+    // return `&startTime=${this._detectorControlService.startTime.format(format)}&endTime=${this._detectorControlService.endTime.format(format)}`;
+    return `&startTime=${startTime}&endTime=${endTime}`;
   }
 
   private _getSystemInvokerParameters(systemDataSource: string, timeRange: string) {

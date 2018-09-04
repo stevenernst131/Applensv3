@@ -1,0 +1,46 @@
+.control-container {
+    display: flex;
+}
+
+.control-group {
+    margin: 0px 5px;
+    display: flex;
+}
+
+.control-group > .control:last-child {
+    border-right: 1px solid #5d6f98;
+}
+
+.control {
+    padding: 4px 6px;
+    background-color: white;
+    border: 1px solid #5d6f98;
+    border-right: none;
+    color: #5d6f98;
+    cursor: pointer;
+}
+
+.control-selected {
+    background-color: #7287b7;
+    color: white;
+}
+
+.outer-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px 20px;
+}
+
+.date-input {
+    border: none;
+}
+
+.date-control {
+    width: 125px;
+    overflow: hidden;
+    cursor: inherit;
+}
+
+.date-control > input:focus {
+    outline: none;
+}

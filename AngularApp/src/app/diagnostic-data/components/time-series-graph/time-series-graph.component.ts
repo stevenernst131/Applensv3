@@ -133,12 +133,9 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
       if (!this.customizeXAxis) {
         let pointToAdd = pointsForThisSeries.pop();
-
-        while (pointToAdd.timestamp.isBefore(this.startTime)) {
+       
+        while (pointToAdd && pointToAdd.timestamp.isBefore(this.startTime)) {
           pointToAdd = pointsForThisSeries.pop();
-          if (!pointToAdd) {
-            console.error('No data returned within time range');
-          }
         }
 
         for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
@@ -238,6 +235,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _prepareStartAndEndTime() {
+    console.log(this.startTime);
     let start = this.startTime;
     let end = this.endTime;
 
@@ -246,6 +244,9 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     end.minute(end.minute() - end.minute() % this.timeGrain.minutes()).second(0);
     this.startTime = start;
     this.endTime = end;
+
+    console.log(this.startTime);
+    console.log(this.endTime);
   }
 
   private _getSeriesName(column: string, countername: string) {
