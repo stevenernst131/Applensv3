@@ -133,15 +133,9 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
       if (!this.customizeXAxis) {
         let pointToAdd = pointsForThisSeries.pop();
-<<<<<<< HEAD
-       
-        while (pointToAdd && pointToAdd.timestamp.isBefore(this.startTime)) {
-          pointToAdd = pointsForThisSeries.pop();
-=======
 
         while (pointToAdd && pointToAdd.timestamp && pointToAdd.timestamp.isBefore(this.startTime)) {
           pointToAdd = pointsForThisSeries.pop();
->>>>>>> 2a3bc8fe4afa8af097160f1f429c3de3e0d8084d
         }
 
         for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
