@@ -234,7 +234,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
   }
 
   private _prepareStartAndEndTime() {
-    console.log(this.startTime);
     let start = this.startTime;
     let end = this.endTime;
 
@@ -243,9 +242,6 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
     end.minute(end.minute() - end.minute() % this.timeGrain.minutes()).second(0);
     this.startTime = start;
     this.endTime = end;
-
-    console.log(this.startTime);
-    console.log(this.endTime);
   }
 
   private _getSeriesName(column: string, countername: string) {

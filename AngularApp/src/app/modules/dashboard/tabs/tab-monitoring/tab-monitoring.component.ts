@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DetectorResponse, DetectorMetaData } from '../../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '@angular/router';
-import { QueryParamsService } from '../../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
 import { DiagnosticService } from '../../../../diagnostic-data/services/diagnostic.service';
 import * as moment from 'moment';
@@ -21,7 +20,7 @@ export enum StatisticsType {
 })
 
 export class TabMonitoringComponent implements OnInit {
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService, private _diagnosticService: DiagnosticService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, private _diagnosticService: DiagnosticService) { }
 
   systemInvokerResponse: DetectorResponse;
   detectorAuthor: String = "";

@@ -6,7 +6,6 @@ import 'rxjs/add/operator/map';
 import { environment } from '../../../environments/environment';
 import { DetectorResponse, DetectorMetaData } from '../../diagnostic-data/models/detector';
 import { CacheService } from './cache.service';
-import { QueryParamsService } from './query-params.service';
 import { HttpMethod } from '../models/http';
 import { QueryResponse } from '../../diagnostic-data/models/compiler-response';
 import { AuthService } from './auth.service';
@@ -17,7 +16,7 @@ export class DiagnosticApiService {
 
   public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
-  constructor(private _http: Http, private _cacheService: CacheService, private _detectorControlService: QueryParamsService, private _authService: AuthService) { }
+  constructor(private _http: Http, private _cacheService: CacheService, private _authService: AuthService) { }
 
   public get diagnosticApi(): string {
     return environment.production ? '' : this.localDiagnosticApi;
@@ -26,7 +25,7 @@ export class DiagnosticApiService {
   public getDetector(version: string, resourceId: string, detector: string, startTime?: string, endTime?: string, body?: any, refresh: boolean = false, internalView: boolean = false): Observable<DetectorResponse> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/detectors/${detector}?${timeParameters}`;
-    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, refresh, internalView);
+    return this.invoke<DetectorResponse>(path, HttpMethod.POST, body, true, refresh, internalView);
   }
 
   public getSystemInvoker(resourceId: string, detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string, body?: any): Observable<DetectorResponse> {
@@ -43,13 +42,13 @@ export class DiagnosticApiService {
   public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string): Observable<QueryResponse<DetectorResponse>> {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = `${version}${resourceId}/diagnostics/query?${timeParameters}`;
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false);
   }
 
   public getSystemCompilerResponse(resourceId: string, body: any, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
     let invokerParameters = this._getSystemInvokerParameters(dataSource, timeRange);
     let path = `/${resourceId}/detectors/${detectorId}/statisticsQuery?${invokerParameters}`;
-    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, true);
+    return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false);
   }
 
   public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
@@ -57,7 +56,7 @@ export class DiagnosticApiService {
     return this.invoke<any>(path, HttpMethod.POST, packageToPublish, true);
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
     var url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._http.post(url, body, {
@@ -65,7 +64,7 @@ export class DiagnosticApiService {
     })
       .map((response: Response) => <T>(response.json()));
 
-    return this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache);
+    return useCache ? this._cacheService.get(this.getCacheKey(method, path), request, invalidateCache) : request;
   }
 
   private getCacheKey(method: HttpMethod, path: string) {
@@ -89,7 +88,8 @@ export class DiagnosticApiService {
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
     headers.append('Authorization', `Bearer ${this._authService.accessToken}`);
-    headers.append('internal-applens', String(internalView))
+    headers.append('x-ms-internal-client', String(true));
+    headers.append('x-ms-internal-view', String(internalView));
     if (path) {
       headers.append('x-ms-path-query', path);
     }

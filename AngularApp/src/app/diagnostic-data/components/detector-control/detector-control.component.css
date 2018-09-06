@@ -25,6 +25,11 @@
     color: white;
 }
 
+.control-static {
+    cursor: default;
+    background-color: #eef2fd;
+}
+
 .outer-container {
     display: flex;
     justify-content: flex-end;

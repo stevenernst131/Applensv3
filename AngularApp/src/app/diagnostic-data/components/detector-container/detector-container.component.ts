@@ -3,7 +3,7 @@ import { DiagnosticService } from '../../services/diagnostic.service';
 import { DetectorControlService } from '../../services/detector-control.service';
 import { ActivatedRoute } from '@angular/router';
 import { DetectorResponse } from '../../models/detector';
-import { BehaviorSubject } from '../../../../../node_modules/rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'detector-container',
@@ -28,8 +28,6 @@ export class DetectorContainerComponent implements OnInit {
   ngOnInit() {
     this.detectorControlService.update.subscribe(isValidUpdate => {
       if (isValidUpdate && this._detector) {
-        console.log(this.detectorControlService.startTime);
-        console.log(this.detectorControlService.endTime);
         this.refresh();
       }
     });

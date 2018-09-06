@@ -22,12 +22,14 @@
     <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
 
     <div *ngIf="code" class="onboarding-container">
+        
         <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
 
             <split-area size="60">
 
                 <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
                     <split-area size="85">
+                        <detector-control></detector-control>
                         <div class="code-container-header">
 
                             <div class="file-tab active">
@@ -46,7 +48,7 @@
 
                         </div>
 
-                        <ngx-monaco-editor style="height:calc(100% - 50px)" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+                        <ngx-monaco-editor style="height:calc(100% - 100px)" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
 
                     </split-area>
                     <split-area size="15">

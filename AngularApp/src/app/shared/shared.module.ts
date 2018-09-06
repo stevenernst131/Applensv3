@@ -11,7 +11,6 @@ import { ObserverService } from './services/observer.service';
 import { GithubApiService } from './services/github-api.service';
 import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
-import { QueryParamsService } from './services/query-params.service';
 import { ResourceService } from './services/resource.service';
 import { AadAuthGuard } from './auth/aad-auth-guard.service';
 import { AuthService } from './services/auth.service';
@@ -39,7 +38,6 @@ export class SharedModule {
         ObserverService,
         GithubApiService,
         CacheService,
-        QueryParamsService,
         AadAuthGuard,
         AuthService
       ]

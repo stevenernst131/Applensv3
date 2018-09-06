@@ -33,7 +33,7 @@ import { StarRatingFeedbackComponent } from './components/star-rating-feedback/s
 import { FormsModule } from '@angular/forms';
 import { StatusIconComponent } from './components/status-icon/status-icon.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
-import { DetectorControlComponent } from './components/detector-control/detector-control.component';
+import { DetectorControlComponent, InternalPipe } from './components/detector-control/detector-control.component';
 import { DetectorControlService } from './services/detector-control.service';
 import { DetectorContainerComponent } from './components/detector-container/detector-container.component';
 
@@ -58,7 +58,7 @@ import { DetectorContainerComponent } from './components/detector-container/dete
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
     LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, 
-    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent],
+    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
     LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent],
 })

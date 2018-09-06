@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '@angular/router';
-import { QueryParamsService } from '../../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { ApplensDiagnosticService } from '../../services/applens-diagnostic.serv
 })
 export class TabDataComponent implements OnInit {
 
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService) { }
 
   detectorResponse: DetectorResponse;
 
@@ -20,8 +19,6 @@ export class TabDataComponent implements OnInit {
   error: any;
 
   ngOnInit() {
-
-    console.log('tab data onInit');
 
     this._route.params.subscribe((params: Params) => {
       this.refresh();

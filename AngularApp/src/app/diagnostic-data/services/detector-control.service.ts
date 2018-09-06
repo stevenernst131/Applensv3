@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import * as momentNs from 'moment';
 import 'moment-timezone';
 import { TimeZones } from '../../shared/models/datetime';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../config/diagnostic-data-config';
 
 const moment = momentNs;
 
@@ -15,29 +16,33 @@ export class DetectorControlService {
     {
       displayName: '1h',
       duration: moment.duration(1, 'hours'),
-      selected: false
+      internalOnly: false
     },
     {
       displayName: '6h',
       duration: moment.duration(6, 'hours'),
-      selected: false
+      internalOnly: false
     },
     { 
       displayName: '1d',
       duration: moment.duration(1, 'days'),
-      selected: false
+      internalOnly: false
     },
     { 
       displayName: '3d',
       duration: moment.duration(3, 'days'),
-      selected: false
+      internalOnly: true
     }
   ];
 
   private _duration: DurationSelector;
   private _startTime: momentNs.Moment;
   private _endTime: momentNs.Moment;
-  private _internalView = false;
+
+  //TODO: allow for this to be changed with dropdown
+  private _internalView = true;
+
+  public internalClient: boolean = false;
 
   private _error: string;
 
@@ -45,18 +50,40 @@ export class DetectorControlService {
 
   private _refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
-  constructor() {
-    this.selectDuration(this.durationSelections[2]);
+  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
+    this.internalClient = !config.isPublic;
   }
 
   public get update() {
     return this._refresh;
   }
 
-  public setCustomStartEnd(start: string, end: string) {
+  public setDefault() {
+    this.selectDuration(this.durationSelections[3]);
+  }
+
+  public setCustomStartEnd(start?: string, end?: string): void {
     this._duration = null;
-    let startTime = moment.tz(start, this.stringFormat,TimeZones.UTC);
-    let endTime = moment.tz(end, this.stringFormat, TimeZones.UTC);
+    let startTime, endTime: momentNs.Moment;
+    if (start && end) {
+      startTime = moment.tz(start, TimeZones.UTC);
+      endTime = moment.tz(end, TimeZones.UTC);
+    }
+    else if (start) {
+      startTime = moment.tz(start, TimeZones.UTC);
+      endTime = startTime.clone().add(1, 'days');
+    }
+    else if (end) {
+      endTime = moment.tz(end, TimeZones.UTC);
+      startTime = endTime.clone().subtract(1, 'days');
+    }
+    else {
+      this.selectDuration(this.durationSelections[2]);
+      return;
+    }
+
+    // let startTime = moment.tz(start, this.stringFormat,TimeZones.UTC);
+    // let endTime = moment.tz(end, this.stringFormat, TimeZones.UTC);
 
     this._startTime = startTime;
     this._endTime = endTime;
@@ -84,6 +111,11 @@ export class DetectorControlService {
 
   public refresh() {
     this._duration ? this.selectDuration(this._duration): this._refreshData();
+  }
+
+  public toggleInternalExternal() {
+    this._internalView = !this._internalView;
+    this._refreshData();
   }
 
   private _refreshData() {
@@ -115,8 +147,8 @@ export class DetectorControlService {
 
 }
 
-interface DurationSelector {
+export interface DurationSelector {
   displayName: string;
   duration: momentNs.Duration;
-  selected: boolean;
+  internalOnly: boolean;
 }

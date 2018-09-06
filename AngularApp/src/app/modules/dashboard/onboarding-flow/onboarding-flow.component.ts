@@ -6,12 +6,12 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
-import { QueryParamsService } from '../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import * as momentNs from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
+import { DetectorControlService } from '../../../diagnostic-data/services/detector-control.service';
 
 const moment = momentNs;
 
@@ -60,7 +60,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   private userName: string;
 
   constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
-    public queryParamsService: QueryParamsService, private authService: AuthService, public ngxSmartModalService: NgxSmartModalService) {
+    private _detectorControlService: DetectorControlService, private authService: AuthService, public ngxSmartModalService: NgxSmartModalService) {
 
     this.editorOptions = {
       theme: 'vs',
@@ -95,8 +95,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
         this.code = data;
       });
       this.fileName = "new.csx";
-      this.startTime = this.queryParamsService.startTime;
-      this.endTime = this.queryParamsService.endTime;
+      this.startTime = this._detectorControlService.startTime;
+      this.endTime = this._detectorControlService.endTime;
     }
     else if (this.mode === DevelopMode.Edit) {
       // EDIT FLOW
@@ -105,8 +105,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
         this.code = data;
         this.retrieveProgress();
       });
-      this.startTime = this.queryParamsService.startTime;
-      this.endTime = this.queryParamsService.endTime;
+      this.startTime = this._detectorControlService.startTime;
+      this.endTime = this._detectorControlService.endTime;
     }
     else if (this.mode === DevelopMode.EditMonitoring) {
       // SYSTEM MONITORING FLOW
@@ -127,8 +127,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy() {
-    console.log('ngOnDestroy');
-    this.saveProgress();
+    // TODO: Figure out saving capabilities
+    //this.saveProgress();
   }
 
   saveProgress() {
@@ -163,7 +163,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
     let isSystemInvoker: boolean = this.mode === DevelopMode.EditMonitoring || this.mode === DevelopMode.EditAnalytics;
 
-    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this.dataSource, this.timeRange)
+    this.diagnosticApiService.getCompilerResponse(body, isSystemInvoker, this.detectorId, this._detectorControlService.startTimeString, 
+        this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
       .subscribe((response: QueryResponse<DetectorResponse>) => {
 
         this.queryResponse = response;

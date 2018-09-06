@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceTypeState, ResourceType, ResourceServiceInputs } from '../../../shared/models/resources';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { TimeZones } from '../../../shared/models/datetime';
 import { Http } from '@angular/http';
 import { AuthService } from '../../../shared/services/auth.service';

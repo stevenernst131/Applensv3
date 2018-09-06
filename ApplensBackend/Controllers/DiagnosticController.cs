@@ -41,9 +41,9 @@ namespace AppLensV3.Controllers
             }
 
             bool internalView = true;
-            if (Request.Headers.ContainsKey("internal-applens"))
+            if (Request.Headers.ContainsKey("x-ms-internal-view"))
             {
-                bool.TryParse(Request.Headers["internal-applens"], out internalView);
+                bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
 
             var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);

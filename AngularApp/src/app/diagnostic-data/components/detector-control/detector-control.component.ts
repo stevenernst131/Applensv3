@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as momentNs from 'moment';
-import { DetectorControlService } from '../../services/detector-control.service';
-import { ActivatedRoute, Router } from '../../../../../node_modules/@angular/router';
+import { DetectorControlService, DurationSelector } from '../../services/detector-control.service';
+import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 
 const moment = momentNs;
 
@@ -12,10 +13,15 @@ const moment = momentNs;
 })
 export class DetectorControlComponent implements OnInit {
 
-  constructor(public _router: Router, private _activatedRoute: ActivatedRoute, public detectorControlService: DetectorControlService) { }
-
   startTime: string;
   endTime: string;
+
+  isInternal: boolean;
+
+  constructor(public _router: Router, private _activatedRoute: ActivatedRoute, public detectorControlService: DetectorControlService,
+    @Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig) {
+    this.isInternal = !config.isPublic;
+  }
 
   ngOnInit() {
     this.detectorControlService.update.subscribe(validUpdate => {
@@ -24,7 +30,7 @@ export class DetectorControlComponent implements OnInit {
         this.endTime = this.detectorControlService.endTimeString;
       }
 
-      let timeParams = { 
+      let timeParams = {
         'startTime': this.detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
         'endTime': this.detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       }
@@ -38,5 +44,13 @@ export class DetectorControlComponent implements OnInit {
   }
 }
 
-
+@Pipe({
+  name:'internal',
+  pure: false
+})
+export class InternalPipe implements PipeTransform {
+  transform(items: DurationSelector[], internalClient: boolean) {
+    return items ? items.filter(item => !item.internalOnly || internalClient): items;
+  }
+}
 

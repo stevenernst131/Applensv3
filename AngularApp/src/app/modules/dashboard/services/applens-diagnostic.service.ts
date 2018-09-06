@@ -13,7 +13,7 @@ export class ApplensDiagnosticService {
   constructor(private _diagnosticApi: DiagnosticApiService, private _resourceService: ResourceService) {
   }
 
-  getDetector(detector: string, startTime: string, endTime: string, refresh: boolean = false, internalView: boolean = false): Observable<DetectorResponse> {
+  getDetector(detector: string, startTime: string, endTime: string, refresh: boolean = false, internalView: boolean = true): Observable<DetectorResponse> {
     return this._diagnosticApi.getDetector(
       this._resourceService.versionPrefix, 
       this._resourceService.getCurrentResourceId(true), 

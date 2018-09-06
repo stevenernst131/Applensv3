@@ -66,7 +66,7 @@ namespace AppLensV3
                 MaxResponseContentBufferSize = Int32.MaxValue
             };
 
-            //client.DefaultRequestHeaders.Add("internal-applens", "true");
+            client.DefaultRequestHeaders.Add("x-ms-internal-client", "true");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
@@ -80,7 +80,7 @@ namespace AppLensV3
                 if (!hitPassThroughAPI(path))
                 {
                     HttpRequestMessage requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post: HttpMethod.Get, path);
-                    requestMessage.Headers.Add("internal-applens", internalView.ToString());
+                    requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
 
                     if (method.ToUpper() == "POST")
                     {
