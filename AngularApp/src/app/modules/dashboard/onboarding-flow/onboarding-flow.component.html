@@ -29,7 +29,7 @@
 
                 <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
                     <split-area size="85">
-                        <detector-control></detector-control>
+                        <detector-control *ngIf="mode === DevelopMode.Create || mode === DevelopMode.Edit"></detector-control>
                         <div class="code-container-header">
 
                             <div class="file-tab active">

@@ -59,7 +59,7 @@ export class DetectorControlService {
   }
 
   public setDefault() {
-    this.selectDuration(this.durationSelections[3]);
+    this.selectDuration(this.durationSelections.find(duration => duration.displayName === '1d'));
   }
 
   public setCustomStartEnd(start?: string, end?: string): void {

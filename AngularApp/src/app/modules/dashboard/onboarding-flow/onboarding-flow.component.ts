@@ -36,6 +36,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   @Input() startTime: momentNs.Moment = moment.tz(TimeZones.UTC).subtract(1, 'days');
   @Input() endTime: momentNs.Moment =  moment.tz(TimeZones.UTC);
 
+  DevelopMode = DevelopMode;
+
   fileName: string;
   editorOptions: any;
   code: string;
@@ -103,7 +105,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.fileName = `${this.detectorId}.csx`;
       this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
         this.code = data;
-        this.retrieveProgress();
+        //this.retrieveProgress();
       });
       this.startTime = this._detectorControlService.startTime;
       this.endTime = this._detectorControlService.endTime;
@@ -113,7 +115,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.fileName = '__monitoring.csx';
       this.githubService.getDetectorFile("__monitoring").subscribe(data => {
         this.code = data;
-        this.retrieveProgress();
+        //this.retrieveProgress();
       });
     }
     else if (this.mode === DevelopMode.EditAnalytics) {
@@ -121,7 +123,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.fileName = '__analytics.csx';
       this.githubService.getDetectorFile("__analytics").subscribe(data => {
         this.code = data;
-        this.retrieveProgress();
+        //this.retrieveProgress();
       });
     }
   }
