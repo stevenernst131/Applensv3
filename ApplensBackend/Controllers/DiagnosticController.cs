@@ -40,14 +40,26 @@ namespace AppLensV3.Controllers
                 method = Request.Headers["x-ms-method"];
             }
 
-            var response = await this._diagnosticClient.Execute(method, path, body?.ToString());
+            bool internalView = true;
+            if (Request.Headers.ContainsKey("x-ms-internal-view"))
+            {
+                bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
+            }
 
-            if (response != null && response.IsSuccessStatusCode)
+            var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);
+
+            if (response != null)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-
-                var responseObject = JsonConvert.DeserializeObject(responseString);
-                return Ok(responseObject);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseObject = JsonConvert.DeserializeObject(responseString);
+                    return Ok(responseObject);
+                }
+                else if(response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    return BadRequest(responseString);
+                }
             }
 
             return StatusCode((int)response.StatusCode);

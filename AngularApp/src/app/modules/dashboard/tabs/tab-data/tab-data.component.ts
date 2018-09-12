@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DetectorResponse } from '../../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '@angular/router';
-import { QueryParamsService } from '../../../../shared/services/query-params.service';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { ApplensDiagnosticService } from '../../services/applens-diagnostic.serv
 })
 export class TabDataComponent implements OnInit {
 
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, public queryParamsService: QueryParamsService) { }
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService) { }
 
   detectorResponse: DetectorResponse;
 
@@ -22,26 +21,28 @@ export class TabDataComponent implements OnInit {
   ngOnInit() {
 
     this._route.params.subscribe((params: Params) => {
-      this.getDetectorResponse();
+      this.refresh();
     });
 
-    this._route.queryParams.subscribe((queryParams: Params) => {
-      this.getDetectorResponse();
-    })
+    // this._route.queryParams.subscribe((queryParams: Params) => {
+    //   this.getDetectorResponse();
+    // });
+
+    
   }
 
   refresh() {
-    this.getDetectorResponse();
+    this.detector = this._route.snapshot.params['detector'];
   }
 
-  getDetectorResponse() {
-    this.detectorResponse = null;
-    this.detector = this._route.snapshot.params['detector'];
-    this._diagnosticApiService.getDetector(this.detector)
-      .subscribe((response: DetectorResponse) => {
-        this.detectorResponse = response;
-      }, (error: any) => {
-        this.error = error;
-      });
-  }
+  // getDetectorResponse() {
+  //   this.detectorResponse = null;
+  //   this.detector = this._route.snapshot.params['detector'];
+  //   this._diagnosticApiService.getDetector(this.detector)
+  //     .subscribe((response: DetectorResponse) => {
+  //       this.detectorResponse = response;
+  //     }, (error: any) => {
+  //       this.error = error;
+  //     });
+  // }
 }

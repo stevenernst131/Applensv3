@@ -8,6 +8,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { LoadingStatus } from '../../models/loading';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { DetectorControlService } from '../../services/detector-control.service';
 
 @Component({
   selector: 'detector-list',
@@ -36,7 +37,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
 
   private childDetectorsEventProperties = {};
 
-  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService) {
+  constructor(private _diagnosticService: DiagnosticService, protected telemetryService: TelemetryService, private _detectorControl: DetectorControlService) {
     super(telemetryService);
   }
 
@@ -103,7 +104,7 @@ export class DetectorListComponent extends DataRenderBaseComponent {
       statusIcon: null,
       expanded: false,
       response: null,
-      request: this._diagnosticService.getDetector(detector.id)
+      request: this._diagnosticService.getDetector(detector.id, this._detectorControl.startTimeString, this._detectorControl.endTimeString)
     }
   }
 
