@@ -5,6 +5,7 @@ import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagn
 import * as momentNs from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 import { TelemetryEventNames } from '../../services/telemetry/telemetry.common';
+import { DetectorControlService } from '../../services/detector-control.service';
 
 const moment = momentNs;
 
@@ -45,11 +46,30 @@ export class DetectorViewComponent implements OnInit {
   @Input() isSystemInvoker: boolean = false;
 
 
-  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService) {
+  constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService, private detectorControlService: DetectorControlService) {
     this.isPublic = config && config.isPublic;
   }
 
   ngOnInit() {
+    this.loadDetector();
+
+    this.detectorControlService.update.subscribe(validUpdate => {
+      if (validUpdate) {
+
+      }
+    });
+
+    this.errorSubject.subscribe((data: any) => {
+      this.errorState = data;
+    });
+
+    // The detector name can be retrieved from  url column of application insight resource pageviews table.
+    if (!this.insideDetectorList) {
+      this.telemetryService.logPageView(TelemetryEventNames.DetectorViewLoaded);
+    }
+  }
+
+  protected loadDetector() {
     this.detectorResponseSubject.subscribe((data: DetectorResponse) => {
       this.detectorDataLocalCopy = data;
       if (data) {
@@ -76,87 +96,83 @@ export class DetectorViewComponent implements OnInit {
           this.authorEmails = authorsArray.join(";");
         }
 
-        // Log all the insights from response
-        if (data.dataset) {
-          let totalCount: number = 0;
-          let successCount: number = 0;
-          let criticalCount: number = 0;
-          let warningCount: number = 0;
-          let infoCount: number = 0;
-          let defaultCount: number = 0;
-          let insightsList = [];
-          let insightsNameList: string[] = [];
+        this.logInsights(data);
 
-          let statusColumnIndex = 0;
-          let insightColumnIndex = 1;
-          let isExpandedIndex = 4;
-
-          data.dataset.forEach(dataset => {
-            if (dataset.renderingProperties && dataset.renderingProperties.type === RenderingType.Insights) {
-              dataset.table.rows.forEach(row => {
-                if ((insightsNameList.find(insightName => insightName === row[insightColumnIndex])) == null) {
-                  {
-                    let isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false
-                    var insightInstance = {
-                      "Name": row[insightColumnIndex],
-                      "Status": row[statusColumnIndex],
-                      "IsExpandedByDefault": isExpanded
-                    }
-                    insightsList.push(insightInstance);
-                    insightsNameList.push(row[insightColumnIndex]);
-
-                    switch (row[statusColumnIndex]) {
-                      case "Critical":
-                        criticalCount++;
-                        break;
-                      case "Warning":
-                        warningCount++;
-                        break;
-                      case "Success":
-                        successCount++;
-                        break;
-                      case "Info":
-                        infoCount++;
-                        break;
-                      default:
-                        defaultCount++;
-                    }
-                  }
-                }
-              });
-            }
-          });
-
-          totalCount = insightsList.length;
-
-          var insightSummary = {
-            "Total": totalCount,
-            "Critical": criticalCount,
-            "Warning": warningCount,
-            "Success": successCount,
-            "Info": infoCount,
-            "Default": defaultCount
-          }
-
-          this.insightsListEventProperties = {
-            "InsightsList": JSON.stringify(insightsList),
-            "InsightsSummary": JSON.stringify(insightSummary)
-          }
-
-          this.logEvent(TelemetryEventNames.InsightsSummary, this.insightsListEventProperties);
-        }
       }
     });
+  }
 
-    this.errorSubject.subscribe((data: any) => {
-      this.errorState = data;
-    });
+  protected logInsights(data: DetectorResponse) {
+    if (data.dataset) {
+      let totalCount: number = 0;
+      let successCount: number = 0;
+      let criticalCount: number = 0;
+      let warningCount: number = 0;
+      let infoCount: number = 0;
+      let defaultCount: number = 0;
+      let insightsList = [];
+      let insightsNameList: string[] = [];
 
-    // The detector name can be retrieved from  url column of application insight resource pageviews table.
-    if (!this.insideDetectorList) {
-      this.telemetryService.logPageView(TelemetryEventNames.DetectorViewLoaded);
+      let statusColumnIndex = 0;
+      let insightColumnIndex = 1;
+      let isExpandedIndex = 4;
+
+      data.dataset.forEach(dataset => {
+        if (dataset.renderingProperties && dataset.renderingProperties.type === RenderingType.Insights) {
+          dataset.table.rows.forEach(row => {
+            if ((insightsNameList.find(insightName => insightName === row[insightColumnIndex])) == null) {
+              {
+                let isExpanded: boolean = row.length > isExpandedIndex ? row[isExpandedIndex].toLowerCase() === 'true' : false
+                var insightInstance = {
+                  "Name": row[insightColumnIndex],
+                  "Status": row[statusColumnIndex],
+                  "IsExpandedByDefault": isExpanded
+                }
+                insightsList.push(insightInstance);
+                insightsNameList.push(row[insightColumnIndex]);
+
+                switch (row[statusColumnIndex]) {
+                  case "Critical":
+                    criticalCount++;
+                    break;
+                  case "Warning":
+                    warningCount++;
+                    break;
+                  case "Success":
+                    successCount++;
+                    break;
+                  case "Info":
+                    infoCount++;
+                    break;
+                  default:
+                    defaultCount++;
+                }
+              }
+            }
+          });
+        }
+      });
+
+      totalCount = insightsList.length;
+
+      var insightSummary = {
+        "Total": totalCount,
+        "Critical": criticalCount,
+        "Warning": warningCount,
+        "Success": successCount,
+        "Info": infoCount,
+        "Default": defaultCount
+      }
+
+      this.insightsListEventProperties = {
+        "InsightsList": JSON.stringify(insightsList),
+        "InsightsSummary": JSON.stringify(insightSummary)
+      }
+
+      this.logEvent(TelemetryEventNames.InsightsSummary, this.insightsListEventProperties);
     }
   }
+
 
   protected logEvent(eventMessage: string, eventProperties?: any, measurements?: any) {
     for (let id in this.detectorEventProperties) {

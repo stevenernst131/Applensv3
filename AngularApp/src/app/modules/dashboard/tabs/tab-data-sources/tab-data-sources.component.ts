@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DataProviderMetadata, DetectorResponse } from '../../../../diagnostic-data/models/detector';
 import { ActivatedRoute, Params } from '../../../../../../node_modules/@angular/router';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
+import { DetectorControlService } from '../../../../diagnostic-data/services/detector-control.service';
 
 @Component({
   selector: 'tab-data-sources',
@@ -10,7 +11,7 @@ import { ApplensDiagnosticService } from '../../services/applens-diagnostic.serv
 })
 export class TabDataSourcesComponent {
 
-  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService) {
+  constructor(private _route: ActivatedRoute, private _diagnosticApiService: ApplensDiagnosticService, private _detectorControlService: DetectorControlService) {
   }
 
   @Input() onboardingMode: boolean = false;
@@ -45,7 +46,7 @@ export class TabDataSourcesComponent {
     else {
       this.detector = this._route.parent.snapshot.params['detector'];
     }
-    this._diagnosticApiService.getDetector(this.detector)
+    this._diagnosticApiService.getDetector(this.detector, this._detectorControlService.startTimeString, this._detectorControlService.endTimeString)
       .subscribe((response: DetectorResponse) => {
         this.loadingDetector = false;
         this.detectorResponse = response;

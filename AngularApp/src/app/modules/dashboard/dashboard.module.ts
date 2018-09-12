@@ -17,8 +17,6 @@ import { ResourceService } from '../../shared/services/resource.service';
 import { ResourceServiceFactory } from '../../shared/providers/resource.service.provider';
 import { ResourceHomeComponent } from './resource-home/resource-home.component';
 import { DiagnosticDataModule } from '../../diagnostic-data/diagnostic-data.module';
-import { QueryParamsService } from '../../shared/services/query-params.service';
-import { TimePickerComponent } from './time-picker/time-picker.component';
 import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
 import { CUSTOM_MOMENT_FORMATS } from '../../shared/models/datetime';
 import { OnboardingFlowComponent } from './onboarding-flow/onboarding-flow.component';
@@ -34,13 +32,14 @@ import { TabMonitoringComponent } from './tabs/tab-monitoring/tab-monitoring.com
 import { TabMonitoringDevelopComponent } from './tabs/tab-monitoring-develop/tab-monitoring-develop.component';
 import { TabAnalyticsDevelopComponent } from './tabs/tab-analytics-develop/tab-analytics-develop.component';
 import { TabAnalyticsDashboardComponent } from './tabs/tab-analytics-dashboard/tab-analytics-dashboard.component';
+import { DetectorControlService } from '../../diagnostic-data/services/detector-control.service';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
-  constructor(private _resourceService: ResourceService, private _queryParamService: QueryParamsService) { }
+  constructor(private _resourceService: ResourceService, private _detectorControlService: DetectorControlService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    this._queryParamService.setStartAndEndTime(route.queryParams['startTime'], route.queryParams['endTime']);
+    this._detectorControlService.setCustomStartEnd(route.queryParams['startTime'], route.queryParams['endTime']);
     return this._resourceService.waitForInitialization();
   }
 }
@@ -141,6 +140,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     },
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, TimePickerComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent,TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent,TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent]
 })
 export class DashboardModule { }

@@ -13,12 +13,16 @@ export class ApplensDiagnosticService {
   constructor(private _diagnosticApi: DiagnosticApiService, private _resourceService: ResourceService) {
   }
 
-  getDetector(detector: string): Observable<DetectorResponse> {
+  getDetector(detector: string, startTime: string, endTime: string, refresh: boolean = false, internalView: boolean = true): Observable<DetectorResponse> {
     return this._diagnosticApi.getDetector(
       this._resourceService.versionPrefix, 
       this._resourceService.getCurrentResourceId(true), 
       detector,
-      this._resourceService.getRequestBody(),);
+      startTime,
+      endTime,
+      this._resourceService.getRequestBody(),
+      refresh,
+      internalView);
   }
 
   getSystemInvoker(detector: string, systemInvokerId: string = '', dataSource: string, timeRange: string): Observable<DetectorResponse> {
@@ -38,14 +42,16 @@ export class ApplensDiagnosticService {
       this._resourceService.getRequestBody());
   }
 
-  getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
+  getCompilerResponse(body: any, isSystemInvoker: boolean, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = ''): Observable<QueryResponse<DetectorResponse>> {
     body.resource = this._resourceService.getRequestBody();
     if (isSystemInvoker === false)
     {
       return this._diagnosticApi.getCompilerResponse(
         this._resourceService.versionPrefix,
         this._resourceService.getCurrentResourceId(true),
-        body);
+        body,
+        startTime,
+        endTime);
     }
     else
     {

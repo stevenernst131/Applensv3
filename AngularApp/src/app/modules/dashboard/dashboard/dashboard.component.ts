@@ -1,51 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
 import * as moment from 'moment';
-import { QueryParamsService } from '../../../shared/services/query-params.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DetectorControlService } from '../../../diagnostic-data/services/detector-control.service';
 
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
   startTime: moment.Moment;
   endTime: moment.Moment;
 
   contentHeight: string;
 
-  constructor(public resourceService: ResourceService, private _queryParamsService: QueryParamsService, 
+  constructor(public resourceService: ResourceService, private _detectorControlService: DetectorControlService,
     private _router: Router, private _activatedRoute: ActivatedRoute) {
-      this.contentHeight = (window.innerHeight -50) + 'px';
+    this.contentHeight = (window.innerHeight - 50) + 'px';
 
-      // Add time params to route if not already present
-      if(!this._activatedRoute.queryParams['startTime'] || !this._activatedRoute.queryParams['endTime']) {
-        let timeParams = { 
-          'startTime': this._queryParamsService.startTime.format('YYYY-MM-DDTHH:mm'),
-          'endTime': this._queryParamsService.endTime.format('YYYY-MM-DDTHH:mm')
-        }
-        this._router.navigate([], { queryParams: timeParams, relativeTo: this._activatedRoute });
+    // Add time params to route if not already present
+    if (!this._activatedRoute.queryParams['startTime'] || !this._activatedRoute.queryParams['endTime']) {
+      let timeParams = {
+        'startTime': this._detectorControlService.startTime.format('YYYY-MM-DDTHH:mm'),
+        'endTime': this._detectorControlService.endTime.format('YYYY-MM-DDTHH:mm')
       }
+      this._router.navigate([], { queryParams: timeParams, relativeTo: this._activatedRoute });
     }
-
-  ngOnInit() {
-    this.updateStartandEndTime();
   }
 
-  updateTime() {
-    this._queryParamsService.setStartAndEndTime(this.startTime, this.endTime);
-    this.updateStartandEndTime();
-  }
 
   reloadHome() {
     window.location.href = '/';
-  }
-
-  updateStartandEndTime() {
-    this.startTime = this._queryParamsService.startTime;
-    this.endTime = this._queryParamsService.endTime;
   }
 
 }
