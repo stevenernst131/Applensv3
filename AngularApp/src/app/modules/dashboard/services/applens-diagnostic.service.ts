@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { DetectorResponse, DetectorMetaData } from '../../../diagnostic-data/models/detector';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs'
 import { QueryResponse } from '../../../diagnostic-data/models/compiler-response';
 import { DevelopMode } from '../onboarding-flow/onboarding-flow.component';
 import { Package } from '../../../shared/models/package';

@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import * as momentNs from 'moment';
 import 'moment-timezone';
 import { TimeZones } from '../../shared/models/datetime';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs'
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../config/diagnostic-data-config';
 
 const moment = momentNs;
