@@ -34,9 +34,21 @@ export class CacheService {
             return this.inFlightObservables.get(key);
         } else if (fallback && fallback instanceof Observable) {
 
-            this.inFlightObservables.set(key, new Subject());
+            let subject = new Subject();
+            subject.subscribe(x => {}, error => {console.log('error')}, () => console.log('complete'));
+            this.inFlightObservables.set(key, subject);
             this.log(`%c Calling api for ${key}`, 'color: purple');
-            return fallback.do((value) => { this.set(key, value); }, error => this.inFlightObservables.delete(key));
+            return fallback.do(
+                (value) => { 
+                    this.set(key, value); 
+                }, 
+                (error) => {
+                    this.inFlightObservables.delete(key);
+                })
+                .finally(() => {
+                    this.inFlightObservables.delete(key);
+                });
+
         } else {
             return Observable.throw('Requested key is not available in Cache');
         }
