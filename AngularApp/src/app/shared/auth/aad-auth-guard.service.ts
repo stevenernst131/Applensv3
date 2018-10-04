@@ -2,8 +2,8 @@ import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnaps
 import { Injectable } from "@angular/core";
 import { AuthService } from "../services/auth.service";
 import { Http } from "@angular/http";
+import { Observable } from "../../../../node_modules/rxjs";
 import { environment } from "../../../environments/environment";
-import { Observable } from "rxjs";
 
 @Injectable()
 export class AadAuthGuard implements CanActivate {

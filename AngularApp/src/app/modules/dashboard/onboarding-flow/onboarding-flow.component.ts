@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 import { QueryResponse, CompilerResponse } from '../../../diagnostic-data/models/compiler-response';
@@ -47,6 +47,11 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   buildOutput: string[];
   runButtonDisabled: boolean;
   publishButtonDisabled: boolean;
+  localDevButtonDisabled: boolean;
+  localDevText: string;
+  localDevUrl: string;
+  localDevIcon: string;
+  devOptionsIcon: string;
   runButtonText: string;
   runButtonIcon: string;
   publishButtonText: string;
@@ -61,7 +66,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   private publishingPackage: Package;
   private userName: string;
 
-  constructor(private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
+  constructor(private cdRef: ChangeDetectorRef, private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
     private _detectorControlService: DetectorControlService, private authService: AuthService, public ngxSmartModalService: NgxSmartModalService) {
 
     this.editorOptions = {
@@ -77,8 +82,13 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     };
 
     this.buildOutput = [];
+    this.localDevButtonDisabled = false;
     this.runButtonDisabled = false;
     this.publishButtonDisabled = true;
+    this.localDevText = "Download Local Detector Packages";
+    this.localDevUrl ="";
+    this.localDevIcon = "fa fa-download";
+    this.devOptionsIcon = "fa fa-download";
     this.runButtonText = "Run";
     this.runButtonIcon = "fa fa-play";
     this.publishButtonText = "Publish";
@@ -148,8 +158,78 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     localStorage.removeItem(`${this.detectorId}_code`);
   }
 
-  runCompilation() {
+  ngAfterViewInit() {
+    this.ngxSmartModalService.getModal('devModeModal').open();
+  }
 
+  ngAfterViewChecked() {
+    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+    this.cdRef.detectChanges();
+  }
+
+  prepareLocalDev() {
+    // Get current code content, send it to applens controller backend, get the URL returning to download automatically with window.open();
+    let currentCode = this.code;
+
+    var body = {
+      script: this.code
+    };
+
+    this.runButtonDisabled = true;
+    this.publishButtonDisabled = true;
+    this.localDevButtonDisabled = true;
+    this.localDevText = "Preparing Local Tools";
+    this.localDevIcon = "fa fa-circle-o-notch fa-spin";
+
+    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this.dataSource, this.timeRange)
+      .subscribe((response: string) => {
+        this.localDevButtonDisabled = false;
+        this.localDevUrl = response;
+        this.localDevText = "Download Local Detector Packages";
+        this.runButtonIcon = "fa fa-play";
+        this.ngxSmartModalService.getModal('devModeModal').open();
+   //     window.open(response);
+      }
+      , ((error: any) => {
+        this.localDevButtonDisabled = false;
+        this.publishingPackage = null;
+        this.localDevText = "Download Local Detector Packages";
+        this.runButtonIcon = "fa fa-play";
+        this.buildOutput.push("Something went wrong during preparing local dev environment.");
+
+      }));
+  }
+
+  getDevOptions() {
+    this.ngxSmartModalService.getModal('devModeModal').open();
+  }
+
+  downloadLocalDevTools() {
+    this.localDevButtonDisabled = true;
+    this.localDevText = "Preparing Local Tools";
+    this.localDevIcon = "fa fa-circle-o-notch fa-spin";
+    
+    var body = {
+      script: this.code
+    };
+    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString, 
+      this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
+    .subscribe((response: string) => {
+      this.localDevButtonDisabled = false;
+      this.localDevUrl = response;
+      this.localDevText = "Download Local Development Tools";
+      this.localDevIcon = "fa fa-download";
+      window.open(response);
+    }
+    , ((error: any) => {
+      this.localDevButtonDisabled = false;
+      this.publishingPackage = null;
+      this.localDevText = "Something went wrong";
+      this.localDevIcon = "fa fa-download";
+    }));
+  }
+  
+  runCompilation() {
     this.buildOutput = [];
     this.buildOutput.push("------ Build started ------");
     let currentCode = this.code;
@@ -160,6 +240,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
     this.runButtonDisabled = true;
     this.publishButtonDisabled = true;
+    this.localDevButtonDisabled = true;
     this.runButtonText = "Running";
     this.runButtonIcon = "fa fa-circle-o-notch fa-spin";
 
@@ -191,10 +272,12 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
         if (this.queryResponse.runtimeSucceeded != null && this.queryResponse.runtimeSucceeded === false) {
           this.publishButtonDisabled = true;
         }
+        this.localDevButtonDisabled = false;
 
       }, ((error: any) => {
         this.runButtonDisabled = false;
         this.publishingPackage = null;
+        this.localDevButtonDisabled = false;
         this.runButtonText = "Run";
         this.runButtonIcon = "fa fa-play";
         this.buildOutput.push("Something went wrong during detector invocation.");
@@ -222,6 +305,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.diagnosticApiService.publishDetector(this.publishingPackage).subscribe(data => {
       this.deleteProgress();
       this.runButtonDisabled = false;
+      this.localDevButtonDisabled = false;
       this.publishButtonText = "Publish";
       this.modalPublishingButtonDisabled = false;
       this.modalPublishingButtonText = "Publish";
@@ -229,6 +313,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.showAlertBox('alert-success', 'Detector published successfully. Changes will be live shortly.');
     }, err => {
       this.runButtonDisabled = false;
+      this.localDevButtonDisabled = false;
       this.publishButtonText = "Publish";
       this.modalPublishingButtonDisabled = false;
       this.modalPublishingButtonText = "Publish";
