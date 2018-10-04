@@ -1,8 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataTableDataType, DiagnosticData, TimeSeriesPerInstanceRendering, DataTableResponseObject, DataTableResponseColumn } from '../../models/detector';
+import { DetectorResponse, DataTableDataType, DiagnosticData, Rendering, TimeSeriesPerInstanceRendering, DataTableResponseObject, DataTableResponseColumn } from '../../models/detector';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
-import { InstanceDetails, DetailedInstanceTimeSeries } from '../../models/time-series';
+import { Timestamp } from 'rxjs';
+import { count } from 'rxjs/operators';
+import { time } from 'd3';
+import { TimeSeries, InstanceTimeSeries, InstanceDetails, DetailedInstanceTimeSeries, TablePoint } from '../../models/time-series';
 import { TimeZones, TimeUtilities } from '../../utilities/time-utilities';
 import * as momentNs from 'moment-timezone';
 const moment = momentNs;

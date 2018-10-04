@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { DetectorResponse, DetectorMetaData } from '../../../diagnostic-data/models/detector';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs/Observable';
 import { QueryResponse } from '../../../diagnostic-data/models/compiler-response';
 import { DevelopMode } from '../onboarding-flow/onboarding-flow.component';
 import { Package } from '../../../shared/models/package';
@@ -62,6 +62,18 @@ export class ApplensDiagnosticService {
         dataSource,
         timeRange);
     }
+  }
+
+  prepareLocalDevelopment(body: any, detectorId: string = '', startTime: string = '', endTime: string = '', dataSource: string = '', timeRange: string = ''): Observable<string> {
+    body.resource = this._resourceService.getRequestBody();
+    detectorId = detectorId === '' ? 'newdetector' : detectorId; 
+    return this._diagnosticApi.getLocalDevelopmentResponse(
+      detectorId.toLowerCase(),
+      this._resourceService.versionPrefix,
+      '/'+this._resourceService.getCurrentResourceId(true),
+      body,
+      startTime,
+      endTime);
   }
 
   publishDetector(pkg: Package) : Observable<any> {
