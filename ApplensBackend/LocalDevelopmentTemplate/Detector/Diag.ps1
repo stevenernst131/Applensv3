@@ -77,27 +77,22 @@ if ($systemCheck)
 }
 
 if ($run) {
-    $compilationResponse = Start-Compilation -IsLocalhost -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
+    $compilationResponse = Start-Compilation  -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
     if (!$compileOnly -and $compilationResponse.invocationOutput)
     {
-        Write-Verbose "path: $PSScriptRoot\..\FrameWork\UI\Detector-Local-UI\src\assets\invocationOutput.json" -Verbose
+        Write-Verbose "path: $PSScriptRoot\..\FrameWork\UI\Detector-UI-Rendering\dist\assets\invocationOutput.json" -Verbose
         $invocationOutput = $compilationResponse.invocationOutput | ConvertTo-Json -Depth 8
-        [System.IO.File]::WriteAllText("$PSScriptRoot\..\FrameWork\UI\Detector-Local-UI\src\assets\invocationOutput.json", $invocationOutput) 
-        Push-Location
-        
-        try {
-            cd "$PSScriptRoot\..\Framework\UI\Detector-Local-UI\"
-            ng serve --open --port 4223
-        }
-        finally
+        [System.IO.File]::WriteAllText("$PSScriptRoot\..\FrameWork\UI\Detector-UI-Rendering\dist\assets\invocationOutput.json", $invocationOutput)
+
+        if ($compilationResponse.compilationOutput.compilationSucceeded -eq $true)
         {
-            Pop-Location
+            http-server "$PSScriptRoot\..\Framework\UI\Detector-UI-Rendering\dist" -o -a localhost -p 8000 -c-1
         }
     }
 }
 
 if ($publish) {
-    Publish-Detector -IsLocalhost -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
+    Publish-Detector -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
 }
 
 if ($help) {

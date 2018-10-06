@@ -61,15 +61,12 @@ namespace AppLensV3
             }
 
             // would not need cors if running in same host
-            if (env.IsDevelopment())
-            {
-                app.UseCors(cors =>
-                  cors
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowAnyOrigin()
-                );
-            }
+            app.UseCors(cors =>
+                cors
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+            );
 
             app.UseAuthentication();
 

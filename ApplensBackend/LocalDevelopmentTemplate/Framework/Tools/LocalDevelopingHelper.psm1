@@ -133,7 +133,7 @@ function Set-ResourceInfo
         "EndTime" = $EndTime
     } | ConvertTo-Json 
 
-    [System.IO.File]::WriteAllText("$PSScriptRoot\..\UI\Detector-Local-UI\src\assets\detectorSettings.json", $detectorSettings) 
+    [System.IO.File]::WriteAllText("$PSScriptRoot\..\UI\Detector-UI-Rendering\dist\assets\detectorSettings.json", $detectorSettings) 
 }
 
 function Start-Compilation

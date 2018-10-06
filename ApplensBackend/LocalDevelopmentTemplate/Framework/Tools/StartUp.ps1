@@ -3,10 +3,10 @@ function Enlist-UIRendering
 {
     $VerbosePreference = 'Continue'
     cd "$PSScriptRoot/../UI/"
-    if ((test-path "$PSScriptRoot/../UI/Detector-Local-UI/angular.json") -eq $false)
+    if ((test-path "$PSScriptRoot/../UI/Detector-UI-Rendering/dist") -eq $false)
     {
         Write-Host "Enlisting UI project from git..." -ForegroundColor Green
-        git clone https://github.com/cindylovescoding/Detector-Local-UI.git
+        git clone https://github.com/cindylovescoding/Detector-UI-Rendering.git
     }
     else
     {
@@ -32,11 +32,8 @@ function System-Check
         write-host "`tNode.js version: $current_version" -ForegroundColor Cyan
         write-host "`tNpm version: $npm_version`n"  -ForegroundColor Cyan
 
-        write-host "Intstalling npm packages for local development tool" -ForegroundColor Green
-        Push-Location
-        cd "$PSScriptRoot/../UI/Detector-Local-UI/"
-        npm install
-        Pop-Location
+        write-host "Intstalling http-server for local development tool" -ForegroundColor Green
+        npm install http-server -g
     }
     else {
         write-host "Please make sure you have installed Node.js version 8.x (or greater), npm version 5.x (or greater)." -ForegroundColor Cyan
