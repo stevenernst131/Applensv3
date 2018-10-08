@@ -1,4 +1,4 @@
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { ResourceService } from "../../shared/services/resource.service";
 import { DetectorResponse, DetectorMetaData } from "../models/detector";

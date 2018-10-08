@@ -302,13 +302,10 @@ button.social-signin.onlinedev {
   height: 80px;
 }
 .container:hover .buttons:not(:last-of-type) {
-  /* width: 40px;
-  height: 40px; */
   margin: 15px auto 0;
   opacity: 1;
 }
 .container:hover .rotate {
-  /* background-image: url("https://goo.gl/0eJslQ"); */
   transform: rotate(0deg);
 }
 
@@ -326,44 +323,13 @@ button.social-signin.onlinedev {
   transition: .2s;
   color: white;
 }
-/* .buttons:nth-last-of-type(2) {
-  transition-delay: 20ms;
-}
-.buttons:nth-last-of-type(3) {
-  transition-delay: 40ms;
-}
-.buttons:nth-last-of-type(4) {
-  transition-delay: 60ms;
-}
-.buttons:nth-last-of-type(5) {
-  transition-delay: 80ms;
-}
-.buttons:nth-last-of-type(6) {
-  transition-delay: 100ms;
-} */
+
 .buttons:nth-last-of-type(1) {
   /* width: 50px;
   height: 50px; */
   opacity: 1;
 }
-/* .buttons:nth-last-of-type(2) {
-  background: #D2A518 url("https://goo.gl/XVUbvp") center no-repeat;
-}
-.buttons:nth-last-of-type(3) {
-  background: #3C80F6 url("https://goo.gl/xdZJHE") center no-repeat;
-}
-.buttons:nth-last-of-type(4) {
-  background-image: url("https://goo.gl/OEKh8Y");
-  background-size: contain;
-}
-.buttons:nth-last-of-type(5) {
-  background-image: url("https://goo.gl/SrERjY");
-  background-size: contain;
-}
-.buttons:nth-last-of-type(6) {
-  background-image: url("https://goo.gl/c5kspt");
-  background-size: contain;
-} */
+
 .buttons:hover {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.28);
   color: #3c8dbc;

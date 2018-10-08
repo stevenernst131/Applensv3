@@ -9,10 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using System.IO.Compression;
-using System.Reflection;
-using System.Text;
 
 namespace AppLensV3.Controllers
 {
@@ -31,7 +27,6 @@ namespace AppLensV3.Controllers
         [HttpOptions("invoke")]
         public async Task<IActionResult> Invoke([FromBody]JToken body)
         {
-
             if (!Request.Headers.ContainsKey("x-ms-path-query"))
             {
                 return BadRequest("Missing x-ms-path-query header");

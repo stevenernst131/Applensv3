@@ -188,7 +188,6 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
         this.localDevText = "Download Local Detector Packages";
         this.runButtonIcon = "fa fa-play";
         this.ngxSmartModalService.getModal('devModeModal').open();
-   //     window.open(response);
       }
       , ((error: any) => {
         this.localDevButtonDisabled = false;

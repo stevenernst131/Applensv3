@@ -1,99 +1,52 @@
 <div class="view-container">
-    
-        <ngx-smart-modal #publishModal identifier="publishModal">
-            <div>
-                <h4>Confirm?</h4>
-                <hr style="margin-top: 10px;margin-bottom: 10px;">
-                <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external customers if the detector is marked public.</span>
-                
-                <div style="margin-top:10px;margin-bottom: 10px">
-                    <button type="button" class="btn btn-primary" (click)="publish()" [class.disabled]="modalPublishingButtonDisabled">{{modalPublishingButtonText}}</button>
-                    <button type="button" class="btn btn-danger" (click)="publishModal.close()">Cancel</button>
-                </div>
-                
-            </div>
-            
-                
-        </ngx-smart-modal>
-<!-- 
-    <ngx-smart-modal #devModeModal identifier="devModeModal1">
-        <div class="row">
-            <div class="col-xs-6 col-sm-6">
-                <h4>Develop in local Visual Studio</h4>
-                <hr style="margin-top: 10px;margin-bottom: 10px;">
-                    <span>Some stuff.</span>
-                <p>Instructions...</p>
-                
-                <button (click)="devModeModal.close()">Close</button>
-            </div>
-            <div class="col-xs-6 col-sm-6">
-                <h4>Continue online development</h4>
-                <hr style="margin-top: 10px;margin-bottom: 10px;">
-                    <span>Some stuff.</span>
-                <p>Some stuff...</p>
-                
-                <button (click)="devModeModal.close()">Close</button>
-            </div>
-        </div>
-    </ngx-smart-modal> -->
 
-    <!-- # 675ed5-->
-    <!-- rgb(60, 141, 188) -->
-    
-    <ngx-smart-modal #devModeModal identifier="devModeModal" [customClass] = "'wide-modal'">
+    <ngx-smart-modal #publishModal identifier="publishModal">
+        <div>
+            <h4>Confirm?</h4>
+            <hr style="margin-top: 10px;margin-bottom: 10px;">
+            <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external
+                customers if the detector is marked public.</span>
+
+            <div style="margin-top:10px;margin-bottom: 10px">
+                <button type="button" class="btn btn-primary" (click)="publish()" [class.disabled]="modalPublishingButtonDisabled">{{modalPublishingButtonText}}</button>
+                <button type="button" class="btn btn-danger" (click)="publishModal.close()">Cancel</button>
+            </div>
+
+        </div>
+    </ngx-smart-modal>
+
+    <ngx-smart-modal #devModeModal identifier="devModeModal" [customClass]="'wide-modal'">
         <div class="modal-header" style="background-color: #373277; padding: 10px 15px 10px 15px">
             <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:black!important">&times;</button> -->
             <h4 class="modal-title" id="myModalLabel" style="color:white">Get Developing Options</h4>
         </div>
         <div class="modal-content">
-            <div id="dev-box">  
+            <div id="dev-box">
                 <div>
-                    <!-- <div class="pull-left"> -->
-                    <!-- <input type="submit" style="background-color: 373277" name="signup_submit" value="Develop in local VS Code" /> -->
-                    <!-- <button class="social-signin vscode"><img src="assets/img/LocalDev-Fab1.png" class="resource-logo" style="width:50px; height: 30px"> Develop in local VS Code</button> -->
-                    <!-- <div class="pull-left image">
-                            <img [src]="resourceService.imgSrc" class="resource-logo" style="max-width:25px">
-                        </div> -->
-
                     <h4 style="font-weight: bold; color:#373277">Local Development Prerequiste</h4>
-                    <p>1. Make sure you have installed <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> locally.</p>
-                    <p>2. Install <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp" target="_blank">C# extension</a> on Visual Studio Code.</p>
-                        <!-- <div (click)="downloadLocalDevTools()" class="action-button run-button" [ngClass]="{'disabled': localDevButtonDisabled }">
-                           <i [ngClass]="localDevIcon"></i>
-                            Detector local development tool
-                        </div> -->
-            
-                                              
+                    <p>1. Make sure you have installed <a href="https://code.visualstudio.com/" target="_blank">Visual
+                            Studio Code</a> locally.</p>
+                    <p>2. Install <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp" target="_blank">C#
+                            extension</a> on Visual Studio Code.</p>
                     <br>
 
                     <h4 style="font-weight: bold; color: #373277">Local Development Instructions</h4>
                     <p>1. Download local detector packages</p>
                     <p>2. Extract the zip file</p>
                     <p>3. Launch the startup.cmd</p>
-                    <!-- <h4>Local development instructions</h4> -->
-                            <!-- <input type="text" name="username" placeholder="Username" />
-                            <input type="text" name="email" placeholder="E-mail" />
-                            <input type="password" name="password" placeholder="Password" />
-                            <input type="password" name="password2" placeholder="Retype password" /> --> 
-                    </div>
-                    <div style="margin-top:10px;margin-bottom: 10px; padding-top: 20px; padding-bottom: 20px">
-                        <button type="button" class="btn" style="background-color: #373277; color:white; padding:0px 10px 0px 0px; margin-right: 10px; height: 35px;"(click)="downloadLocalDevTools()" [class.disabled]="localDevButtonDisabled"><img src="assets\img\Local-Dev-Logo.png"> {{localDevText}}</button>
-                        <span style="font-weight:bold">OR</span>
-                        <button type="button" class="btn" style="background-color: white; border-color: #373277; color:#373277; height: 33px; margin-left: 10px; height: 35px;"(click)="devModeModal.close()">Continue Online</button>
-                    </div>
-                    <!-- <div class="or">OR</div> -->
-                    <!-- <div class="right">
-                            <button class="social-signin onlinedev"><img src="assets/img/Applens-Logo.png" class="resource-logo" style="width:25px; height: 20px"> Develop Online</button>
-                            <h4 style="font-weight: bold; text-align: center"><img src="assets/img/crown.png" style="width: 50px; height: 30px"></h4>
-                            <h4 style="font-weight: bold; text-align: center">KEEP</h4>
-                            <h4 style="font-weight: bold; text-align: center">CALM</h4>
-                            <h6 style="font-weight: bold; text-align: center">and</h6>
-                            <h4 style="font-weight: bold; text-align: center">CONTINUE</h4>
-                            <h4 style="font-weight: bold; text-align: center"(click)="devModeModal.close()" class="onlineDev" ><u>ONLINE DEVELOPING</u></h4>
-                    </div> -->
+                </div>
+
+                <div style="margin-top:10px;margin-bottom: 10px; padding-top: 20px; padding-bottom: 20px">
+                    <button type="button" class="btn" style="background-color: #373277; color:white; padding:0px 10px 0px 0px; margin-right: 10px; height: 35px;"
+                        (click)="downloadLocalDevTools()" [class.disabled]="localDevButtonDisabled"><img src="assets\img\Local-Dev-Logo.png">
+                        {{localDevText}}</button>
+                    <span style="font-weight:bold">OR</span>
+                    <button type="button" class="btn" style="background-color: white; border-color: #373277; color:#373277; height: 33px; margin-left: 10px; height: 35px;"
+                        (click)="devModeModal.close()">Continue Online</button>
                 </div>
             </div>
-        </ngx-smart-modal>  
+        </div>
+    </ngx-smart-modal>
 
     <div *ngIf="showAlert" class="alert alert-container" [ngClass]="alertClass" role="alert">
         {{alertMessage}}
@@ -101,11 +54,8 @@
     <loader-view *ngIf="!code" message="Starting onboarding flow ..."></loader-view>
 
     <div *ngIf="code" class="onboarding-container">
-        
         <split [direction]="horizontal" gutterSize="8" gutterColor="#dff0ff">
-
             <split-area size="60">
-
                 <split direction="vertical" gutterSize="8" gutterColor="rgb(249, 233, 212)">
                     <split-area size="85">
                         <detector-control *ngIf="mode === DevelopMode.Create || mode === DevelopMode.Edit"></detector-control>
@@ -124,7 +74,7 @@
                                 <i [ngClass]="runButtonIcon"></i>
                                 {{runButtonText}}
                             </div>
-                            
+
                             <div (click)="getDevOptions()" class="action-button run-button" [ngClass]="{'disabled': localDevButtonDisabled }">
                                 <i [ngClass]="devOptionsIcon"></i>
                                 {{localDevText}}
@@ -144,7 +94,7 @@
             </split-area>
             <split-area size="40">
                 <div class="invocation-output-title-container">
-                    <div class="invocation-title" [ngClass]="[!showDataSources ? 'active' : '']"  (click)="queryResponse ? showDataSources=false : false">
+                    <div class="invocation-title" [ngClass]="[!showDataSources ? 'active' : '']" (click)="queryResponse ? showDataSources=false : false">
                         Detector Output
                     </div>
                     <div class="invocation-title" [ngClass]="[showDataSources ? 'active' : '']" (click)="queryResponse ? showDataSources=true : false">
@@ -153,24 +103,18 @@
                 </div>
 
                 <div style="padding:10px">
-                    <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="startTime"
-                        [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
+                    <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput"
+                        [startTime]="startTime" [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
 
-                    <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true" [detectorResponse]="queryResponse.invocationOutput">
+                    <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true"
+                        [detectorResponse]="queryResponse.invocationOutput">
                     </tab-data-sources>
                     <nav class="container">
-                        <!-- <a target="_blank" tooltip="Kyle Lavery" class="buttons"></a>
-                        <a href="#" tooltip="Xavier" class="buttons"></a>
-                        <a href="#" tooltip="Calculator" class="buttons"></a>
-                        <a href="#" tooltip="Calender" class="buttons"></a>
-                        <a href="#" tooltip="Music" class="buttons"></a> -->
                         <a (click)="getDevOptions()" tooltip="Local VS Development" class="buttons">
-                        <span><span class="rotate"></span></span></a>
+                            <span><span class="rotate"></span></span></a>
                     </nav>
                 </div>
-
             </split-area>
-
         </split>
     </div>
 </div>

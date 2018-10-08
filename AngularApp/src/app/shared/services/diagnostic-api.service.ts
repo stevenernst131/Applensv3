@@ -55,7 +55,6 @@ export class DiagnosticApiService {
     let timeParameters = this._getTimeQueryParameters(startTime, endTime);
     let path = resourceId;
     var url: string = `${this.diagnosticApi}api/localdev?detectorId=${detectorId}`;
-
     let method : HttpMethod = HttpMethod.POST; 
     let request = this._http.post(url, body, {
       headers: this._getHeaders(path, method)
@@ -67,7 +66,7 @@ export class DiagnosticApiService {
 
   public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
-    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, true);
+    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
   }
 
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {

@@ -1,8 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ObserverSiteResponse, ObserverSiteInfo } from '../models/observer';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/of';
+import { BehaviorSubject } from 'rxjs';
 import { ResourceService } from './resource.service';
 import { ObserverService } from './observer.service';
 import { ArmResource, RESOURCE_SERVICE_INPUTS, ResourceServiceInputs } from '../models/resources';
