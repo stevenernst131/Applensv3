@@ -10,68 +10,10 @@ private static string GetQuery(OperationContext<App> cxt)
 [Definition(Id = "<YOUR_DETECTOR_ID>", Name = "", Author = "<YOUR_ALIAS>", Description = "")]
 public async static Task<Response> Run(DataProviders dp, OperationContext<App> cxt, Response res)
 {
-    new Insight(InsightStatus.Critical, "");
-    res.AddMarkdownView("fewe", "");
+    res.Dataset.Add(new DiagnosticData()
+    {
+        Table = await dp.Kusto.ExecuteQuery(GetQuery(cxt), cxt.Resource.Stamp.Name)
+    });
+
     return res;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
