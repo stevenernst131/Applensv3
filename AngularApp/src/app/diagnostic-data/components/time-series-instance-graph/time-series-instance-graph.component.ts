@@ -1,8 +1,8 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DataTableDataType, DiagnosticData, TimeSeriesPerInstanceRendering, DataTableResponseObject, DataTableResponseColumn } from '../../models/detector';
 import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
-import { InstanceDetails, DetailedInstanceTimeSeries} from '../../models/time-series';
+import { InstanceDetails, DetailedInstanceTimeSeries } from '../../models/time-series';
 import { TimeZones, TimeUtilities } from '../../utilities/time-utilities';
 import * as momentNs from 'moment-timezone';
 const moment = momentNs;

@@ -1,7 +1,6 @@
 import { Http, Headers, Response, Request } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subscription as RxSubscription, Subject, ReplaySubject } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
 import { environment } from '../../../environments/environment';
 
 interface CacheContent {

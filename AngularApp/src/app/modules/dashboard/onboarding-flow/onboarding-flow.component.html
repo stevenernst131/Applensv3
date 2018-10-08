@@ -4,30 +4,29 @@
         <div>
             <h4>Confirm?</h4>
             <hr style="margin-top: 10px;margin-bottom: 10px;">
-            <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external
-                customers if the detector is marked public.</span>
+            <span>Published changes will be live in Applens and App Services "Diagnose and Solve" blade for external customers
+                if the detector is marked public.</span>
 
             <div style="margin-top:10px;margin-bottom: 10px">
                 <button type="button" class="btn btn-primary" (click)="publish()" [class.disabled]="modalPublishingButtonDisabled">{{modalPublishingButtonText}}</button>
                 <button type="button" class="btn btn-danger" (click)="publishModal.close()">Cancel</button>
             </div>
-
         </div>
     </ngx-smart-modal>
 
     <ngx-smart-modal #devModeModal identifier="devModeModal" [customClass]="'wide-modal'">
         <div class="modal-header" style="background-color: #373277; padding: 10px 15px 10px 15px">
-            <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:black!important">&times;</button> -->
             <h4 class="modal-title" id="myModalLabel" style="color:white">Get Developing Options</h4>
         </div>
         <div class="modal-content">
             <div id="dev-box">
                 <div>
                     <h4 style="font-weight: bold; color:#373277">Local Development Prerequiste</h4>
-                    <p>1. Make sure you have installed <a href="https://code.visualstudio.com/" target="_blank">Visual
-                            Studio Code</a> locally.</p>
-                    <p>2. Install <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp" target="_blank">C#
-                            extension</a> on Visual Studio Code.</p>
+                    <p>1. Make sure you have installed
+                        <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> locally.</p>
+                    <p>2. Install
+                        <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp" target="_blank">C# extension
+                        </a> on Visual Studio Code.</p>
                     <br>
 
                     <h4 style="font-weight: bold; color: #373277">Local Development Instructions</h4>
@@ -38,8 +37,9 @@
 
                 <div style="margin-top:10px;margin-bottom: 10px; padding-top: 20px; padding-bottom: 20px">
                     <button type="button" class="btn" style="background-color: #373277; color:white; padding:0px 10px 0px 0px; margin-right: 10px; height: 35px;"
-                        (click)="downloadLocalDevTools()" [class.disabled]="localDevButtonDisabled"><img src="assets\img\Local-Dev-Logo.png">
-                        {{localDevText}}</button>
+                        (click)="downloadLocalDevTools()" [class.disabled]="localDevButtonDisabled">
+                        <img src="assets\img\Local-Dev-Logo.png"> {{localDevText}}
+                    </button>
                     <span style="font-weight:bold">OR</span>
                     <button type="button" class="btn" style="background-color: white; border-color: #373277; color:#373277; height: 33px; margin-left: 10px; height: 35px;"
                         (click)="devModeModal.close()">Continue Online</button>
@@ -103,15 +103,17 @@
                 </div>
 
                 <div style="padding:10px">
-                    <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput"
-                        [startTime]="startTime" [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
+                    <detector-view *ngIf="queryResponse && !showDataSources" [detectorResponse]="queryResponse.invocationOutput" [startTime]="startTime"
+                        [endTime]="endTime" [error]="errorState" [showEdit]="false"></detector-view>
 
-                    <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true"
-                        [detectorResponse]="queryResponse.invocationOutput">
+                    <tab-data-sources *ngIf="queryResponse && showDataSources" [onboardingMode]="true" [detectorResponse]="queryResponse.invocationOutput">
                     </tab-data-sources>
                     <nav class="container">
                         <a (click)="getDevOptions()" tooltip="Local VS Development" class="buttons">
-                            <span><span class="rotate"></span></span></a>
+                            <span>
+                                <span class="rotate"></span>
+                            </span>
+                        </a>
                     </nav>
                 </div>
             </split-area>

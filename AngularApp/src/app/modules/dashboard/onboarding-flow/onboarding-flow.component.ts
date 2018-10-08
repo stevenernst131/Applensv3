@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
 import { QueryResponse, CompilerResponse } from '../../../diagnostic-data/models/compiler-response';
@@ -85,7 +85,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.localDevButtonDisabled = false;
     this.runButtonDisabled = false;
     this.publishButtonDisabled = true;
-    this.localDevText = "Download Local Detector Packages";
+    this.localDevText = "Download Local Detector Package";
     this.localDevUrl ="";
     this.localDevIcon = "fa fa-download";
     this.devOptionsIcon = "fa fa-download";
@@ -163,12 +163,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewChecked() {
-    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
 
   prepareLocalDev() {
-    // Get current code content, send it to applens controller backend, get the URL returning to download automatically with window.open();
     let currentCode = this.code;
 
     var body = {
@@ -185,14 +183,14 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       .subscribe((response: string) => {
         this.localDevButtonDisabled = false;
         this.localDevUrl = response;
-        this.localDevText = "Download Local Detector Packages";
+        this.localDevText = "Download Local Detector Package";
         this.runButtonIcon = "fa fa-play";
         this.ngxSmartModalService.getModal('devModeModal').open();
       }
       , ((error: any) => {
         this.localDevButtonDisabled = false;
         this.publishingPackage = null;
-        this.localDevText = "Download Local Detector Packages";
+        this.localDevText = "Download Local Detector Package";
         this.runButtonIcon = "fa fa-play";
         this.buildOutput.push("Something went wrong during preparing local dev environment.");
 
@@ -216,7 +214,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     .subscribe((response: string) => {
       this.localDevButtonDisabled = false;
       this.localDevUrl = response;
-      this.localDevText = "Download Local Development Tools";
+      this.localDevText = "Download Local Development Package";
       this.localDevIcon = "fa fa-download";
       window.open(response);
     }
