@@ -24,11 +24,6 @@ param (
     [ValidateNotNullOrEmpty()]
     [switch]
     $systemCheck,
-	
-    [Parameter(Mandatory=$false, ParameterSetName="RunDetector")]
-    [ValidateNotNullOrEmpty()]
-    [switch]
-    $compileOnly,
 
 	[Parameter(Mandatory=$false, ParameterSetName="PublishDetector")]
 	[Parameter(Mandatory=$false, ParameterSetName="RunDetector")]
@@ -78,7 +73,7 @@ if ($systemCheck)
 
 if ($run) {
     $compilationResponse = Start-Compilation  -ResourceId $ResourceId -DetectorCsxPath $DetectorFile -IsInternalClient $IsInternalClient -IsInternalView $InternalView
-    if (!$compileOnly -and $compilationResponse.invocationOutput)
+    if ($compilationResponse.invocationOutput)
     {
         Write-Verbose "path: $PSScriptRoot\..\FrameWork\UI\Detector-UI-Rendering\dist\assets\invocationOutput.json" -Verbose
         $invocationOutput = $compilationResponse.invocationOutput | ConvertTo-Json -Depth 8
@@ -102,7 +97,6 @@ if ($help) {
     Write-Host "Syntax" -ForegroundColor Green
     Write-Host "`t-run: Run detector script"-ForegroundColor Magenta
     Write-Host "`t-publish: Publish detector script" -ForegroundColor Magenta
-    Write-Host "`t-compileOnly: compile and run detector without showing UI Rendering"-ForegroundColor Magenta
 	Write-Host "`t-resourceId: ResourceId parameter to run or publish" -ForegroundColor Magenta
 	Write-Host "`t-detectorFile: Detector file to run or publish" -ForegroundColor Magenta
     Write-Host "`t-help: Help info for Diag command "-ForegroundColor Magenta
@@ -111,9 +105,6 @@ if ($help) {
 	Write-Host "Examples" -ForegroundColor Green
 	Write-Host "`t.\Diag.ps1 -run" -ForegroundColor Magenta
 	Write-Host "`tRun default detector script 'detector.csx' with settings from 'detectorSettings.json'`n" -ForegroundColor cyan
-	
-    Write-Host "`t.\Diag.ps1 -run -compileOnly" -ForegroundColor Magenta
-	Write-Host "`tRun default detector script 'detector.csx' without showing UI rendering`n" -ForegroundColor cyan
 
 	Write-Host "`t.\Diag.ps1 -run -resourceId '/subscriptions/1402be24-4f35-4ab7-a212-2cd496ebdf14/resourcegroups/badsites/providers/Microsoft.Web/sites/highcpuscenario'" -ForegroundColor Magenta
 	Write-Host "`tRun default detector script with spcified resourceId`n" -ForegroundColor cyan

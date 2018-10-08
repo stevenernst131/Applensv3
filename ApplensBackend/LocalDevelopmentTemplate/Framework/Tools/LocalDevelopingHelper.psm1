@@ -159,7 +159,11 @@ function Start-Compilation
 
         [parameter(Mandatory = $false)]
         [switch]
-        $IsLocalhost
+        $IsLocalhost,
+
+        [parameter(Mandatory = $false)]
+        [switch]
+        $IsStaging
     )
 
     $ErrorActionPreference = 'Stop'
@@ -220,6 +224,11 @@ function Start-Compilation
     if ($IsLocalhost)
     {
         $endpoint = "http://localhost:5000/api/invoke"
+    }
+
+    if ($IsStaging)
+    {
+        $endpoint = "https://applens-staging.azurewebsites.net/api/invoke"
     }
 
 	Write-Host "============  Build started ============ " -ForegroundColor Green
@@ -286,7 +295,11 @@ function Publish-Detector
 
     [Parameter(Mandatory = $false)]
     [Switch]
-    $IsLocalhost
+    $IsLocalhost,
+
+    [Parameter(Mandatory = $false)]
+    [Switch]
+    $IsStaging
     )
     
 	$ErrorActionPreference = 'Stop'
@@ -364,6 +377,11 @@ function Publish-Detector
         $endpoint = "http://localhost:5000/api/invoke"
     }
 
+    if ($IsStaging)
+    {
+        $endpoint = "https://applens-staging.azurewebsites.net/api/invoke"
+    }
+
     try {
         Write-Host "Publishing package..." -ForegroundColor Green
         $response = Invoke-RestMethod -Method Post -Uri $endpoint -Headers $publishHeader -Body $publishingPackageBody -ContentType "application/json; charset=utf-8"
@@ -386,7 +404,7 @@ function Publish-Detector
             $detectorId = $compilationResponse.invocationOutput.metadata.id
             $resourceUrl = $ResourceId -ireplace "resourcegroup", "resourceGroup"
             $publishedLink = "https://applens.azurewebsites.net" + $resourceUrl + "/detectors/" + $detectorId
-            Write-Host "Changes will be live shortly: $publishedLink" -ForegroundColor Cyan
+            Write-Host "Changes will be live shortly at: $publishedLink" -ForegroundColor Cyan
         }
     }
 }
