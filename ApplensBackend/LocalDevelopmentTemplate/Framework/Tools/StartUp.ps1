@@ -127,6 +127,9 @@ function Copy-FrameworkDependencies
             Write-Host "Same build version $latestBuild already exists. Skip Copying builds." -ForegroundColor Cyan
         }
     }
+    else {
+        Write-Error "Unable to get access to build path $buildPath, please check you Internet or VPN connection"
+    }
 }
 
 function Add-FrameworkReferences
@@ -207,7 +210,6 @@ Add-FrameworkReferences -detectorCsxPath $detectorCsxPath
 
 # Open csx in vscode
 code "$($PSScriptRoot)\..\..\Detector\detector.csx" "$($PSScriptRoot)\..\..\Detector" 
-
 
 Stop-Transcript -ErrorAction Ignore
 
