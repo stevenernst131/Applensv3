@@ -12,6 +12,7 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import * as momentNs from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
 import { DetectorControlService } from '../../../diagnostic-data/services/detector-control.service';
+import { Observable } from '../../../../../node_modules/rxjs';
 
 const moment = momentNs;
 
@@ -101,11 +102,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resourceId = this.resourceService.getCurrentResourceId();
+    let detectorFile: Observable<string>;
     if (this.mode === DevelopMode.Create) {
       // CREATE FLOW
-      this.githubService.getDetectorTemplate(this.resourceService.templateFileName).subscribe(data => {
-        this.code = data;
-      });
+      detectorFile = this.githubService.getDetectorTemplate(this.resourceService.templateFileName);
       this.fileName = "new.csx";
       this.startTime = this._detectorControlService.startTime;
       this.endTime = this._detectorControlService.endTime;
@@ -113,29 +113,25 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     else if (this.mode === DevelopMode.Edit) {
       // EDIT FLOW
       this.fileName = `${this.detectorId}.csx`;
-      this.githubService.getDetectorFile(this.detectorId).subscribe(data => {
-        this.code = data;
-        //this.retrieveProgress();
-      });
+      detectorFile = this.githubService.getDetectorFile(this.detectorId);
       this.startTime = this._detectorControlService.startTime;
       this.endTime = this._detectorControlService.endTime;
     }
     else if (this.mode === DevelopMode.EditMonitoring) {
       // SYSTEM MONITORING FLOW
       this.fileName = '__monitoring.csx';
-      this.githubService.getDetectorFile("__monitoring").subscribe(data => {
-        this.code = data;
-        //this.retrieveProgress();
-      });
+      detectorFile = this.githubService.getDetectorFile("__monitoring");
     }
     else if (this.mode === DevelopMode.EditAnalytics) {
       // SYSTEM ANALYTICS FLOW
       this.fileName = '__analytics.csx';
-      this.githubService.getDetectorFile("__analytics").subscribe(data => {
-        this.code = data;
-        //this.retrieveProgress();
-      });
+      detectorFile = this.githubService.getDetectorFile("__analytics");
     }
+
+    detectorFile.subscribe(code => {
+      this.code = code;
+      this.ngxSmartModalService.getModal('devModeModal').open();
+    })
   }
   
   ngOnDestroy() {
@@ -159,42 +155,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.ngxSmartModalService.getModal('devModeModal').open();
   }
 
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
-  }
-
-  prepareLocalDev() {
-    let currentCode = this.code;
-
-    var body = {
-      script: this.code
-    };
-
-    this.runButtonDisabled = true;
-    this.publishButtonDisabled = true;
-    this.localDevButtonDisabled = true;
-    this.localDevText = "Preparing Local Tools";
-    this.localDevIcon = "fa fa-circle-o-notch fa-spin";
-
-    this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this.dataSource, this.timeRange)
-      .subscribe((response: string) => {
-        this.localDevButtonDisabled = false;
-        this.localDevUrl = response;
-        this.localDevText = "Download Local Detector Package";
-        this.runButtonIcon = "fa fa-play";
-        this.ngxSmartModalService.getModal('devModeModal').open();
-      }
-      , ((error: any) => {
-        this.localDevButtonDisabled = false;
-        this.publishingPackage = null;
-        this.localDevText = "Download Local Detector Package";
-        this.runButtonIcon = "fa fa-play";
-        this.buildOutput.push("Something went wrong during preparing local dev environment.");
-
-      }));
   }
 
   getDevOptions() {
@@ -216,7 +180,18 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       this.localDevUrl = response;
       this.localDevText = "Download Local Development Package";
       this.localDevIcon = "fa fa-download";
-      window.open(response);
+     // window.open(response);
+
+      var element = document.createElement('a');
+      element.setAttribute('href', response);
+      element.setAttribute('download', "Local Development Package");
+  
+      element.style.display = 'none';
+      document.body.appendChild(element);
+  
+      element.click();
+  
+      document.body.removeChild(element);
     }
     , ((error: any) => {
       this.localDevButtonDisabled = false;

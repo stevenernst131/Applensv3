@@ -196,9 +196,8 @@ write-Host "Start preparing VS code `n" -ForegroundColor Green
 # Rename detectorSettings.txt into detectorSettings.json
 if (Test-Path "$($PSScriptRoot)\..\..\Detector\detectorSettings.txt")
 {
-    Rename-Item -Path "$($PSScriptRoot)\..\..\Detector\detectorSettings.txt" -NewName "detectorSettings.json"
+    Move-Item -Path "$($PSScriptRoot)\..\..\Detector\detectorSettings.txt" -Destination "detectorSettings.json" -Force
 }
-
 
 # Preparign the reference region for detector csx
 # a. Copy the references from latest reddog build
