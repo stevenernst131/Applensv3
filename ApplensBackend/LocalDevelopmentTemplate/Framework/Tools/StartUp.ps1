@@ -196,7 +196,7 @@ write-Host "Start preparing VS code `n" -ForegroundColor Green
 # Rename detectorSettings.txt into detectorSettings.json
 if (Test-Path "$($PSScriptRoot)\..\..\Detector\detectorSettings.txt")
 {
-    Move-Item -Path "$($PSScriptRoot)\..\..\Detector\detectorSettings.txt" -Destination "detectorSettings.json" -Force
+    Move-Item -Path "$($PSScriptRoot)\..\..\Detector\detectorSettings.txt" -Destination "$($PSScriptRoot)\..\..\Detector\detectorSettings.json" -Force
 }
 
 # Preparign the reference region for detector csx
