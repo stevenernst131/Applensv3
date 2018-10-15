@@ -28,7 +28,6 @@ export class DetectorViewComponent implements OnInit {
   private insightsListEventProperties = {};
   private currentSiteString = `Current Site: ${window.location.href} `;
 
-
   @Input()
   set detectorResponse(value: DetectorResponse) {
     this.detectorResponseSubject.next(value);
@@ -54,6 +53,7 @@ export class DetectorViewComponent implements OnInit {
 
   ngOnInit() {
     this.loadDetector();
+    
     this.detectorControlService.update.subscribe(validUpdate => {
       if (validUpdate) {
 
