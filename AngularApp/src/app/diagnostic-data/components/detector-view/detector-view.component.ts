@@ -26,6 +26,8 @@ export class DetectorViewComponent implements OnInit {
   private ratingEventProperties: { [name: string]: string };
   private authorEmails: string;
   private insightsListEventProperties = {};
+  private currentSiteString = `Current Site: ${window.location.href} `;
+
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -52,7 +54,6 @@ export class DetectorViewComponent implements OnInit {
 
   ngOnInit() {
     this.loadDetector();
-
     this.detectorControlService.update.subscribe(validUpdate => {
       if (validUpdate) {
 
