@@ -2,7 +2,7 @@ import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { DataRenderBaseComponent } from '../data-render-base/data-render-base.component';
 import { DetectorListRendering, DiagnosticData, DetectorResponse, HealthStatus, DetectorMetaData } from '../../models/detector';
 import { DiagnosticService } from '../../services/diagnostic.service';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 import { StatusStyles } from '../../models/styles';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { LoadingStatus } from '../../models/loading';

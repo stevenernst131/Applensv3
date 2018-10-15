@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ReplaySubject } from 'rxjs'
+import { ReplaySubject } from 'rxjs';
 import { DiagnosticData, RenderingType } from '../../models/detector';
 import * as momentNs from 'moment-timezone';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';

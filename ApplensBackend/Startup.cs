@@ -40,6 +40,7 @@ namespace AppLensV3
             services.AddSingleton<IObserverClientService, SupportObserverClientService>();
             services.AddSingleton<IDiagnosticClientService, DiagnosticRoleClient>();
             services.AddSingleton<IGithubClientService, GithubClientService>();
+            services.AddSingleton<ILocalDevelopmentClientService, LocalDevelopmentClientService>();
 
             services.AddMvc ();
 
@@ -60,15 +61,12 @@ namespace AppLensV3
             }
 
             // would not need cors if running in same host
-            if (env.IsDevelopment())
-            {
-                app.UseCors(cors =>
-                  cors
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowAnyOrigin()
-                );
-            }
+            app.UseCors(cors =>
+                cors
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+            );
 
             app.UseAuthentication();
 

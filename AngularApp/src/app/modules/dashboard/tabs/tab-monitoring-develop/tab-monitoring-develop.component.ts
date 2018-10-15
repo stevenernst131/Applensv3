@@ -32,7 +32,7 @@ export class TabMonitoringDevelopComponent implements OnInit {
     ["Last Month", "720"]
   ]);
   timeRangeKeys: string[];
-  selectedTimeRange: string = "Last 7 days";
+  selectedTimeRange: string = "Last Week";
   timeRangeInHours: string = "168"; 
   endTime: moment.Moment = moment.tz(TimeZones.UTC);
   startTime: moment.Moment = this.endTime.clone().subtract(7, 'days');

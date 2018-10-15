@@ -10,7 +10,7 @@ import { AngularSplitModule } from 'angular-split';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { StartupService } from '../../shared/services/startup.service';
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 import { SideNavComponent, SearchMenuPipe } from './side-nav/side-nav.component';
 import { ResourceMenuItemComponent } from './resource-menu-item/resource-menu-item.component';
 import { ResourceService } from '../../shared/services/resource.service';

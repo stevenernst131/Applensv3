@@ -51,6 +51,19 @@ export class DiagnosticApiService {
     return this.invoke<QueryResponse<DetectorResponse>>(path, HttpMethod.POST, body, false);
   }
 
+  public getLocalDevelopmentResponse(detectorId: string, version: string, resourceId: string, body: any, startTime?: string, endTime?: string): Observable<string> {
+    let timeParameters = this._getTimeQueryParameters(startTime, endTime);
+    let path = resourceId;
+    var url: string = `${this.diagnosticApi}api/localdev?detectorId=${detectorId}`;
+    let method : HttpMethod = HttpMethod.POST; 
+    let request = this._http.post(url, body, {
+      headers: this._getHeaders(path, method)
+    })
+      .map((response: Response) => <String>(response.json()));
+
+    return this._cacheService.get(this.getCacheKey(method, path), request, true);
+  }
+
   public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
     return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
