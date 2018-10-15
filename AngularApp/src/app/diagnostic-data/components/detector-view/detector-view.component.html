@@ -7,7 +7,7 @@
       </h1>
       <div class="description" *ngIf="!isPublic && !isSystemInvoker">By
         <span style="padding:2px; color: #0066c0;">
-          <a *ngIf="detectorDataLocalCopy.metadata && detectorDataLocalCopy.metadata.author; else unknownAuthor" href="mailto:{{authorEmails}}?subject=Detector%20Feedback%20for%20{{detectorDataLocalCopy.metadata.id}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
+          <a *ngIf="detectorDataLocalCopy.metadata && detectorDataLocalCopy.metadata.author; else unknownAuthor" href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{detectorDataLocalCopy.metadata.id}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
             {{detectorDataLocalCopy.metadata.author}}
           </a>
           <ng-template #unknownAuthor>
