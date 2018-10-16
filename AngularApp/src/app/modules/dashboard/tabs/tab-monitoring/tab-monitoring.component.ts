@@ -78,7 +78,6 @@ export class TabMonitoringComponent implements OnInit {
   }
 
   getDetectorResponse() {
-    this.detectorId = this._route.parent.snapshot.params['detector'];
     this._diagnosticService.getDetectors().subscribe(detectors => {
       let detectorMetaData: DetectorMetaData = detectors.find(detector => this.detectorId === detector.id);
       if (detectorMetaData.name) {
