@@ -24,7 +24,9 @@ import { TabCommonComponent } from './tabs/tab-common/tab-common.component';
 import { TabDataComponent } from './tabs/tab-data/tab-data.component';
 import { TabDevelopComponent } from './tabs/tab-develop/tab-develop.component';
 import { ApplensDiagnosticService } from './services/applens-diagnostic.service';
+import { ApplensCommsService } from './services/applens-comms.service';
 import { DiagnosticService } from '../../diagnostic-data/services/diagnostic.service';
+import { CommsService } from '../../diagnostic-data/services/comms.service';
 import { CollapsibleMenuModule } from '../../collapsible-menu/collapsible-menu.module';
 import { ObserverService } from '../../shared/services/observer.service';
 import { TabDataSourcesComponent } from './tabs/tab-data-sources/tab-data-sources.component';
@@ -88,7 +90,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           {
             path: 'monitoring',
             component: TabMonitoringComponent
-          }          
+          }
           ,
           {
             path: 'analytics',
@@ -128,6 +130,7 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
   ],
   providers: [
     ApplensDiagnosticService,
+    ApplensCommsService,
     InitResolver,
     {
       provide: ResourceService,
@@ -138,8 +141,9 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       provide: OWL_DATE_TIME_FORMATS,
       useValue: CUSTOM_MOMENT_FORMATS
     },
-    { provide: DiagnosticService, useExisting: ApplensDiagnosticService }
+    { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
+    { provide: CommsService, useExisting: ApplensCommsService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent,TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent]
 })
 export class DashboardModule { }

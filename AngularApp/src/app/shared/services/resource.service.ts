@@ -13,7 +13,7 @@ export class ResourceService {
   protected _armResource: ArmResource;
   protected _initialized: Observable<boolean>;
 
-  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs)  { 
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs) {
     this._armResource = inputs.armResource;
     this.templateFileName = inputs.templateFileName;
     this.imgSrc = inputs.imgSrc;
