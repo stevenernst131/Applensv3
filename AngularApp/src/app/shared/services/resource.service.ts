@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ArmResource, ResourceServiceInputs, RESOURCE_SERVICE_INPUTS } from '../models/resources';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ResourceService {
   protected _armResource: ArmResource;
   protected _initialized: Observable<boolean>;
 
-  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs) {
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs)  { 
     this._armResource = inputs.armResource;
     this.templateFileName = inputs.templateFileName;
     this.imgSrc = inputs.imgSrc;

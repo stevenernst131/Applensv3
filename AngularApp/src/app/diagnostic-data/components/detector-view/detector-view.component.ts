@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { DetectorResponse, RenderingType } from '../../models/detector';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import * as momentNs from 'moment';
@@ -26,6 +26,7 @@ export class DetectorViewComponent implements OnInit {
   private ratingEventProperties: { [name: string]: string };
   private authorEmails: string;
   private insightsListEventProperties = {};
+  private currentSiteString = `Current Site: ${window.location.href} `;
 
   @Input()
   set detectorResponse(value: DetectorResponse) {
@@ -52,7 +53,7 @@ export class DetectorViewComponent implements OnInit {
 
   ngOnInit() {
     this.loadDetector();
-
+    
     this.detectorControlService.update.subscribe(validUpdate => {
       if (validUpdate) {
 

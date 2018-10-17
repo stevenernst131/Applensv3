@@ -44,6 +44,7 @@ namespace AppLensV3
             services.AddSingleton<IKustoQueryService, KustoQueryService>();
             services.AddSingleton<IKustoTokenRefreshService, KustoTokenRefreshService>();
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
+            services.AddSingleton<ILocalDevelopmentClientService, LocalDevelopmentClientService>();
 
             services.AddMvc ();
 
@@ -64,15 +65,12 @@ namespace AppLensV3
             }
 
             // would not need cors if running in same host
-            if (env.IsDevelopment())
-            {
-                app.UseCors(cors =>
-                  cors
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowAnyOrigin()
-                );
-            }
+            app.UseCors(cors =>
+                cors
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+            );
 
             app.UseAuthentication();
 
