@@ -12,7 +12,6 @@ export class ApplensCommsService {
   public getServiceHealthCommunications(): Observable<Communication[]> {
 
     return this._resourceService.getCurrentResource().flatMap((data: any) => {
-      console.log(data);
       let subId = data.subscriptionId;
       if (data.Subscription) {
         subId = data.Subscription;
