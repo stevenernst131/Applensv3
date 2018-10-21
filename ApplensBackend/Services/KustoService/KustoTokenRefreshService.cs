@@ -10,7 +10,6 @@ namespace AppLensV3.Services
 {
     public interface IKustoTokenRefreshService
     {
-
         Task<string> GetAuthorizationTokenAsync();
     }
 

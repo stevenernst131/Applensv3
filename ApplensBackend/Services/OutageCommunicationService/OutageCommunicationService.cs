@@ -14,8 +14,8 @@ namespace AppLensV3.Services
     {
         private IKustoQueryService _kustoQueryService;
 
-        private TimeSpan _commAlertWindow = TimeSpan.FromDays(2);
-        private TimeSpan _commExpandedWindow = TimeSpan.FromDays(1);
+        private TimeSpan _commAlertWindow = TimeSpan.FromDays(20);
+        private TimeSpan _commExpandedWindow = TimeSpan.FromDays(19);
 
         private string _commsQuery = @"
         let startDate = datetime({START_TIME});
@@ -41,7 +41,7 @@ namespace AppLensV3.Services
 
             if (string.IsNullOrWhiteSpace(impactedService))
             {
-                throw new ArgumentNullException("impactedService");
+                impactedService = "appservice";
             }
 
             DateTime currentTimeUTC = DateTime.UtcNow;
@@ -52,7 +52,6 @@ namespace AppLensV3.Services
             string kustoQuery = _commsQuery
                 .Replace("{START_TIME}", startTimeStr)
                 .Replace("{END_TIME}", endTimeStr)
-                .Replace("{IMPACTED_SERVICE}", impactedService)
                 .Replace("{SUBSCRIPTION}", subscription);
 
             DataTable dt = await this._kustoQueryService.ExecuteQueryAsync("Icmcluster", "ACM.Backend", kustoQuery);

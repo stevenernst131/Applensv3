@@ -10,7 +10,7 @@
 
   <div class="comm-body" *ngIf="isAlertExpanded">
     
-    <div *ngIf="!isPublic" class="comm-source-link">
+    <div *ngIf="isPublic" class="comm-source-link">
       <a href="https://app.azure.com/h/{{commAlertToShow.incidentId}}" target="_blank">Open Service Health <i class="fa fa fa-external-link" aria-hidden="true"></i></a>
     </div>
     

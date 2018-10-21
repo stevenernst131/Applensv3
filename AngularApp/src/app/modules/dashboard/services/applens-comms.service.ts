@@ -10,14 +10,7 @@ export class ApplensCommsService {
   constructor(private _diagnosticApi: DiagnosticApiService, private _resourceService: ResourceService) { }
 
   public getServiceHealthCommunications(): Observable<Communication[]> {
-
-    return this._resourceService.getCurrentResource().flatMap((data: any) => {
-      let subId = data.subscriptionId;
-      if (data.Subscription) {
-        subId = data.Subscription;
-      }
-      return this._diagnosticApi.get<Communication[]>(`api/comms/${subId}`);
-    });
+    return this._diagnosticApi.get<Communication[]>(`api/comms/${this._resourceService.ArmResource.subscriptionId}`);
   }
 
   public openMoreDetails() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import { CommsService } from '../../services/comms.service';
 import { Communication, CommunicationStatus } from '../../models/communication';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
@@ -17,6 +17,7 @@ export class CommAlertComponent implements OnInit {
   private resolvedAlertTitle: string = 'An Azure service outage that was impacting this subscription was recently resolved.';
   private azureServiceCommList: Communication[];
 
+  @Input() autoExpand: boolean = false;
   public commAlertTitle: string;
   public commAlertToShow: Communication = null;
   public isAlertExpanded: boolean = false;
@@ -39,7 +40,7 @@ export class CommAlertComponent implements OnInit {
       let commAlert = commsList.find((comm: Communication) => comm.isAlert === true);
       if (commAlert) {
         this.commAlertToShow = commAlert;
-        this.isAlertExpanded = this.commAlertToShow.isExpanded;
+        this.isAlertExpanded = this.autoExpand && this.commAlertToShow.isExpanded;
         this.commPublishedTime = moment.tz(this.commAlertToShow.publishedTime, 'Etc/UTC').format('YYYY-MM-DD HH:mm A');
         if (commAlert.status === CommunicationStatus.Active) {
           this.commAlertTitle = this.activeAlertTitle;

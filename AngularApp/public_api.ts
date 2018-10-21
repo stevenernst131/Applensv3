@@ -1,5 +1,6 @@
 export * from './src/app/diagnostic-data/diagnostic-data.module';
 export { DiagnosticService } from './src/app/diagnostic-data/services/diagnostic.service';
+export { CommsService } from './src/app/diagnostic-data/services/comms.service';
 export { TelemetryService } from './src/app/diagnostic-data/services/telemetry/telemetry.service';
 export { DetectorControlService } from './src/app/diagnostic-data/services/detector-control.service';
 export * from './src/app/collapsible-menu/collapsible-menu.module';
