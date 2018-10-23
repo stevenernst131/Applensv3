@@ -26,6 +26,12 @@
     right:10px;
     top:0;
 }
+.comm-action-button{
+    color:white;
+    padding:10px;
+    background-color:#2966ba;
+    border-radius:2px;
+}
 .comm-info-container{
     padding:10px;
     margin-top:15px;
