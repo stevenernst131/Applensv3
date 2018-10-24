@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div *ngIf="isPublic" class="comm-info-row" style="margin-bottom:10px">
+      <div *ngIf="!isPublic" class="comm-info-row" style="margin-bottom:10px">
         <a class="comm-action-button" href="https://app.azure.com/h/{{commAlertToShow.incidentId}}" target="_blank">Download Summary(PDF) or Request RCA in Azure Service Health <i class="fa fa fa-external-link" aria-hidden="true"></i></a>
       </div>
     </div>
