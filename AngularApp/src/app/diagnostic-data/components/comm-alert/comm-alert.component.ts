@@ -13,8 +13,8 @@ const moment = momentNs;
 })
 export class CommAlertComponent implements OnInit {
 
-  private activeAlertTitle: string = 'An Azure service outage may be impacting this subscription.';
-  private resolvedAlertTitle: string = 'An Azure service outage that was impacting this subscription was recently resolved.';
+  private activeAlertTitle: string = 'An Azure service outage may be impacting this subscription. (Issue : {title})';
+  private resolvedAlertTitle: string = 'An Azure service outage that was impacting this subscription was recently resolved. (Issue : {title})';
   private azureServiceCommList: Communication[];
 
   @Input() autoExpand: boolean = false;
@@ -49,6 +49,7 @@ export class CommAlertComponent implements OnInit {
           this.commAlertTitle = this.resolvedAlertTitle;
         }
 
+        this.commAlertTitle = this.commAlertTitle.replace("{title}", commAlert.title);
         this._getImpactedServices();
       }
     });
@@ -61,19 +62,19 @@ export class CommAlertComponent implements OnInit {
 
     let allCommsForImpactingIncident = this.azureServiceCommList.filter(x => x.incidentId === this.commAlertToShow.incidentId);
     allCommsForImpactingIncident.forEach(item => {
-      impactedServices = impactedServices.concat(item.impactedServices.map(y=>y.name));
-      
-      var regions = item.impactedServices.map(z=>z.regions);
+      impactedServices = impactedServices.concat(item.impactedServices.map(y => y.name));
+
+      var regions = item.impactedServices.map(z => z.regions);
       impactedRegions = impactedRegions.concat(...regions);
 
     });
 
-    this.impactedServices = impactedServices.filter((value, index, arr)=> arr.indexOf(value) == index).toString();
-    let uniqueRegions = impactedRegions.filter((value, index, arr)=> arr.indexOf(value) == index);
-    if(uniqueRegions.length > 3){
+    this.impactedServices = impactedServices.filter((value, index, arr) => arr.indexOf(value) == index).toString();
+    let uniqueRegions = impactedRegions.filter((value, index, arr) => arr.indexOf(value) == index);
+    if (uniqueRegions.length > 3) {
       this.impactedRegions = uniqueRegions.slice(0, 3).toString().concat(`(+${uniqueRegions.length - 3} more)`);
     }
-    else{
+    else {
       this.impactedRegions = uniqueRegions.toString();
     }
   }
