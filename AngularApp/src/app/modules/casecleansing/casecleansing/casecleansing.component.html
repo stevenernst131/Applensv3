@@ -1,0 +1,48 @@
+<div *ngIf="cases" class="caseTable">
+  <div class="row">
+  <div class="table-responsive col-md-5 col-md-offset-1">
+    <table class="table table-hover ">
+    <thead>
+        <tr>
+            <th>IncidentId</th>
+            <th>Status</th>
+            <th title="Person responsible for correcting the case coding">Assigned To</th>
+            <th>Recommendation Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let case of cases" [class.table-primary]="case === selectedCase" (click)="onSelect(case)">
+            <td>{{ case.incidentId }}</td>
+            <td>{{ case.status }}</td>
+            <td>{{ case.assignedTo }}</td>
+            <td>{{ case.recomendationCount }}</td>
+            <!-- <td><button (click)="save(task.id)">Save</button>&nbsp;&nbsp;<button (click)="Delete(task.id)">Delete</button></td> -->
+        </tr>
+    </tbody>
+    </table>
+  </div>
+  <div class="col-md-5  col-md-offset-1" *ngIf="content">
+    <pre><code>{{content}}</code></pre>
+  </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="myTestModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Modal body text goes here.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

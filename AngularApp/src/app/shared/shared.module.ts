@@ -15,6 +15,7 @@ import { ResourceService } from './services/resource.service';
 import { AadAuthGuard } from './auth/aad-auth-guard.service';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './components/login/login.component';
+import { CaseCleansingApiService } from './services/casecleansing-api.service';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ export class SharedModule {
         GithubApiService,
         CacheService,
         AadAuthGuard,
-        AuthService
+        AuthService,
+        CaseCleansingApiService
       ]
     }
   }

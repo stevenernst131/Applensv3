@@ -14,6 +14,7 @@ import { AuthService } from '../../../shared/services/auth.service';
 export class MainComponent implements OnInit {
 
   showResourceTypeOptions: boolean = false;
+  showCaseCleansingOption: boolean = false;
   selectedResourceType: ResourceTypeState;
   resourceName: string;
   resourceTypes: ResourceTypeState[] = [
@@ -72,6 +73,10 @@ export class MainComponent implements OnInit {
     this._http.get('assets/enabledResourceTypes.json').map(response => {
       this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
     });
+
+    if (_authService.userInfo.userName === 'cmaher@microsoft.com' || _authService.userInfo.userName === "shgup@microsoft.com"){
+      this.showCaseCleansingOption = true;
+    }
   }
 
   ngOnInit() {
@@ -106,6 +111,10 @@ export class MainComponent implements OnInit {
     }
 
     this._router.navigate([route], navigationExtras);
+  }
+
+  caseCleansingNavigate(){
+    this._router.navigate(["caseCleansing"]);
   }
 
 }

@@ -1,0 +1,29 @@
+.caseTable{
+    text-align: center;
+    background-color: white;
+}
+
+.caseTable table{
+    /* width: 1200px; */
+    display: inline-table;
+}
+
+th{
+    text-align: center;
+}
+
+code{
+    text-align: left;
+}
+
+pre{
+    text-align: left;
+}
+
+.table-primary{
+    background-color:#b8daff;
+}
+
+.table-primary:hover{
+    background-color:#98badf;
+}
