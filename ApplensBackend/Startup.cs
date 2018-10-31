@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using AppLensV3.Services;
 
 namespace AppLensV3
 {
@@ -40,6 +41,9 @@ namespace AppLensV3
             services.AddSingleton<IObserverClientService, SupportObserverClientService>();
             services.AddSingleton<IDiagnosticClientService, DiagnosticRoleClient>();
             services.AddSingleton<IGithubClientService, GithubClientService>();
+            services.AddSingleton<IKustoQueryService, KustoQueryService>();
+            services.AddSingleton<IKustoTokenRefreshService, KustoTokenRefreshService>();
+            services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
             services.AddSingleton<ILocalDevelopmentClientService, LocalDevelopmentClientService>();
 
             services.AddMvc ();

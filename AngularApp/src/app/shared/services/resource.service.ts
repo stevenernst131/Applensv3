@@ -8,16 +8,18 @@ export class ResourceService {
   public imgSrc: string;
   public versionPrefix: string;
   public templateFileName: string;
+  public azureCommImpactedServicesList: string;
 
   protected _requestBody: any = null;
   protected _armResource: ArmResource;
   protected _initialized: Observable<boolean>;
 
-  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs)  { 
+  constructor(@Inject(RESOURCE_SERVICE_INPUTS) inputs: ResourceServiceInputs) {
     this._armResource = inputs.armResource;
     this.templateFileName = inputs.templateFileName;
     this.imgSrc = inputs.imgSrc;
     this.versionPrefix = inputs.versionPrefix;
+    this.azureCommImpactedServicesList = inputs.azureCommImpactedServicesList;
   }
 
   public startInitializationObservable() {
@@ -26,6 +28,10 @@ export class ResourceService {
 
   public waitForInitialization(): Observable<boolean> {
     return this._initialized;
+  }
+
+  public get ArmResource(): ArmResource {
+    return this._armResource;
   }
 
   public getResourceName(): string {
