@@ -79,7 +79,7 @@ export class TabMonitoringComponent implements OnInit {
 
   getDetectorResponse() {
     this._diagnosticService.getDetectors().subscribe(detectors => {
-      let detectorMetaData: DetectorMetaData = detectors.find(detector => this.detectorId === detector.id);
+      let detectorMetaData: DetectorMetaData = detectors.find(detector => this.detectorId === detector.id.toLowerCase());
       if (detectorMetaData && detectorMetaData.name) {
         this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${detectorMetaData.name} Monitoring 📈` : `${detectorMetaData.name} Analytics 📊`;
       }
