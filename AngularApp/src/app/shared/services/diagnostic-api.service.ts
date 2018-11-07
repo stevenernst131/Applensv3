@@ -14,7 +14,7 @@ import { Package } from '../models/package';
 @Injectable()
 export class DiagnosticApiService {
 
-  public readonly localDiagnosticApi: string = "http://localhost:5000/";
+  public readonly localDiagnosticApi: string = "http://localhost:22533/";
 
   constructor(private _http: Http, private _cacheService: CacheService, private _authService: AuthService) { }
 
