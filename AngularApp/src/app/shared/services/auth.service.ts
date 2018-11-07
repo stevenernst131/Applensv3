@@ -33,6 +33,7 @@ export class AuthService {
   }
 
   login() {
+    this.clearLocalStorageIfInvalid();
     this.authContext.login();
   }
 
@@ -43,6 +44,15 @@ export class AuthService {
   tokenCallback: AuthenticationContext.TokenCallback = (errorDesc, token, error) => {
     this.error = errorDesc;
     this.logInSubject.next(!errorDesc);
+  }
+
+  clearLocalStorageIfInvalid() {
+    var state = localStorage.getItem('adal.token.renew.status');
+    //adal.token.renew.status
+
+    if(!state || state === '') {
+      localStorage.clear();
+    }
   }
 
   registerWithAppServiceAuth(): Observable<Response> {

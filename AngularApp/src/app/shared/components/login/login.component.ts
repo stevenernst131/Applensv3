@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UAParser } from 'ua-parser-js';
 
 @Component({
   selector: 'login',
@@ -16,13 +17,19 @@ export class LoginComponent implements OnInit {
   popUpsBlocked: boolean = false;
   inIFrame: boolean = false;
 
-  constructor(private _authService: AuthService, private _router: Router, private _route: ActivatedRoute) { 
+  constructor(private _authService: AuthService, private _router: Router, private _route: ActivatedRoute) {
     this.inIFrame = window.parent !== window;
   }
 
   ngOnInit() {
     this.contentHeight = window.innerHeight;
-    this._authService.login();
+    var parser = new UAParser();
+    var browser = parser.getBrowser();
+
+    if (browser && browser.name !== 'IE' && browser.name !== 'Edge') {
+      this._authService.login();
+    }
+
     this._authService.logInSubject.subscribe(isAuthenticated => {
       if (isAuthenticated !== null) {
         if (isAuthenticated) {
@@ -31,7 +38,7 @@ export class LoginComponent implements OnInit {
         else {
           this.error = this._authService.errorDescription;
 
-          if(this.error.indexOf('Popup Window is null') >= 0) {
+          if (this.error.indexOf('Popup Window is null') >= 0) {
             this.popUpsBlocked = true;
           }
         }
