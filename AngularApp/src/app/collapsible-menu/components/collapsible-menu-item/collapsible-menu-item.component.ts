@@ -1,5 +1,6 @@
 import { Component, Input, Pipe, PipeTransform} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { BehaviorSubject } from '../../../../../node_modules/rxjs';
 
 @Component({
   selector: 'collapsible-menu-item',
@@ -15,13 +16,30 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class CollapsibleMenuItemComponent {
 
+  private _searchValueSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private searchValueLocal: string;
+
   @Input() menuItem: CollapsibleMenuItem;
-
   @Input() level: number = 0;
+  @Input() set searchValue(value) {
+    this._searchValueSubject.next(value);
+  };
 
-  @Input() searchValue: string;
+  children: CollapsibleMenuItem[];
 
   hasChildren : boolean;
+  matchesSearchTerm: boolean = true;
+
+  ngOnInit() {
+
+    this.children = this.menuItem.subItems;
+    this.hasChildren = this.menuItem.subItems && this.menuItem.subItems.length > 0;
+
+    this._searchValueSubject.subscribe(searchValue => {
+      this.searchValueLocal = searchValue;
+      this.matchesSearchTerm = !this.searchValueLocal || this.menuItem.label.toLowerCase().indexOf(this.searchValueLocal.toLowerCase()) >= 0;
+    });
+  }
 
   handleClick() {
     if (this.menuItem.subItems && this.menuItem.subItems.length > 0) {
@@ -70,5 +88,23 @@ export class CollapsibleMenuItem {
 export class SearchPipe implements PipeTransform {
   transform(items: CollapsibleMenuItem[], searchString: string) {
     return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
+  }
+}
+
+
+@Pipe({
+  name:'searchmatch',
+  pure: false
+})
+export class SearchMatchPipe implements PipeTransform {
+  transform(label: string, searchString: string) {
+    if(searchString) {
+      let matchIndex = label.toLowerCase().indexOf(searchString.toLowerCase());
+      if(matchIndex >= 0) {
+        return `${label.substr(0, matchIndex)}<b>${label.substr(matchIndex, searchString.length)}</b>${label.substr(matchIndex + searchString.length)}`
+      }
+    }
+
+    return label;
   }
 }
