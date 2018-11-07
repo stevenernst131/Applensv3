@@ -18,14 +18,15 @@ namespace AppLensV3.Controllers
     [Authorize]
     public class CaseCleansingController : Controller
     {
-        public class CaseSimple{
+        public class CaseSimple
+        {
             public string IncidentId { get; set; }
             public DateTime Time { get; set; }
             public string Status { get; set; }
             public string AssignedTo { get; set; }
             public DateTime ClosedTime { get; set; }
             public int ID { get; set; }
-            public int RecomendationCount { get; set; }
+            public int RecommendationCount { get; set; }
         }
 
         public class CaseExtra
@@ -39,7 +40,7 @@ namespace AppLensV3.Controllers
             public string RuleName { get; set; }
             public string OldClosedAgainst { get; set; }
             public string RecommendedClosedAgainst { get; set; }
-            public DateTime RecomendationDate { get; set; }
+            public DateTime RecommendationDate { get; set; }
         }
 
         private ICaseCleansingClientService _caseCleansingService;
@@ -52,14 +53,14 @@ namespace AppLensV3.Controllers
         [HttpGet("GetAllCases")]
         public CaseSimple[] Get()
         {
-            string str = @"select IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecomendationCount
+            string str = @"select IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecommendationCount
 from Incidents 
 JOIN Statuses ON Statuses.Id=Incidents.ID
 JOIN Recomendations ON Recomendations.Id=Incidents.ID
 WHERE Status = 'OPEN'
 Group by IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID
 order by Time Desc;";
-            
+
             using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
             {
                 var res = connection.Query<CaseSimple>(str);
@@ -72,7 +73,7 @@ order by Time Desc;";
         {
             CaseExtra extra = new CaseExtra();
             //Get Recommendations from SQL
-            string SQLQueryString = @"select RuleName, OldClosedAgainst, RecommendedClosedAgainst, Recomendations.Date As RecomendationDate
+            string SQLQueryString = @"select RuleName, OldClosedAgainst, RecommendedClosedAgainst, Recomendations.Date As RecommendationDate
 from Incidents 
 JOIN Recomendations ON Recomendations.Id=Incidents.ID
 JOIN Rules ON Recomendations.RuleId=Rules.RuleId
@@ -110,6 +111,39 @@ WHERE IncidentId = @IncidentId;";
             extra.KustoData = kustoResult;
 
             return extra;
+        }
+
+        [HttpGet("CloseCase/{incidentId}/{closeReason}")]
+        public bool CloseCase(string incidentId, string closeReason)
+        {
+            string sqlUpdate = "UPDATE Statuses SET status = @closeReason, time = @utcnow WHERE Id = @internalId";
+            using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
+            {
+                int internalId = GetLocalID(connection, incidentId);
+                if (internalId == -1)
+                {
+                    return false;
+                }
+
+
+                return connection.Execute(sqlUpdate, new { internalId = internalId, closeReason = closeReason, utcnow = DateTime.UtcNow }) > 0;
+            }
+        }
+
+        private static int GetLocalID(SqlConnection connection, string IncidentId)
+        {
+            int localID;
+            var caseIDs = connection.Query<int>("select ID from Incidents where IncidentId = @incidentId", new { incidentId = IncidentId });
+            if (caseIDs.Count() == 0)
+            {
+                localID = -1;
+            }
+            else
+            {
+                localID = caseIDs.First();
+            }
+
+            return localID;
         }
     }
 }

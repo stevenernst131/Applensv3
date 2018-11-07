@@ -1,7 +1,7 @@
 ﻿using System;
 using Dapper.Contrib.Extensions;
 
-namespace AppLensV3.Models
+namespace AppLensV3
 {
     public static class CaseCleansingDBObjects
     {

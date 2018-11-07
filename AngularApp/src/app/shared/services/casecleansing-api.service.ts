@@ -14,6 +14,10 @@ export class CaseCleansingApiService {
   public GetCaseDetails(incidentId:string): Observable<object> {
     return this._diagnosticApiService.get<object>(`api/casecleansing/GetCase/${incidentId}`, true);
   }
+
+  public CloseCase(incidentId:string, closeReason:string) : Observable<Boolean> {
+    return this._diagnosticApiService.get<Boolean>(`api/casecleansing/CloseCase/${incidentId}/${closeReason}`, true);
+  }
 }
 
 export class CaseSimple{
@@ -23,5 +27,5 @@ export class CaseSimple{
   assignedTo : String;
   closedTime : Date;
   id : number;
-  recomendationCount : number;
+  recommendationCount : number;
 }

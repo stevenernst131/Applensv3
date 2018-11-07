@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CasecleansingComponent } from './casecleansing/casecleansing.component';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { RouterModule } from '@angular/router';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export const CasecleansingModuleRoutes : ModuleWithProviders = RouterModule.forChild([
   {
@@ -14,7 +16,9 @@ export const CasecleansingModuleRoutes : ModuleWithProviders = RouterModule.forC
 @NgModule({
   imports: [
     CommonModule,
-    CasecleansingModuleRoutes
+    CasecleansingModuleRoutes,
+    ReactiveFormsModule,
+    NgxSmartModalModule.forRoot()
   ],
   declarations: [CasecleansingComponent]
 })
