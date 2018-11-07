@@ -35,6 +35,7 @@ export interface ResourceServiceInputs {
     versionPrefix: string;
     service: string;
     armResource: ArmResource;
+    azureCommImpactedServicesList: string;
 }
 
 export const RESOURCE_SERVICE_INPUTS = new InjectionToken<ResourceServiceInputs>('ResourceServiceInputs');
@@ -45,5 +46,6 @@ export const DEFAULT_RESOURCE_SERVICE_INPUTS: ResourceServiceInputs = {
     service: '',
     templateFileName: '',
     versionPrefix: '',
-    armResource: null
+    armResource: null,
+    azureCommImpactedServicesList: ''
 }

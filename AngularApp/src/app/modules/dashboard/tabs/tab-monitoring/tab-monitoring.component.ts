@@ -78,13 +78,12 @@ export class TabMonitoringComponent implements OnInit {
   }
 
   getDetectorResponse() {
-    this.detectorId = this._route.parent.snapshot.params['detector'];
     this._diagnosticService.getDetectors().subscribe(detectors => {
-      let detectorMetaData: DetectorMetaData = detectors.find(detector => this.detectorId === detector.id);
-      if (detectorMetaData.name) {
+      let detectorMetaData: DetectorMetaData = detectors.find(detector => this.detectorId === detector.id.toLowerCase());
+      if (detectorMetaData && detectorMetaData.name) {
         this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${detectorMetaData.name} Monitoring 📈` : `${detectorMetaData.name} Analytics 📊`;
       }
-      if (detectorMetaData.author) {
+      if (detectorMetaData && detectorMetaData.author) {
         this.detectorAuthor = detectorMetaData.author;
         let separators = [' ', ',', ';', ':'];
         let authors = detectorMetaData.author.split(new RegExp(separators.join('|'), 'g'));

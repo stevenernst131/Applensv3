@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using AppLensV3.Services;
 
 namespace AppLensV3
 {
@@ -41,6 +42,10 @@ namespace AppLensV3
             services.AddSingleton<IDiagnosticClientService, DiagnosticRoleClient>();
             services.AddSingleton<IGithubClientService, GithubClientService>();
             services.AddSingleton<ICaseCleansingClientService, CaseCleansingClientService>();
+            services.AddSingleton<IKustoQueryService, KustoQueryService>();
+            services.AddSingleton<IKustoTokenRefreshService, KustoTokenRefreshService>();
+            services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();
+            services.AddSingleton<ILocalDevelopmentClientService, LocalDevelopmentClientService>();
 
             services.AddMvc ();
 
@@ -61,15 +66,12 @@ namespace AppLensV3
             }
 
             // would not need cors if running in same host
-            if (env.IsDevelopment())
-            {
-                app.UseCors(cors =>
-                  cors
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowAnyOrigin()
-                );
-            }
+            app.UseCors(cors =>
+                cors
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+            );
 
             app.UseAuthentication();
 

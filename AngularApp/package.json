@@ -1,6 +1,6 @@
 {
   "name": "applens-diagnostics",
-  "version": "0.0.11",
+  "version": "0.0.17",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -36,7 +36,7 @@
     "moment": "^2.21.0",
     "moment-timezone": "^0.5.14",
     "ng-pick-datetime": "^5.1.8",
-    "ng-pick-datetime-moment": "^1.0.5",
+    "ng-pick-datetime-moment": "1.0.6",
     "ng2-nvd3": "^2.0.0",
     "ngx-markdown": "1.5.2",
     "ngx-monaco-editor": "^4.0.1",
