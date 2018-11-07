@@ -47,11 +47,19 @@ export class AuthService {
   }
 
   clearLocalStorageIfInvalid() {
-    var state = localStorage.getItem('adal.token.renew.status');
-    //adal.token.renew.status
+    var keys = localStorage.getItem('adal.token.keys');
 
-    if(!state || state === '') {
-      localStorage.clear();
+    if(!keys || keys === '') {
+      
+      let keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key.startsWith('adal')) {
+          keysToRemove.push(key);
+        }
+      }
+
+      keysToRemove.forEach(key => localStorage.removeItem(key));
     }
   }
 
