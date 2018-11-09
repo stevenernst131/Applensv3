@@ -1,17 +1,17 @@
 .custom-btn {
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #53cde0;
+  margin-top: 30px;
+  border: 1px solid #6a61fa;
   display: block;
   width: 175px;
   height:37px;
   border-radius: 25px;
   color: white;
   text-decoration: none;  
-  background-color: #53cde0;
+  background-color: #6a61fa;
   box-sizing:border-box;
   font-family: 'Nunito Sans', sans-serif;
-  text-weight:400;
  }
 
 .view-container{

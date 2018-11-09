@@ -132,7 +132,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
     detectorFile.subscribe(code => {
       this.code = code;
-      if (localStorage.getItem("localdevmodal.hidden") === null || localStorage.getItem("localdevmodal.hidden") === "false")
+      if (!this.hideModal)
       {
         this.ngxSmartModalService.getModal('devModeModal').open();
       }
@@ -171,10 +171,11 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   }
 
   dismissDevModal() {
-    let hiddenModalValue = this.hideModal === true ? "true" : "false";
-    localStorage.setItem("localdevmodal.hidden", hiddenModalValue);
+    // Set the default popped up behaviour of local development modal as a key value pair in localStorage
+    localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
     this.ngxSmartModalService.getModal('devModeModal').close();
   }
+
   downloadLocalDevTools() {
     this.localDevButtonDisabled = true;
     this.localDevText = "Preparing Local Tools";
@@ -184,8 +185,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
       script: this.code
     };
 
-    let hiddenModalValue = this.hideModal === true ? "true" : "false";
-    localStorage.setItem("localdevmodal.hidden", hiddenModalValue);
+    localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
 
     this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString, 
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
