@@ -39,6 +39,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
   DevelopMode = DevelopMode;
 
+  hideModal: boolean = false;
   fileName: string;
   editorOptions: any;
   code: string;
@@ -102,6 +103,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resourceId = this.resourceService.getCurrentResourceId();
+    this.hideModal = localStorage.getItem("localdevmodal.hidden") === "true";
     let detectorFile: Observable<string>;
     if (this.mode === DevelopMode.Create) {
       // CREATE FLOW
@@ -130,7 +132,10 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
     detectorFile.subscribe(code => {
       this.code = code;
-      this.ngxSmartModalService.getModal('devModeModal').open();
+      if (!this.hideModal)
+      {
+        this.ngxSmartModalService.getModal('devModeModal').open();
+      }
     })
   }
   
@@ -165,6 +170,12 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.ngxSmartModalService.getModal('devModeModal').open();
   }
 
+  dismissDevModal() {
+    // Set the default popped up behaviour of local development modal as a key value pair in localStorage
+    localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
+    this.ngxSmartModalService.getModal('devModeModal').close();
+  }
+
   downloadLocalDevTools() {
     this.localDevButtonDisabled = true;
     this.localDevText = "Preparing Local Tools";
@@ -173,6 +184,9 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     var body = {
       script: this.code
     };
+
+    localStorage.setItem("localdevmodal.hidden", this.hideModal === true ? "true" : "false");
+
     this.diagnosticApiService.prepareLocalDevelopment(body, this.detectorId, this._detectorControlService.startTimeString, 
       this._detectorControlService.endTimeString, this.dataSource, this.timeRange)
     .subscribe((response: string) => {
