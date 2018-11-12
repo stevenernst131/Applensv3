@@ -14,8 +14,8 @@ namespace AppLensV3.Services
     {
         private IKustoQueryService _kustoQueryService;
 
-        private TimeSpan _commAlertWindow = TimeSpan.FromDays(20);
-        private TimeSpan _commExpandedWindow = TimeSpan.FromDays(19);
+        private TimeSpan _commAlertWindow = TimeSpan.FromDays(2);
+        private TimeSpan _commExpandedWindow = TimeSpan.FromDays(1);
 
         private string _commsQuery = @"
         let startDate = datetime({START_TIME});
@@ -102,13 +102,17 @@ namespace AppLensV3.Services
                     if(rca != null && ((currentTimeUTC - rca.PublishedTime) <= _commAlertWindow))
                     {
                         rca.IsAlert = true;
-                        rca.IsExpanded = ((currentTimeUTC - rca.PublishedTime) <= _commExpandedWindow);
+                        // NOTE:- For now, resolved incidents will be collapsed by Default.
+                        // Uncommenting below line would make resolved incidents expanded by default for certain timespan.
+                        //rca.IsExpanded = ((currentTimeUTC - rca.PublishedTime) <= _commExpandedWindow);
                         impactedServiceComm = rca;
                     }
                     else if((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commAlertWindow)
                     {
                         mostRecentImpactedServiceComm.IsAlert = true;
-                        mostRecentImpactedServiceComm.IsExpanded = ((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commExpandedWindow);
+                        // NOTE:- For now, resolved incidents will be collapsed by Default.
+                        // Uncommenting below line would make resolved incidents expanded by default for certain timespan.
+                        //mostRecentImpactedServiceComm.IsExpanded = ((currentTimeUTC - mostRecentImpactedServiceComm.PublishedTime) <= _commExpandedWindow);
                         impactedServiceComm = mostRecentImpactedServiceComm;
                     }
                 }
