@@ -78,7 +78,8 @@ export class DetectorViewComponent implements OnInit {
           "StartTime": String(this.startTime),
           "EndTime": String(this.endTime),
           "DetectorId": data.metadata.id,
-          "ParentDetectorId": this.parentDetectorId
+          "ParentDetectorId": this.parentDetectorId,
+          "Url": window.location.href
         }
 
         this.ratingEventProperties = {
