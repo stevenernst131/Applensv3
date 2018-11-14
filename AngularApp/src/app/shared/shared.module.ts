@@ -13,15 +13,16 @@ import { AseService } from './services/ase.service';
 import { CacheService } from './services/cache.service';
 import { ResourceService } from './services/resource.service';
 import { AadAuthGuard } from './auth/aad-auth-guard.service';
-import { AuthService } from './services/auth.service';
 import { LoginComponent } from './components/login/login.component';
+import { RouterModule } from '@angular/router';
 import { CaseCleansingApiService } from './services/casecleansing-api.service';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpModule,
-    FormsModule
+    FormsModule,
+    RouterModule,
   ],
   declarations: [TreeViewComponent, LoginComponent],
   exports: [TreeViewComponent]
@@ -40,7 +41,6 @@ export class SharedModule {
         GithubApiService,
         CacheService,
         AadAuthGuard,
-        AuthService,
         CaseCleansingApiService
       ]
     }
