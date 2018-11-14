@@ -18,6 +18,7 @@ namespace AppLensV3
             public string IncidentId { get; set; }
             public DateTime ClosedTime { get; set; }
             public string DerivedProductIDStrInitial { get; set; }
+            public string Title { get; set; }
         }
 
         [Table("Statuses")]
@@ -30,7 +31,7 @@ namespace AppLensV3
             public string AssignedTo { get; set; }
         }
 
-        public class Recomendation
+        public class Recommendation
         {
             [ExplicitKey]
             public int Id { get; set; }

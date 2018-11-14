@@ -28,4 +28,5 @@ export class CaseSimple{
   closedTime : Date;
   id : number;
   recommendationCount : number;
+  title : string;
 }

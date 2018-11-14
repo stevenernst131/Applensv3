@@ -27,6 +27,7 @@ namespace AppLensV3.Controllers
             public DateTime ClosedTime { get; set; }
             public int ID { get; set; }
             public int RecommendationCount { get; set; }
+            public string Title { get; set; }
         }
 
         public class CaseExtra
@@ -53,12 +54,12 @@ namespace AppLensV3.Controllers
         [HttpGet("GetAllCases")]
         public CaseSimple[] Get()
         {
-            string str = @"select IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecommendationCount
+            string str = @"select IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecommendationCount, Title
 from Incidents 
 JOIN Statuses ON Statuses.Id=Incidents.ID
-JOIN Recomendations ON Recomendations.Id=Incidents.ID
+JOIN Recommendations ON Recommendations.Id=Incidents.ID
 WHERE Status = 'OPEN'
-Group by IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID
+Group by IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID, Title
 order by Time Desc;";
 
             using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
@@ -73,10 +74,10 @@ order by Time Desc;";
         {
             CaseExtra extra = new CaseExtra();
             //Get Recommendations from SQL
-            string SQLQueryString = @"select RuleName, OldClosedAgainst, RecommendedClosedAgainst, Recomendations.Date As RecommendationDate
+            string SQLQueryString = @"select RuleName, OldClosedAgainst, RecommendedClosedAgainst, Recommendations.Date As RecommendationDate
 from Incidents 
-JOIN Recomendations ON Recomendations.Id=Incidents.ID
-JOIN Rules ON Recomendations.RuleId=Rules.RuleId
+JOIN Recommendations ON Recommendations.Id=Incidents.ID
+JOIN Rules ON Recommendations.RuleId=Rules.RuleId
 WHERE IncidentId = @IncidentId;";
 
             using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
@@ -86,7 +87,7 @@ WHERE IncidentId = @IncidentId;";
             }
 
             //Get More Info from Kusto
-            string kustoQueryString = $@"SupportProductionClosedVolumeMonthlyVer1023
+            string kustoQueryString = $@"SupportProductionClosedVolumeDailyVer1023
                 | where Incidents_IncidentId == {id}";
 
             var queryProvider = KustoClientFactory.CreateCslQueryProvider(_caseCleansingService.GetKustoP360ConnectionString());
