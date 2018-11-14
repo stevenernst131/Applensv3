@@ -16,6 +16,14 @@ namespace AppLensV3.Services.EmailNotificationService
 
         private HttpClient _client { get; set; }
 
+        public string SendGridApiKey
+        {
+            get
+            {
+                return _configuration["EmailNotification:ApiKey"];
+            }
+        }
+
         public EmailNotificationService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -52,11 +60,9 @@ namespace AppLensV3.Services.EmailNotificationService
 
         public async Task SendEmail1(string from, string to, string subject, IDictionary<string, string> replacement, string TemplateId)
         {
-            var apiKey = Environment.GetEnvironmentVariable("NAME_OF_THE_ENVIRONMENT_VARIABLE_FOR_YOUR_SENDGRID_KEY");
-            var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("test@example.com", "Example User");
-            var subject = "Sending with SendGrid is Fun";
-            var to = new EmailAddress("xipeng@microsoft.com", "Cindy Peng");
+            var client = new SendGridClient(SendGridApiKey);
+            var from = new EmailAddress(from);
+            var to = new EmailAddress(to);
             var plainTextContent = "and easy to do anywhere, even with C#";
             var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
