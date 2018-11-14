@@ -10,11 +10,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class CasecleansingComponent implements OnInit {
   public cases : CaseSimple[];
-  public content : object;
+  public content : any;
   public contentJSON : string;
   public selectedCase : CaseSimple;
   public showProgress : boolean = false;
-  public activeIncident : object;
+  public activeIncident : any;
   public caseCleansingForm = new FormGroup({
     select: new FormControl(''),
     other: new FormControl('')
@@ -29,11 +29,11 @@ export class CasecleansingComponent implements OnInit {
     };
   }
 
-  private getAllCases = async function() {
+  private async getAllCases() {
     this.cases = await this.caseCleansingService.GetAllCases().toPromise();
   }
 
-  private getDetails = async function(incidentID:string) {
+  private async getDetails(incidentID:string) {
     this.activeIncident = {
       title: "...",
       recommendation: "...",
@@ -44,6 +44,7 @@ export class CasecleansingComponent implements OnInit {
     this.showProgress = true;
     this.caseCleansingForm.reset();
     this.caseCleansingForm.updateValueAndValidity();
+    this.caseCleansingForm.controls['select'].setValue("");
 
     this.ngxSmartModalService.getModal('infoModal').open();
 
@@ -56,19 +57,15 @@ export class CasecleansingComponent implements OnInit {
     this.showProgress = false;
   }
 
-  public toggleDebugInformation = async function() {
+  public async toggleDebugInformation() {
     if (!this.contentJSON) {
-      this.contentJSON = JSON.stringify(this.content, null, 2);
+      this.contentJSON = "Rule Name: " + this.activeIncident.rule + "\n" + JSON.stringify(this.content, null, 2);
     } else {
       this.contentJSON = undefined;
     }
   }
 
-  public showHowTo = async function() {
-    alert("Not yet implemented");
-  }
-
-  public onSelect = function(caseIn : CaseSimple) {
+  public onSelect(caseIn : CaseSimple) {
       this.selectedCase = caseIn;
       this.getDetails(this.selectedCase.incidentId);
   }
@@ -89,7 +86,7 @@ export class CasecleansingComponent implements OnInit {
     }
   }
 
-  public onSelectChange = function(args) {
+  public onSelectChange(args) {
     let selectValue = args.target.value; 
     let otherControl = this.caseCleansingForm.get("other") as FormControl;
     if (selectValue === 'other') {

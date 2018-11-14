@@ -26,3 +26,8 @@ pre{
 .table-primary:hover{
     background-color:#98badf;
 }
+
+#ccTextAreaOther{
+    width: 100%;
+    height: 10em;
+}

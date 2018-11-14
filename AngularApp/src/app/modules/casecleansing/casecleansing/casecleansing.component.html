@@ -1,6 +1,7 @@
 <div *ngIf="cases" class="caseTable">
   <div class="row">
     <div class="table-responsive col-md-5 col-md-offset-3">
+      <h3>Wrongly Coded Cases</h3>
       <table class="table table-hover ">
         <thead>
           <tr>
@@ -26,16 +27,17 @@
 <ngx-smart-modal #infoModal identifier="infoModal">
   <div>
     <div class="modal-header">
-      <h4 class="modal-title">Incident: {{activeIncident.title}}</h4>
+      <h4 class="modal-title">Incident:  <a target="_blank" rel="noopener noreferrer" href='https://servicedesk.microsoft.com/#/customer/case/{{selectedCase ? selectedCase.incidentId.trim() : ""}}'>{{selectedCase ? selectedCase.incidentId.trim() : ""}}</a> - {{activeIncident.title}}</h4>
     </div>
     <form [formGroup]="caseCleansingForm" (ngSubmit)="onSubmit()">
       <div class="modal-body">
 
         <span>
-          Recommendation: {{activeIncident.recommendation}}<br />
-          Rule Name: {{activeIncident.rule}}<br /><br />
+          Recommendation: {{activeIncident.recommendation}}<br /><br />
 
-          <button type="button" class="btn btn-secondary btn-sm" (click)="showHowTo()">How to Link</button><br /><br />
+          <a target="_blank" rel="noopener noreferrer" href='https://servicedesk.microsoft.com/#/customer/case/{{selectedCase ? selectedCase.incidentId.trim() : ""}}'>Open in Service Desk</a><br/>
+          <a target="_blank" rel="noopener noreferrer" href='https://azuresupportcenter.msftcloudes.com/caseoverview?srId={{selectedCase ? selectedCase.incidentId.trim() : ""}}'>Open in Azure Support Center</a><br/><br/>
+
           <button type="button" class="btn btn-secondary btn-sm" *ngIf="!showProgress" (click)="toggleDebugInformation()">Debug
             Information</button><br />
           <div class="progress" *ngIf="showProgress">
@@ -46,12 +48,12 @@
           <div class="form-group">
             <label for="exampleFormControlSelect1">Enter Option</label>
             <select class="form-control" id="exampleFormControlSelect1" required formControlName="select" (change)="onSelectChange($event)">
-              <option value="">---Please Select---</option>
+              <option value="" selected="selected">---Please Select---</option>
               <option value="Good Recommendation">Changed as per recommendation</option>
-              <option value="Bad Recommendation">Bad recommendation (not Changed)</option>
+              <option value="Bad Recommendation">Bad recommendation (Not Changed)</option>
               <option value="other">Other</option>
             </select>
-            <input type="text" placeholder="Please Specify" *ngIf="caseCleansingForm.value.select == 'other'" formControlName="other">
+            <textarea id="ccTextAreaOther" placeholder="Please Specify what you did" *ngIf="caseCleansingForm.value.select == 'other'" formControlName="other"></textarea>
             <div class="alert alert-warning" role="alert" *ngIf="!caseCleansingForm.valid">
                     All fields are required to finish this case!
             </div>
@@ -59,7 +61,7 @@
         </span>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" [disabled]="!caseCleansingForm.valid">Complete</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!caseCleansingForm.valid">Corrected in MSSOLVE</button>
         <button type="button" class="btn btn-secondary" (click)="infoModal.close()">Cancel</button>
       </div>
     </form>
