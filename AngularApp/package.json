@@ -25,7 +25,7 @@
     "@swimlane/ngx-datatable": "^11.1.7",
     "@types/adal-angular": "^1.0.1",
     "@types/ua-parser-js": "^0.7.32",
-    "adal-angular": "^1.0.17",
+    "adal-angular4": "^2.0.15",
     "admin-lte": "^2.4.3",
     "angular-split": "^1.0.0-rc.3",
     "applicationinsights-js": "^1.0.18",

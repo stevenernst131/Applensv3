@@ -1,43 +1,45 @@
-import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from "@angular/router";
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from "@angular/router";
 import { Injectable } from "@angular/core";
-import { AuthService } from "../services/auth.service";
-import { Http } from "@angular/http";
-import { environment } from "../../../environments/environment";
 import { Observable } from "rxjs";
+import { AdalService } from "adal-angular4";
+
+const loginRedirectKey = 'login_redirect';
 
 @Injectable()
 export class AadAuthGuard implements CanActivate {
 
-    constructor(private _authService: AuthService, private _router: Router, private http: Http) { }
+
+
+    constructor(private _router: Router, private _adalService: AdalService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
-        if (!this._authService.isAuthenticated) {
-            this._authService.returnUrl = state.url;
-            this._router.navigate(['login'], { queryParams: { returnUrl: state.url } })
+
+        if (!this._adalService.userInfo.authenticated) {
+            if (state.url.indexOf('#') === -1) {
+                localStorage.setItem(loginRedirectKey, state.url);
+                this._router.navigate(['login'])
+            }
         }
         else {
-            console.log(`Signed in as ${this._authService.userInfo.userName}`);
-
-            if (environment.production) {
-                return this._authService.registerWithAppServiceAuth().map(
-                    response => {
-                        if (this._authService.returnUrl) {
-                            this._router.navigateByUrl(this._authService.returnUrl);
-                            this._authService.returnUrl = null;
-                        }
-                        return true;
-                    }
-                );
+            this.clearHash();
+            var returnUrl = localStorage.getItem(loginRedirectKey);
+            if (returnUrl && returnUrl != '') {
+                this._router.navigateByUrl(returnUrl);
+                localStorage.removeItem(loginRedirectKey);
             }
-            else {
-                if (this._authService.returnUrl) {
-                    this._router.navigateByUrl(this._authService.returnUrl);
-                    this._authService.returnUrl = null;
-                }
-                return true;
+            return true;
+
+
+        }
+    }
+
+    clearHash() {
+        if (window.location.hash) {
+            if (window.history.replaceState) {
+                window.history.replaceState('', '/', window.location.pathname)
+            } else {
+                window.location.hash = '';
             }
         }
-
-        return false;
     }
 }

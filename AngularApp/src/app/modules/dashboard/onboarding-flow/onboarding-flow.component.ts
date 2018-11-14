@@ -1,18 +1,16 @@
 import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { GithubApiService } from '../../../shared/services/github-api.service';
 import { DetectorResponse } from '../../../diagnostic-data/models/detector';
-import { QueryResponse, CompilerResponse } from '../../../diagnostic-data/models/compiler-response';
-import { ActivatedRoute, Params } from '@angular/router';
-import { DiagnosticApiService } from '../../../shared/services/diagnostic-api.service';
+import { QueryResponse } from '../../../diagnostic-data/models/compiler-response';
 import { ResourceService } from '../../../shared/services/resource.service';
 import { Package } from '../../../shared/models/package';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
-import { AuthService } from '../../../shared/services/auth.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import * as momentNs from 'moment';
 import { TimeZones } from '../../../shared/models/datetime';
 import { DetectorControlService } from '../../../diagnostic-data/services/detector-control.service';
-import { Observable } from '../../../../../node_modules/rxjs';
+import { Observable } from 'rxjs';
+import { AdalService } from 'adal-angular4';
 
 const moment = momentNs;
 
@@ -68,7 +66,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   private userName: string;
 
   constructor(private cdRef: ChangeDetectorRef, private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
-    private _detectorControlService: DetectorControlService, private authService: AuthService, public ngxSmartModalService: NgxSmartModalService) {
+    private _detectorControlService: DetectorControlService, private _adalService: AdalService, public ngxSmartModalService: NgxSmartModalService) {
 
     this.editorOptions = {
       theme: 'vs',
@@ -97,7 +95,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.modalPublishingButtonDisabled = false;
     this.showAlert = false;
 
-    this.userName = this.authService.userInfo.userName.replace('@microsoft.com', '');
+    this.userName = this._adalService.userInfo.profile ? this._adalService.userInfo.profile.upn : '';
   }
 
   ngOnInit() {
