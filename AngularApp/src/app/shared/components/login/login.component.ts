@@ -19,6 +19,8 @@ export class LoginComponent implements OnInit {
 
   interval: any;
 
+  browser: IUAParser.IBrowser;
+
   constructor(private _router: Router, private _adalService: AdalService) {
     this.inIFrame = window.parent !== window;
   }
@@ -27,14 +29,14 @@ export class LoginComponent implements OnInit {
     this.contentHeight = window.innerHeight;
 
     var parser = new UAParser();
-    var browser = parser.getBrowser();
+    this.browser = parser.getBrowser();
 
     if (this._adalService.userInfo.authenticated) {
       this.grantAccess();
       return;
     }
 
-    if (browser && (browser.name === 'IE' || browser.name === 'Edge')) {
+    if (this.browser && (this.browser.name === 'IE' || this.browser.name === 'Edge')) {
       this.clearLocalStorage();
     }
 
@@ -59,6 +61,10 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.interval) {
       clearInterval(this.interval);
+    }
+
+    if (this.browser && (this.browser.name === 'IE' || this.browser.name === 'Edge')) {
+      this.clearLocalStorage();
     }
 
     this.interval = setInterval(() => {
