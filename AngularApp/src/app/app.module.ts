@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
-import { RouterModule, Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { RouterModule, Resolve, ActivatedRouteSnapshot, Router, UrlSerializer } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { MainComponent } from './modules/main/main/main.component';
@@ -12,6 +13,8 @@ import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
 import { AadAuthGuard } from './shared/auth/aad-auth-guard.service';
 import { LoginComponent } from './shared/components/login/login.component';
+import { AdalService, AdalGuard, AdalInterceptor } from 'adal-angular4';
+import { CustomUrlSerializerService } from './shared/services/custom-url-serializer.service';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -87,11 +90,17 @@ export const Routes = RouterModule.forRoot([
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     Routes,
     SharedModule.forRoot()
   ],
   providers: [
     ValidResourceResolver,
+    AdalService,
+    {
+      provide: UrlSerializer,
+      useClass: CustomUrlSerializerService
+    }
   ],
   bootstrap: [AppComponent]
 })
