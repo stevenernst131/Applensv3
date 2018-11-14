@@ -66,6 +66,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   showAlert: boolean;
 
   private publishingPackage: Package;
+  private author: string = "xipeng";
   private userName: string;
 
   constructor(private cdRef: ChangeDetectorRef, private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
@@ -288,7 +289,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.modalPublishingButtonDisabled = true;
     this.modalPublishingButtonText = "Publishing";
 
-    this.diagnosticApiService.publishDetector(this.publishingPackage).subscribe(data => {
+    this.diagnosticApiService.publishDetector(this.author, this.publishingPackage).subscribe(data => {
       this.deleteProgress();
       this.runButtonDisabled = false;
       this.localDevButtonDisabled = false;
@@ -310,6 +311,14 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
 
   private preparePublishingPackage(queryResponse: QueryResponse<DetectorResponse>, code: string) {
 
+
+    if (queryResponse.invocationOutput.metadata.author !== null && queryResponse.invocationOutput.metadata.author !== "")
+    {
+        this.author = this.author + ";"+ queryResponse.invocationOutput.metadata.author;
+    }
+
+    console.log("Author");
+    console.log(this.author);
     this.publishingPackage = {
       codeString: code,
       id: queryResponse.invocationOutput.metadata.id,

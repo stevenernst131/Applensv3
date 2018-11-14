@@ -13,12 +13,14 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.RegularExpressions;
+using AppLensV3.Services.EmailNotificationService;
 
 namespace AppLensV3
 {
     public class DiagnosticRoleClient: IDiagnosticClientService
     {
         private IConfiguration _configuration;
+        private IEmailNotificationService _emailService;
 
         private HttpClient _client { get; set; }
 

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -58,47 +59,56 @@ namespace AppLensV3.Services.EmailNotificationService
 
         }
 
-        public async Task SendEmail1(string from, string to, string subject, IDictionary<string, string> replacement, string TemplateId)
+        public async Task SendEmail1(string alias, string detectorId, string link, List<EmailAddress> tos, string TemplateId = "d-436ddef95ff144f28d665e7faaf01a2f", string from = "applensv2team@microsoft.com")
         {
             var client = new SendGridClient(SendGridApiKey);
-            var from = new EmailAddress(from);
-            var to = new EmailAddress(to);
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            var fromAddress = new EmailAddress(from, "Applens Notification");
+            //var plainTextContent = "and easy to do anywhere, even with C#";
+            //var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var msg = new SendGridMessage();
+            string subject = "Detector Publish Notification - " + detectorId;
+          //  msg.SetSubject(subject);
+            msg.Subject = subject;
+            msg.SetFrom(fromAddress);
+            msg.AddTos(tos);
+            msg.SetTemplateId("d-436ddef95ff144f28d665e7faaf01a2f");
+            
 
-
-
-            var mail = new SendGridMessage
+            var dynamicTemplateData = new ExampleTemplateData
             {
-                From = new EmailAddress(from)
+                detectorId = detectorId,
+                alias = alias,
+                c2a_link = link
             };
 
-            mail.AddTo(to);
-            mail.Subject = subject;
+            msg.SetTemplateData(dynamicTemplateData);
+            var response = await client.SendEmailAsync(msg);
+            Console.WriteLine(response.StatusCode);
+            Console.WriteLine(response.Headers.ToString());
+            Console.WriteLine("\n\nPress any key to exit.");
+        }
 
-            // NOTE: Text/Html and EnableTemplate HTML are not really used if a TemplateId is specified
-            mail.Text = string.Empty;
-            mail.Html = "<p></p>";
-            mail.EnableTemplate("<%body%>");
+        private class ExampleTemplateData
+        {
+            [JsonProperty("detectorId")]
+            public string detectorId { get; set; }
 
-            mail.EnableTemplateEngine(templateId);
+            [JsonProperty("alias")]
+            public string alias { get; set; }
 
-            // Add each replacement token
-            foreach (var key in replacementTokens.Keys)
-            {
-                mail.AddSubstitution(
-                  key,
-                  new List<string>
-                    {
-          replacementTokens[key]
-                    });
-            }
+            [JsonProperty("c2a_link")]
+            public string c2a_link { get; set; }
+        }
 
-            var transportWeb = new Web("THE_AUTH_KEY");
-            var result = transportWeb.DeliverAsync(mail);
+        private class Location
+        {
+            [JsonProperty("city")]
+            public string City { get; set; }
 
+            [JsonProperty("country")]
+            public string Country { get; set; }
         }
     }
+
+
 }

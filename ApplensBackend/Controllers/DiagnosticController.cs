@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using AppLensV3.Services.EmailNotificationService;
+using SendGrid.Helpers.Mail;
 
 namespace AppLensV3.Controllers
 {
@@ -17,10 +19,12 @@ namespace AppLensV3.Controllers
     public class DiagnosticController : Controller
     {
         IDiagnosticClientService _diagnosticClient;
+        IEmailNotificationService _emailNotificationService;
 
-        public DiagnosticController(IDiagnosticClientService diagnosticClient)
+        public DiagnosticController(IDiagnosticClientService diagnosticClient, IEmailNotificationService emailNotificationService)
         {
             this._diagnosticClient = diagnosticClient;
+            this._emailNotificationService = emailNotificationService;
         }
 
         [HttpPost("invoke")]
@@ -46,6 +50,40 @@ namespace AppLensV3.Controllers
                 bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
 
+            if (body == null)
+            {
+                return BadRequest();
+            }
+
+            string alias = "";
+            string detectorId = "";
+            string detectorAuthor = "";
+
+            List<EmailAddress> tos = new List<EmailAddress>();
+            if (body != null && body["committedByAlias"] != null)
+            {
+                alias = body["committedByAlias"].ToString();
+            }
+
+            if (body != null && body["id"] != null)
+            {
+                detectorId = body["id"].ToString();
+            }
+
+            string applensLink = "https://applens.azurewebsites.net/" + path.Replace("resourcegroup", "resourceGroup").Replace("diagnostics/publish", "") + "detectors/" + detectorId;
+
+            if (!String.IsNullOrWhiteSpace(Request.Headers["x-ms-author"]))
+            {
+                detectorAuthor = Request.Headers["x-ms-author"];
+                char[] separators = { ' ', ',', ';', ':' };
+                string[] authors = detectorAuthor.Split(separators);
+                foreach (var author in authors)
+                {
+                    tos.Add(new EmailAddress(author + "@microsoft.com"));
+                }
+            }
+
+
             var response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);
 
             if (response != null)
@@ -54,6 +92,11 @@ namespace AppLensV3.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var responseObject = JsonConvert.DeserializeObject(responseString);
+                    if (path.ToLower().EndsWith("/diagnostics/publish") && tos.Count > 0)
+                    {
+                        await this._emailNotificationService.SendEmail1(alias, detectorId, applensLink, tos,  "d-436ddef95ff144f28d665e7faaf01a2f", "applensv2team@microsoft.com");
+                    }
+
                     return Ok(responseObject);
                 }
                 else if(response.StatusCode == HttpStatusCode.BadRequest)

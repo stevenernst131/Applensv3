@@ -76,9 +76,10 @@ export class ApplensDiagnosticService {
       endTime);
   }
 
-  publishDetector(pkg: Package) : Observable<any> {
+  publishDetector(author:string, pkg: Package) : Observable<any> {
     return this._diagnosticApi.publishDetector(
       this._resourceService.getCurrentResourceId(true),
+      author,
       pkg
     );
   }

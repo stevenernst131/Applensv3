@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.1" />
     <PackageReference Include="Octokit" Version="0.29.0" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
   </ItemGroup>
   
    <ItemGroup>

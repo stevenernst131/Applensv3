@@ -64,16 +64,16 @@ export class DiagnosticApiService {
     return this._cacheService.get(this.getCacheKey(method, path), request, true);
   }
 
-  public publishDetector(resourceId: string, packageToPublish: Package): Observable<any> {
+  public publishDetector(resourceId: string, author: string, packageToPublish: Package): Observable<any> {
     let path = `${resourceId}/diagnostics/publish`;
-    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
+    return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true, true, author);
   }
 
-  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
+  public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true, author: string = ""): Observable<T> {
     var url: string = `${this.diagnosticApi}api/invoke`
 
     let request = this._http.post(url, body, {
-      headers: this._getHeaders(path, method, internalView)
+      headers: this._getHeaders(path, method, internalView, author)
     })
       .map((response: Response) => <T>(response.json()));
 
@@ -96,13 +96,18 @@ export class DiagnosticApiService {
     return this._cacheService.get(path, request, invalidateCache);
   }
 
-  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true): Headers {
+  private _getHeaders(path?: string, method?: HttpMethod, internalView: boolean = true, author: string = ""): Headers {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
     headers.append('Authorization', `Bearer ${this._authService.accessToken}`);
     headers.append('x-ms-internal-client', String(true));
     headers.append('x-ms-internal-view', String(internalView));
+
+    if (author !== "")
+    {
+      headers.append('x-ms-author', author);
+    }
     if (path) {
       headers.append('x-ms-path-query', path);
     }
