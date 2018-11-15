@@ -4,6 +4,7 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment-timezone';
 import { TimeZones } from '../../../shared/models/datetime';
 import { Http } from '@angular/http';
+import { AdalService } from 'adal-angular4';
 
 @Component({
   selector: 'app-main',
@@ -56,7 +57,7 @@ export class MainComponent implements OnInit {
 
   inIFrame: boolean = false;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _adalService: AdalService,) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 
@@ -73,7 +74,7 @@ export class MainComponent implements OnInit {
       this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
     });
 
-    if (_authService.userInfo.userName === 'cmaher@microsoft.com' || _authService.userInfo.userName === "shgup@microsoft.com"){
+    if (_adalService.userInfo.userName === 'cmaher@microsoft.com' || _adalService.userInfo.userName === "shgup@microsoft.com"){
       this.showCaseCleansingOption = true;
     }
   }
