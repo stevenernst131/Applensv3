@@ -10,6 +10,7 @@ using Dapper.Contrib.Extensions;
 using Kusto.Data.Net.Client;
 using System.Dynamic;
 using Kusto.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace AppLensV3.Controllers
 {
@@ -44,14 +45,23 @@ namespace AppLensV3.Controllers
             public DateTime RecommendationDate { get; set; }
         }
 
-        private ICaseCleansingClientService _caseCleansingService;
-
-        public CaseCleansingController(ICaseCleansingClientService caseCleansingService)
+        private IConfiguration _configuration;
+        private class CaseCleansingConfiguration
         {
-            _caseCleansingService = caseCleansingService;
+            public string ConnectionString { get; set; }
+            public string KustoP360ConnectionString { get; set; }
         }
 
-        [HttpGet("GetAllCases")]
+        private readonly CaseCleansingConfiguration _caseCleansingConfiguration;
+
+        public CaseCleansingController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _caseCleansingConfiguration = new CaseCleansingConfiguration();
+            configuration.GetSection("CaseCleansing").Bind(_caseCleansingConfiguration);
+        }
+
+        [HttpGet("getallcases")]
         public CaseSimple[] Get()
         {
             string str = @"select IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecommendationCount, Title
@@ -62,14 +72,14 @@ WHERE Status = 'OPEN'
 Group by IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID, Title
 order by Time Desc;";
 
-            using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
+            using (SqlConnection connection = new SqlConnection(_caseCleansingConfiguration.ConnectionString))
             {
                 var res = connection.Query<CaseSimple>(str);
                 return res.ToArray();
             }
         }
 
-        [HttpGet("GetCase/{id}")]
+        [HttpGet("getcase/{id}")]
         public CaseExtra Get(string id)
         {
             CaseExtra extra = new CaseExtra();
@@ -80,7 +90,7 @@ JOIN Recommendations ON Recommendations.Id=Incidents.ID
 JOIN Rules ON Recommendations.RuleId=Rules.RuleId
 WHERE IncidentId = @IncidentId;";
 
-            using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
+            using (SqlConnection connection = new SqlConnection(_caseCleansingConfiguration.ConnectionString))
             {
                 var res = connection.Query<Recommendation>(SQLQueryString, new { IncidentId = id });
                 extra.Recommendations = res.ToArray();
@@ -90,7 +100,7 @@ WHERE IncidentId = @IncidentId;";
             string kustoQueryString = $@"SupportProductionClosedVolumeDailyVer1023
                 | where Incidents_IncidentId == {id}";
 
-            var queryProvider = KustoClientFactory.CreateCslQueryProvider(_caseCleansingService.GetKustoP360ConnectionString());
+            var queryProvider = KustoClientFactory.CreateCslQueryProvider(_caseCleansingConfiguration.KustoP360ConnectionString);
 
             var reader = queryProvider.ExecuteQuery(kustoQueryString);
 
@@ -114,11 +124,11 @@ WHERE IncidentId = @IncidentId;";
             return extra;
         }
 
-        [HttpGet("CloseCase/{incidentId}/{closeReason}")]
+        [HttpGet("closecase/{incidentId}/{closeReason}")]
         public bool CloseCase(string incidentId, string closeReason)
         {
             string sqlUpdate = "UPDATE Statuses SET status = @closeReason, time = @utcnow WHERE Id = @internalId";
-            using (SqlConnection connection = new SqlConnection(_caseCleansingService.GetConnectionString()))
+            using (SqlConnection connection = new SqlConnection(_caseCleansingConfiguration.ConnectionString))
             {
                 int internalId = GetLocalID(connection, incidentId);
                 if (internalId == -1)

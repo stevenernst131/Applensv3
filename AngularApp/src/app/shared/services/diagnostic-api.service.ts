@@ -14,7 +14,7 @@ import { AdalService } from 'adal-angular4';
 @Injectable()
 export class DiagnosticApiService {
 
-  public readonly localDiagnosticApi: string = "http://localhost:22533/";
+  public readonly localDiagnosticApi: string = "http://localhost:5000/";
 
   constructor(private _httpClient: HttpClient, private _cacheService: CacheService, private _adalService: AdalService) { }
 

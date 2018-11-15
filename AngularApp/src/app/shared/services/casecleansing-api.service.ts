@@ -8,15 +8,15 @@ export class CaseCleansingApiService {
   constructor(private _diagnosticApiService: DiagnosticApiService) { }
 
   public GetAllCases(): Observable<CaseSimple[]> {
-    return this._diagnosticApiService.get<CaseSimple[]>('api/casecleansing/GetAllCases', true);
+    return this._diagnosticApiService.get<CaseSimple[]>('api/casecleansing/getallcases', true);
   }
 
   public GetCaseDetails(incidentId:string): Observable<object> {
-    return this._diagnosticApiService.get<object>(`api/casecleansing/GetCase/${incidentId}`, true);
+    return this._diagnosticApiService.get<object>(`api/casecleansing/getcase/${incidentId}`, true);
   }
 
   public CloseCase(incidentId:string, closeReason:string) : Observable<Boolean> {
-    return this._diagnosticApiService.get<Boolean>(`api/casecleansing/CloseCase/${incidentId}/${closeReason}`, true);
+    return this._diagnosticApiService.get<Boolean>(`api/casecleansing/closecase/${incidentId}/${closeReason}`, true);
   }
 }
 

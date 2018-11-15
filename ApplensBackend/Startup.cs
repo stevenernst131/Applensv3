@@ -41,7 +41,6 @@ namespace AppLensV3
             services.AddSingleton<IObserverClientService, SupportObserverClientService>();
             services.AddSingleton<IDiagnosticClientService, DiagnosticRoleClient>();
             services.AddSingleton<IGithubClientService, GithubClientService>();
-            services.AddSingleton<ICaseCleansingClientService, CaseCleansingClientService>();
             services.AddSingleton<IKustoQueryService, KustoQueryService>();
             services.AddSingleton<IKustoTokenRefreshService, KustoTokenRefreshService>();
             services.AddSingleton<IOutageCommunicationService, OutageCommunicationService>();

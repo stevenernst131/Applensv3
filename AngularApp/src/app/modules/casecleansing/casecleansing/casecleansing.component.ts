@@ -8,7 +8,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   templateUrl: './casecleansing.component.html',
   styleUrls: ['./casecleansing.component.css']
 })
-export class CasecleansingComponent implements OnInit {
+export class CaseCleansingComponent implements OnInit {
   public cases : CaseSimple[];
   public content : any;
   public contentJSON : string;
