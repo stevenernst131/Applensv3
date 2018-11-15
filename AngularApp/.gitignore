@@ -22,10 +22,6 @@ dist.tgz
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # IDE - Visual Studio
 .vs/*
