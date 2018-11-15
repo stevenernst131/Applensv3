@@ -1,6 +1,7 @@
-import { Component, Input, Pipe, PipeTransform} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { BehaviorSubject } from '../../../../../node_modules/rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { SearchPipe } from '../../pipes/search.pipe';
 
 @Component({
   selector: 'collapsible-menu-item',
@@ -8,7 +9,7 @@ import { BehaviorSubject } from '../../../../../node_modules/rxjs';
   styleUrls: ['./collapsible-menu-item.component.css'],
   animations: [
     trigger('expand', [
-      state('shown' , style({ height: '*' })),
+      state('shown', style({ height: '*' })),
       state('hidden', style({ height: '0px' })),
       transition('* => *', animate('.1s'))
     ])
@@ -27,8 +28,10 @@ export class CollapsibleMenuItemComponent {
 
   children: CollapsibleMenuItem[];
 
-  hasChildren : boolean;
+  hasChildren: boolean;
   matchesSearchTerm: boolean = true;
+
+  constructor(private _searchPipe: SearchPipe) { }
 
   ngOnInit() {
 
@@ -37,7 +40,8 @@ export class CollapsibleMenuItemComponent {
 
     this._searchValueSubject.subscribe(searchValue => {
       this.searchValueLocal = searchValue;
-      this.matchesSearchTerm = !this.searchValueLocal || this.menuItem.label.toLowerCase().indexOf(this.searchValueLocal.toLowerCase()) >= 0;
+      this.hasChildren = this.menuItem.subItems ? this._searchPipe.transform(this.menuItem.subItems, searchValue).length > 0 : false;
+      this.matchesSearchTerm = !this.searchValueLocal || this.menuItem.label.toLowerCase().indexOf(this.searchValueLocal.toLowerCase()) >= 0 || this.hasChildren;
     });
   }
 
@@ -74,37 +78,9 @@ export class CollapsibleMenuItem {
   constructor(label: string, onClick: Function, isSelected: Function, icon: string = null, expanded: boolean = false, subItems: CollapsibleMenuItem[] = []) {
     this.label = label;
     this.onClick = onClick;
-    this.expanded = expanded; 
+    this.expanded = expanded;
     this.subItems = subItems;
     this.isSelected = isSelected;
     this.icon = icon;
-  }
-}
-
-@Pipe({
-  name:'search',
-  pure: false
-})
-export class SearchPipe implements PipeTransform {
-  transform(items: CollapsibleMenuItem[], searchString: string) {
-    return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
-  }
-}
-
-
-@Pipe({
-  name:'searchmatch',
-  pure: false
-})
-export class SearchMatchPipe implements PipeTransform {
-  transform(label: string, searchString: string) {
-    if(searchString) {
-      let matchIndex = label.toLowerCase().indexOf(searchString.toLowerCase());
-      if(matchIndex >= 0) {
-        return `${label.substr(0, matchIndex)}<b>${label.substr(matchIndex, searchString.length)}</b>${label.substr(matchIndex + searchString.length)}`
-      }
-    }
-
-    return label;
   }
 }

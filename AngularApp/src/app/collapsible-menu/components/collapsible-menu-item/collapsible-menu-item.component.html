@@ -1,4 +1,4 @@
-<div *ngIf="matchesSearchTerm || hasChildren">
+<div *ngIf="matchesSearchTerm">
     <div class="menu-item" (click)="handleClick()" [class.selected]="isSelected()" [style.padding-left]="getPadding()">
         <i class="fa expand-icon" *ngIf=" menuItem.subItems && menuItem.subItems.length > 0" [class.fa-caret-right]="!menuItem.expanded" [class.fa-caret-down]="menuItem.expanded"></i>
         <i class="fa" *ngIf="menuItem.icon" [ngClass]="menuItem.icon"></i>
