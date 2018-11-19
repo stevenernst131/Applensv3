@@ -66,7 +66,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   showAlert: boolean;
 
   private publishingPackage: Package;
-  private author: string = "xipeng";
+  private author: string;
   private userName: string;
 
   constructor(private cdRef: ChangeDetectorRef, private githubService: GithubApiService, private diagnosticApiService: ApplensDiagnosticService, private resourceService: ResourceService,
@@ -100,6 +100,7 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
     this.showAlert = false;
 
     this.userName = this.authService.userInfo.userName.replace('@microsoft.com', '');
+    this.author = this.userName + ";xipeng;";
   }
 
   ngOnInit() {
@@ -310,11 +311,9 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   }
 
   private preparePublishingPackage(queryResponse: QueryResponse<DetectorResponse>, code: string) {
-
-
     if (queryResponse.invocationOutput.metadata.author !== null && queryResponse.invocationOutput.metadata.author !== "")
     {
-        this.author = this.author + ";"+ queryResponse.invocationOutput.metadata.author;
+        this.author +=  queryResponse.invocationOutput.metadata.author;
     }
 
     console.log("Author");

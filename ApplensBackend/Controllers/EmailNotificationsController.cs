@@ -28,8 +28,6 @@ namespace AppLensV3.Controllers
         public async Task<IActionResult> Invoke(string subscriptionId, string startTime = null, string endTime = null, string impactedServices = null)
         {
   
-
-
             if (string.IsNullOrWhiteSpace(subscriptionId))
             {
                 return BadRequest("subscriptionId cannot be empty");

@@ -66,14 +66,10 @@ namespace AppLensV3.Services.EmailNotificationService
             //var plainTextContent = "and easy to do anywhere, even with C#";
             //var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
             var msg = new SendGridMessage();
-            string subject = "Detector Publish Notification - " + detectorId;
-          //  msg.SetSubject(subject);
-            msg.Subject = subject;
             msg.SetFrom(fromAddress);
             msg.AddTos(tos);
             msg.SetTemplateId("d-436ddef95ff144f28d665e7faaf01a2f");
             
-
             var dynamicTemplateData = new ExampleTemplateData
             {
                 detectorId = detectorId,

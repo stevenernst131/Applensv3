@@ -76,7 +76,10 @@ namespace AppLensV3.Controllers
             {
                 detectorAuthor = Request.Headers["x-ms-author"];
                 char[] separators = { ' ', ',', ';', ':' };
-                string[] authors = detectorAuthor.Split(separators);
+
+                // Currently there's a bug in sendgrid v3, email will not be sent if there are duplicates in the recipient list
+                // Remove duplicates before adding to the recipient list
+                string[] authors = detectorAuthor.Split(separators, StringSplitOptions.RemoveEmptyEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
                 foreach (var author in authors)
                 {
                     tos.Add(new EmailAddress(author + "@microsoft.com"));
