@@ -45,6 +45,7 @@ export class DetectorViewComponent implements OnInit {
   @Input() insideDetectorList: boolean = false;
   @Input() parentDetectorId: string = "";
   @Input() isSystemInvoker: boolean = false;
+  @Input() authorInfo: string = "";
 
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService, private detectorControlService: DetectorControlService) {
@@ -86,7 +87,12 @@ export class DetectorViewComponent implements OnInit {
           "DetectorId": data.metadata.id
         }
 
-        if (data.metadata && data.metadata.author) {
+        if (!this.isSystemInvoker && data.metadata && data.metadata.author) {
+          this.authorInfo = data.metadata.author;
+        }
+
+        if (this.authorInfo !== "")
+        {    
           let separators = [' ', ',', ';', ':'];
           let authors = data.metadata.author.split(new RegExp(separators.join('|'), 'g'));
           let authorsArray: string[] = [];
