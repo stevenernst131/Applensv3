@@ -64,13 +64,13 @@ namespace AppLensV3.Controllers
         [HttpGet("getallcases")]
         public CaseSimple[] Get()
         {
-            string str = @"select IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecommendationCount, Title
-from Incidents 
-JOIN Statuses ON Statuses.Id=Incidents.ID
-JOIN Recommendations ON Recommendations.Id=Incidents.ID
-WHERE Status = 'OPEN'
-Group by IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID, Title
-order by Time Desc;";
+            string str = @"SELECT IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID As ID, Count(RuleID) As RecommendationCount, Title
+                            FROM Incidents 
+                            JOIN Statuses ON Statuses.Id=Incidents.ID
+                            JOIN Recommendations ON Recommendations.Id=Incidents.ID
+                            WHERE Status = 'OPEN'
+                            GROUP BY IncidentId, Time, Status, AssignedTo, ClosedTime, Incidents.ID, Title
+                            ORDER BY Time Desc;";
 
             using (SqlConnection connection = new SqlConnection(_caseCleansingConfiguration.ConnectionString))
             {
@@ -84,11 +84,11 @@ order by Time Desc;";
         {
             CaseExtra extra = new CaseExtra();
             //Get Recommendations from SQL
-            string SQLQueryString = @"select RuleName, OldClosedAgainst, RecommendedClosedAgainst, Recommendations.Date As RecommendationDate
-from Incidents 
-JOIN Recommendations ON Recommendations.Id=Incidents.ID
-JOIN Rules ON Recommendations.RuleId=Rules.RuleId
-WHERE IncidentId = @IncidentId;";
+            string SQLQueryString = @"SELECT RuleName, OldClosedAgainst, RecommendedClosedAgainst, Recommendations.Date As RecommendationDate
+                                    FROM Incidents 
+                                    JOIN Recommendations ON Recommendations.Id=Incidents.ID
+                                    JOIN Rules ON Recommendations.RuleId=Rules.RuleId
+                                    WHERE IncidentId = @IncidentId;";
 
             using (SqlConnection connection = new SqlConnection(_caseCleansingConfiguration.ConnectionString))
             {
@@ -98,7 +98,7 @@ WHERE IncidentId = @IncidentId;";
 
             //Get More Info from Kusto
             string kustoQueryString = $@"SupportProductionClosedVolumeDailyVer1023
-                | where Incidents_IncidentId == {id}";
+                                        | where Incidents_IncidentId == {id}";
 
             var queryProvider = KustoClientFactory.CreateCslQueryProvider(_caseCleansingConfiguration.KustoP360ConnectionString);
 
@@ -144,7 +144,7 @@ WHERE IncidentId = @IncidentId;";
         private static int GetLocalID(SqlConnection connection, string IncidentId)
         {
             int localID;
-            var caseIDs = connection.Query<int>("select ID from Incidents where IncidentId = @incidentId", new { incidentId = IncidentId });
+            var caseIDs = connection.Query<int>("SELECT ID from Incidents where IncidentId = @incidentId", new { incidentId = IncidentId });
             if (caseIDs.Count() == 0)
             {
                 localID = -1;
