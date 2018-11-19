@@ -36,7 +36,7 @@ export class DiagnosticApiService {
 
   public getDetectors(version: string, resourceId: string, body?: any): Observable<DetectorMetaData[]> {
     let path = `${version}${resourceId}/detectors`;
-    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).map(response => response.map(detector => detector.metadata));
+    return this.invoke<DetectorResponse[]>(path, HttpMethod.POST, body).retry(1).map(response => response.map(detector => detector.metadata));
   }
 
   public getCompilerResponse(version: string, resourceId: string, body: any, startTime?: string, endTime?: string): Observable<QueryResponse<DetectorResponse>> {
