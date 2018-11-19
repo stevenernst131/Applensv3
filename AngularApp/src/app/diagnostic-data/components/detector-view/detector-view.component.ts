@@ -46,7 +46,7 @@ export class DetectorViewComponent implements OnInit {
   @Input() parentDetectorId: string = "";
   @Input() isSystemInvoker: boolean = false;
   @Input() authorInfo: string = "";
-
+  @Input() feedbackDetector: string = "";
 
   constructor(@Inject(DIAGNOSTIC_DATA_CONFIG) config: DiagnosticDataConfig, private telemetryService: TelemetryService, private detectorControlService: DetectorControlService) {
     this.isPublic = config && config.isPublic;
@@ -87,7 +87,10 @@ export class DetectorViewComponent implements OnInit {
           "DetectorId": data.metadata.id
         }
 
-        if (!this.isSystemInvoker && data.metadata && data.metadata.author) {
+        this.feedbackDetector = this.isSystemInvoker ? this.feedbackDetector : data.metadata.id;
+        
+        if (!this.isSystemInvoker && data.metadata && data.metadata.author)
+        {
           this.authorInfo = data.metadata.author;
         }
 

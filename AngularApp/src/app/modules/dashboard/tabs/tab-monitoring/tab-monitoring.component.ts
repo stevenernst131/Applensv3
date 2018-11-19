@@ -30,7 +30,7 @@ export class TabMonitoringComponent implements OnInit {
   @Input() statisticsType: StatisticsType = StatisticsType.Monitoring;
 
   reportName: string = "";
-  private detectorId: string;
+  detectorId: string;
   private dataSourceMapping: Map<string, string> = new Map<string, string>([
     ["All", "0"],
     ["Applens", "1"],
