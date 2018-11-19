@@ -43,3 +43,7 @@
 :host-context(.light-theme) .menu-item.selected {
     background-color: rgba(0,137,250,.1);
 }
+
+.menu-label > b {
+    color: #ffb353;
+}

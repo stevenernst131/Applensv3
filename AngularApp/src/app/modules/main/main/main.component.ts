@@ -19,13 +19,6 @@ export class MainComponent implements OnInit {
   resourceName: string;
   resourceTypes: ResourceTypeState[] = [
     {
-      resourceType: null,
-      routeName: () => 'srid',
-      displayName: 'Support Request ID',
-      enabled: true,
-      caseId: true
-    },
-    {
       resourceType: ResourceType.Site,
       routeName: (name) => `sites/${name}`,
       displayName: 'App',
@@ -45,6 +38,13 @@ export class MainComponent implements OnInit {
       displayName: 'ARM Resource ID',
       enabled: true,
       caseId: false
+    },
+    {
+      resourceType: null,
+      routeName: () => 'srid',
+      displayName: 'Support Request ID',
+      enabled: true,
+      caseId: true
     }
   ];
 
