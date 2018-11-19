@@ -94,7 +94,7 @@ export class DetectorViewComponent implements OnInit {
         if (this.authorInfo !== "")
         {    
           let separators = [' ', ',', ';', ':'];
-          let authors = data.metadata.author.split(new RegExp(separators.join('|'), 'g'));
+          let authors = this.authorInfo.split(new RegExp(separators.join('|'), 'g'));
           let authorsArray: string[] = [];
           authors.forEach(author => {
             if (author && author.length > 0) {

@@ -5,7 +5,7 @@
         <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
         <small>{{detectorDataLocalCopy.metadata.description}}</small>
       </h1>
-      <div class="description col-md-1" style="padding-left:0" *ngIf="!isPublic">By
+      <div class="description col-md-3" style="padding-left:0" *ngIf="!isPublic">By
         <span style="padding:2px; color: #0066c0;">
           <a *ngIf="authorInfo !== ''; else unknownAuthor" href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{detectorDataLocalCopy.metadata.id}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
             {{authorInfo}}
@@ -15,7 +15,7 @@
           </ng-template>
         </span>
       </div>
-      <div class="col-md-2 col-md-offset-9">
+      <div class="col-md-2 col-md-offset-7">
       <span>
         <a *ngIf="authorInfo !== ''; else onlyToApplensTeam" href="mailto:{{authorEmails}}?cc=applensdisc@microsoft.com&subject=Detector%20Feedback%20for%20{{detectorDataLocalCopy.metadata.id}}&body=Please%20provide%20your%20feedback%20here:%0D%0A%0D%0A%0D%0A%0D%0A{{currentSiteString}}">
           <span style="color:green; font-weight: bold">📧  Send Feedback </span>
