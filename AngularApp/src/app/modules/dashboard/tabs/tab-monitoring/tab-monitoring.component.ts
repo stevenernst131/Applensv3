@@ -24,13 +24,13 @@ export class TabMonitoringComponent implements OnInit {
 
   systemInvokerResponse: DetectorResponse;
   detectorAuthor: String = "";
-  private authorEmails: string;
+  authorInfo: string = "";
 
   @Input() systemInvokerId: string = "__monitoring";
   @Input() statisticsType: StatisticsType = StatisticsType.Monitoring;
 
   reportName: string = "";
-  private detectorId: string;
+  detectorId: string;
   private dataSourceMapping: Map<string, string> = new Map<string, string>([
     ["All", "0"],
     ["Applens", "1"],
@@ -84,16 +84,7 @@ export class TabMonitoringComponent implements OnInit {
         this.reportName = this.statisticsType === StatisticsType.Monitoring ? `${detectorMetaData.name} Monitoring 📈` : `${detectorMetaData.name} Analytics 📊`;
       }
       if (detectorMetaData && detectorMetaData.author) {
-        this.detectorAuthor = detectorMetaData.author;
-        let separators = [' ', ',', ';', ':'];
-        let authors = detectorMetaData.author.split(new RegExp(separators.join('|'), 'g'));
-        let authorsArray: string[] = [];
-        authors.forEach(author => {
-          if (author && author.length > 0) {
-            authorsArray.push(`${author}@microsoft.com`);
-          }
-        });
-        this.authorEmails = authorsArray.join(";");
+        this.authorInfo = detectorMetaData.author;
       }
     }, (error: any) => {
       this.error = error;
