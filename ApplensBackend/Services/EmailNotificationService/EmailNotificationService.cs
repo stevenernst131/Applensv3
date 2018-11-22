@@ -8,12 +8,28 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Data;
 
 namespace AppLensV3.Services.EmailNotificationService
 {
     public class EmailNotificationService: IEmailNotificationService
     {
         private IConfiguration _configuration;
+        private IKustoQueryService _kustoQueryService;
+
+        private TimeSpan _weeklyWindow = TimeSpan.FromDays(7);
+
+        private string _monitoringSummaryQuery = @"
+        union withsource = SourceTable 
+                    (cluster('wawscus').database('wawsprod').DiagnosticRole | where TIMESTAMP >= ago({timeRange})), 
+                    (cluster('wawseus').database('wawsprod').DiagnosticRole | where TIMESTAMP >= ago({timeRange})), 
+                    (cluster('wawseas').database('wawsprod').DiagnosticRole | where TIMESTAMP >= ago({timeRange})), 
+                    (cluster('wawsneu').database('wawsprod').DiagnosticRole | where TIMESTAMP >= ago({timeRange}))
+        | where EventId == '2002'
+        | where Address contains strcat('/detectors/', '{detectorId}') and  Address !contains strcat('/detectors/', '{detectorId}', '/statistics')
+        | summarize totalReqs = count(), failedReqs = countif(StatusCode>=500), avgLatency = avg(LatencyInMilliseconds), p90Latency = percentiles(LatencyInMilliseconds, 90)
+        | extend availability = 100.0 - (failedReqs*100.0/totalReqs)
+        ";
 
         private HttpClient _client { get; set; }
 
@@ -25,11 +41,13 @@ namespace AppLensV3.Services.EmailNotificationService
             }
         }
 
-        public EmailNotificationService(IConfiguration configuration)
+        public EmailNotificationService(IConfiguration configuration, IKustoQueryService kustoQueryService)
         {
             _configuration = configuration;
+            _kustoQueryService = kustoQueryService;
             _client = InitializeClient();
         }
+
 
         private HttpClient InitializeClient()
         {
@@ -46,6 +64,45 @@ namespace AppLensV3.Services.EmailNotificationService
             //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
+        }
+
+        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string subscription, string detectorId, DateTime startTime, DateTime endTime, string impactedService = "appservice", string timeRange = "7d")
+        {
+            if (string.IsNullOrWhiteSpace(subscription))
+            {
+                throw new ArgumentNullException("subscription");
+            }
+
+            if (string.IsNullOrWhiteSpace(detectorId))
+            {
+                throw new ArgumentNullException("detectorId");
+            }
+
+            DateTime currentTimeUTC = DateTime.UtcNow;
+
+            string monitoringSummaryQuery = _monitoringSummaryQuery
+                .Replace("{timeRange}", timeRange)
+                .Replace("{detectorId}", detectorId);
+
+            DataTable dt = await this._kustoQueryService.ExecuteClusterQuery(monitoringSummaryQuery);
+
+            Dictionary<string, string> monitoringSummary = new Dictionary<string, string>();
+
+            if (dt == null || dt.Rows == null || dt.Rows.Count == 0)
+            {
+                return monitoringSummary;
+            }
+
+            // totalReqs = count(), failedReqs = countif(StatusCode>=500), avgLatency = avg(LatencyInMilliseconds), p90Latency = percentiles(LatencyInMilliseconds, 90)
+            monitoringSummary.Add("Availability", dt.Rows[0]["availability"].ToString());
+            monitoringSummary.Add("TotalRequests", dt.Rows[0]["totalReqs"].ToString());
+            monitoringSummary.Add("FailedRequests", dt.Rows[0]["failedReqs"].ToString());
+            monitoringSummary.Add("AverageLatency", dt.Rows[0]["avgLatency"].ToString());
+            monitoringSummary.Add("P90Latency", dt.Rows[0]["p90Latency"].ToString());
+
+            return monitoringSummary;
+
+         
         }
 
         public async Task<HttpResponseMessage> SendEmail(string method, string path, string body = null, bool internalView = true)

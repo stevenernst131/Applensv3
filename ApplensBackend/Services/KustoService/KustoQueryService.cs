@@ -14,6 +14,7 @@ namespace AppLensV3.Services
 {
     public interface IKustoQueryService
     {
+        Task<DataTable> ExecuteClusterQuery(string query, string cluster = "wawseus", string database = "wawsprod", string requestId = null);
         Task<DataTable> ExecuteQueryAsync(string cluster, string database, string query, string requestId = null);
     }
 
@@ -42,6 +43,11 @@ namespace AppLensV3.Services
         public KustoQueryService(IKustoTokenRefreshService kustoTokenRefreshService)
         {
             _kustoTokenRefreshService = kustoTokenRefreshService;
+        }
+
+        public Task<DataTable> ExecuteClusterQuery(string query, string cluster = "wawseus", string database = "wawsprod", string requestId = null)
+        {
+            return ExecuteQueryAsync(cluster, database, query, requestId);
         }
 
         public async Task<DataTable> ExecuteQueryAsync(string cluster, string database, string query, string requestId = null)
