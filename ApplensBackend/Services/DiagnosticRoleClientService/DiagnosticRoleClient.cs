@@ -76,6 +76,7 @@ namespace AppLensV3
 
         public async Task<HttpResponseMessage> Execute(string method, string path, string body = null, bool internalView = true)
         {
+       //     path = path.Replace("v4/", string.Empty);
             try
             {
                 HttpResponseMessage response;

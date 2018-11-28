@@ -62,7 +62,7 @@ namespace AppLensV3.Controllers
             List<EmailAddress> tos = new List<EmailAddress>();
             if (body != null && body["committedByAlias"] != null)
             {
-                alias = body["committedByAlias"].ToString();
+                // Also add the people who changed this detector on the cc list
             }
 
             if (body != null && body["id"] != null)
@@ -82,7 +82,11 @@ namespace AppLensV3.Controllers
                 string[] authors = detectorAuthor.Split(separators, StringSplitOptions.RemoveEmptyEntries).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
                 foreach (var author in authors)
                 {
-                    tos.Add(new EmailAddress(author + "@microsoft.com"));
+                    EmailAddress emailAddress = new EmailAddress(author + "@microsoft.com");
+                    if (!tos.Contains(emailAddress))
+                    {
+                        tos.Add(emailAddress);
+                    }
                 }
             }
 
