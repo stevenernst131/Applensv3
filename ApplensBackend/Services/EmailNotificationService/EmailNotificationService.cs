@@ -10,6 +10,10 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Data;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Reflection;
+using AppLensV3.Models;
+using System.Text.RegularExpressions;
 
 namespace AppLensV3.Services.EmailNotificationService
 {
@@ -57,6 +61,18 @@ namespace AppLensV3.Services.EmailNotificationService
         | top 1 by period desc
         ";
 
+        private string _deflectionTrendQuery = @"
+        cluster('usage360').database('Product360').{deflectionTableName}
+        | where Timestamp >= ago(300d)
+        | where DerivedProductIDStr in ('{pesId}')
+        | where SupportTopicL2 contains '{category}'
+        | where SupportTopicL3 contains '{supportTopic}'
+        | where DenominatorQuantity != 0 
+        | summarize qty = sum(NumeratorQuantity) / sum(DenominatorQuantity), auxQty = sum(DenominatorQuantity) by Timestamp, ProductName
+        | project Timestamp , Deflection = round(100 * qty, 2)
+        | sort by Timestamp asc
+        ";
+
         private SendGridClient _sendGridClient { get; set; }
 
         public string SendGridApiKey
@@ -93,11 +109,68 @@ namespace AppLensV3.Services.EmailNotificationService
             return sendGridClient;
         }
 
-        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string detectorId, List<string> supppotTopicList, DateTime startTime, DateTime endTime, string timeRange = "7d")
+        internal async Task<List<Tuple<string, string, string, string>>> GetSupportTopicList(JArray supppotTopicList)
+        {
+            try
+            {
+                List<Tuple<string, string, string, string>> supportTopicMappings = new List<Tuple<string, string, string, string>>();
+
+                if (supppotTopicList == null || supppotTopicList.Count == 0)
+                {
+                    return supportTopicMappings;
+                }
+
+                List<Task<DataTable>> supportTopicMappingTasks = new List<Task<DataTable>>();
+                foreach (var supportTopicItem in supppotTopicList)
+                {
+                    string supportTopicId = supportTopicItem["id"].ToString();
+                    string pesId = supportTopicItem["pesId"].ToString();
+                    string supportTopicMappingQuery = _supportTopicMappingQuery
+                        .Replace("{id}", supportTopicId)
+                        .Replace("{pesId}", pesId);
+
+                    var supportTopicMappingQueryTask = _kustoQueryService.ExecuteClusterQuery(supportTopicMappingQuery);
+                    supportTopicMappingTasks.Add(supportTopicMappingQueryTask);
+                }
+
+                var supportTopicMappingTables = await Task.WhenAll(supportTopicMappingTasks);
+
+                if (supportTopicMappingTables != null && supportTopicMappingTables.Length > 0)
+                {
+                    foreach (var mappingTable in supportTopicMappingTables)
+                    {
+                        if (mappingTable != null && mappingTable.Rows != null && mappingTable.Rows.Count != 0)
+                        {
+                            string Id = mappingTable.Rows[0]["Id"].ToString();
+                            string PesId = mappingTable.Rows[0]["PesId"].ToString();
+                            string supportTopicL2 = mappingTable.Rows[0]["TopicL2"].ToString();
+                            string supportTopicL3 = mappingTable.Rows[0]["TopicL3"].ToString();
+                            supportTopicMappings.Add(new Tuple<string, string, string, string>(Id, PesId, supportTopicL2, supportTopicL3));
+                        }
+                    }
+                }
+
+                return supportTopicMappings;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+          
+        }
+
+
+        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string detectorId, List<Tuple<string, string, string, string>> supportTopicMappings, List<Tuple<string, string, Image, Image>> sptrends, DateTime startTime, DateTime endTime, string timeRange = "7d")
         {
             if (string.IsNullOrWhiteSpace(detectorId))
             {
                 throw new ArgumentNullException("detectorId");
+            }
+
+             List<Attachment> attachments = new List<Attachment>();
+            if (detectorId.Contains("backup"))
+            {
+                Console.WriteLine(detectorId);
             }
 
             Dictionary<string, string> monitoringSummary = new Dictionary<string, string>();
@@ -109,7 +182,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
             List<string> deflectionSumTables = new List<string> { "SupportProductionDeflectionWeeklyVer1023", "SupportProductionDeflectionMonthlyVer1023" };
 
-            if (supppotTopicList != null && supppotTopicList.Count > 0)
+            if (supportTopicMappings != null && supportTopicMappings.Count > 0)
             {
                 for (int i = 0; i < deflectionSumTables.Count; i++)
                 {
@@ -118,34 +191,38 @@ namespace AppLensV3.Services.EmailNotificationService
                     double deflectionPercentage = 0;
                     DateTime timePeriod = DateTime.UtcNow.AddMonths(-1);
 
-                    foreach (var supportTopic in supppotTopicList)
+                    for (int j = 0; j < supportTopicMappings.Count; j++)
                     {
-                        JObject supportTopicItem = JObject.Parse(supportTopic);
-                        string supportTopicId = supportTopicItem["id"].ToString();
-                        string pesId = supportTopicItem["pesId"].ToString();
-                        string supportTopicMappingQuery = _supportTopicMappingQuery
-                            .Replace("{id}", supportTopicId)
-                            .Replace("{pesId}", pesId);
+                        string pesId = supportTopicMappings[j].Item2;
+                        string supportTopicL2 = supportTopicMappings[j].Item3;
+                        string supportTopicL3 = supportTopicMappings[j].Item4;
+                        string deflectionSumQuery = _totalDeflectionQuery.Replace("{deflectionTableName}", deflectionSumTables[0]).Replace("{category}", supportTopicL2).Replace("{supportTopic}", supportTopicL3).Replace("{pesId}", pesId);
 
-                        var supportTopicMappingQueryTask = this._kustoQueryService.ExecuteClusterQuery(supportTopicMappingQuery);
-                        DataTable supportTopicMappingTable = await supportTopicMappingQueryTask;
+                        var deflectionSumTask = this._kustoQueryService.ExecuteClusterQuery(deflectionSumQuery);
+                        var deflectionSumDataTable = await deflectionSumTask;
 
-                        if (supportTopicMappingTable != null && supportTopicMappingTable.Rows != null && supportTopicMappingTable.Rows.Count != 0)
+                        if (deflectionSumDataTable != null && deflectionSumDataTable.Rows != null && deflectionSumDataTable.Rows.Count > 0)
                         {
-                            string supportTopicL2 = supportTopicMappingTable.Rows[0]["TopicL2"].ToString();
-                            string supportTopicL3 = supportTopicMappingTable.Rows[0]["TopicL3"].ToString();
-                            string deflectionSumQuery = _totalDeflectionQuery.Replace("{deflectionTableName}", deflectionSumTables[i]).Replace("{category}", supportTopicL2).Replace("{supportTopic}", supportTopicL3).Replace("{pesId}", pesId);
-
-                            var deflectionSumTask = this._kustoQueryService.ExecuteClusterQuery(deflectionSumQuery);
-                            var deflectionSumDataTable = await deflectionSumTask;
-
-                            if (deflectionSumDataTable != null && deflectionSumDataTable.Rows != null && deflectionSumDataTable.Rows.Count > 0)
-                            {
-                                totalNumerator += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Numerator"].ToString());
-                                totalDenominator += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Denominator"].ToString());
-                                timePeriod = DateTime.Parse(deflectionSumDataTable.Rows[0]["period"].ToString());
-                            }
+                            totalNumerator += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Numerator"].ToString());
+                            totalDenominator += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Denominator"].ToString());
+                            timePeriod = DateTime.Parse(deflectionSumDataTable.Rows[0]["period"].ToString());
                         }
+
+                        List<Image> spImages = new List<Image>() { sptrends[j].Item3, sptrends[j].Item4 };
+                        foreach (var image in spImages)
+                        {
+                            Attachment imageAttachment = new Attachment();
+                            imageAttachment.Content = image.ContentBase64Encoded;
+                            imageAttachment.Filename = $"{image.Cid}.png";
+                            imageAttachment.ContentId = image.Cid;
+                            imageAttachment.Type = "image/jpeg";
+                            imageAttachment.Disposition = "inline";
+
+                            attachments.Add(imageAttachment);
+                        }                    
+
+                    //    monitoringSummary.Add(supportTopicL2+"/"+ supportTopicL3+"WeeklyTrends", sptrends[j].Item3.ToString());
+                    //    monitoringSummary.Add(supportTopicL2 + "/" + supportTopicL3 + "WeeklyTrends", sptrends[j].Item4);
                     }
 
                     if (totalDenominator != 0)
@@ -154,17 +231,17 @@ namespace AppLensV3.Services.EmailNotificationService
 
                         if (i == 0)
                         {
-                            monitoringSummary.Add("weeklyDeflectionPercentage", deflectionPercentage.ToString());
-                            monitoringSummary.Add("weeklyNumerator", totalNumerator.ToString());
-                            monitoringSummary.Add("weeklyDenominator", totalDenominator.ToString());
-                            monitoringSummary.Add("weeklyDeflectionTimePeriod", timePeriod.ToString());
+                            monitoringSummary.Add("WeeklyDeflectionPercentage", deflectionPercentage.ToString());
+                            monitoringSummary.Add("WeeklyNumerator", totalNumerator.ToString());
+                            monitoringSummary.Add("WeeklyDenominator", totalDenominator.ToString());
+                            monitoringSummary.Add("WeeklyDeflectionTimePeriod", timePeriod.ToString());
                         }
                         else
                         {
-                            monitoringSummary.Add("montlyDeflectionPercentage", deflectionPercentage.ToString());
-                            monitoringSummary.Add("monthlyNumerator", totalNumerator.ToString());
-                            monitoringSummary.Add("monthlyDenominator", totalDenominator.ToString());
-                            monitoringSummary.Add("weeklyDeflectionTimePeriod", timePeriod.ToString());
+                            monitoringSummary.Add("MonthlyDeflectionPercentage", deflectionPercentage.ToString());
+                            monitoringSummary.Add("MonthlyNumerator", totalNumerator.ToString());
+                            monitoringSummary.Add("MonthlyDenominator", totalDenominator.ToString());
+                            monitoringSummary.Add("MonthlyDeflectionTimePeriod", timePeriod.ToString());
                         }
                     }
                 }
@@ -190,7 +267,6 @@ namespace AppLensV3.Services.EmailNotificationService
             monitoringSummary.Add("MonitoringLink", monitoringDataTable.Rows[0]["MonitoringLink"].ToString());
             monitoringSummary.Add("AnalyticsLink", monitoringDataTable.Rows[0]["AnalyticsLink"].ToString());
 
-            Console.WriteLine(monitoringSummary);
 
             return monitoringSummary;
         }
@@ -207,7 +283,9 @@ namespace AppLensV3.Services.EmailNotificationService
 
         public async Task SendWeeklyMonitoringReport(HttpResponseMessage response)
         {
-            if (response != null)
+            if (response == null)
+                return;
+            try
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
@@ -219,10 +297,30 @@ namespace AppLensV3.Services.EmailNotificationService
                     {
                         //  Console.WriteLine(detectorObject);
                         JObject detectorMetadata = (JObject)detectorObject["metadata"];
-
                         string detectorId = detectorMetadata["id"].ToString();
                         string author = detectorMetadata["author"].ToString();
-                        List<string> supppotTopicList = JsonConvert.DeserializeObject<List<string>>(detectorMetadata["supportTopicList"].ToString());
+                        // List<string> supppotTopicList = JsonConvert.DeserializeObject<List<string>>(detectorMetadata["supportTopicList"].ToString());
+                        JArray supppotTopicList = (JArray)detectorMetadata["supportTopicList"];
+
+                        List<Tuple<string, string, string, string>> supportTopicMappings = await GetSupportTopicList(supppotTopicList);
+                        List<Tuple<string, string, Image, Image>> sptrends = await GetSupportTopicsTrends(supportTopicMappings);
+
+                        List<Attachment> attachments = new List<Attachment>();
+                        for (int i = 0; i < supportTopicMappings.Count; i++)
+                        {
+                            List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
+                            foreach (var image in spImages)
+                            {
+                                Attachment imageAttachment = new Attachment();
+                                imageAttachment.Content = image.ContentBase64Encoded;
+                                imageAttachment.Filename = $"{image.Cid}.png";
+                                imageAttachment.ContentId = image.Cid;
+                                imageAttachment.Type = "image/jpeg";
+                                imageAttachment.Disposition = "inline";
+
+                                attachments.Add(imageAttachment);
+                            }
+                        }
 
                         string monitoringTemplateId = "d-2897fa12011e4ffab5188451a94f681d";
                         EmailAddress from = new EmailAddress("applensv2team@microsoft.com", "Applens Notification");
@@ -236,14 +334,10 @@ namespace AppLensV3.Services.EmailNotificationService
                         List<EmailAddress> authorList = FormatRecipients(author);
                         List<EmailAddress> ccList = new List<EmailAddress> { new EmailAddress("applesnsv2team@microsoft.com", "Applens Notification") };
 
-                        Dictionary<string, string> monitoringDictionary = await GetMonitoringMetricsAsync(detectorId, supppotTopicList, new DateTime(), new DateTime());
+                        Dictionary<string, string> monitoringDictionary = await GetMonitoringMetricsAsync(detectorId, supportTopicMappings, sptrends, new DateTime(), new DateTime());
 
-                        if (!String.IsNullOrWhiteSpace(monitoringDictionary["weeklyDeflectionPercentage"]))
-                        {
-                            Console.WriteLine("haha");
-                            Console.WriteLine(monitoringDictionary["weeklyDeflectionPercentage"].ToString());
-                            Console.WriteLine(monitoringDictionary["monthlyDeflectionPercentage"].ToString());
-                        }
+
+                       
 
                         var monitoringReportTemplateData = new MonitoringReportTemplateData
                         {
@@ -253,17 +347,41 @@ namespace AppLensV3.Services.EmailNotificationService
                             FailedRequests = monitoringDictionary["FailedRequests"],
                             P90Latency = monitoringDictionary["P90Latency"],
                             AverageLatency = monitoringDictionary["AverageLatency"],
-                            MonitoringLink = monitoringDictionary["MonitoringLink"]
+                            MonitoringLink = monitoringDictionary["MonitoringLink"],
+                            AnalyticsLink = monitoringDictionary["AnalyticsLink"],
+                            WeeklyDeflectionPercentage = monitoringDictionary.ContainsKey("WeeklyDeflectionPercentage") ? monitoringDictionary["WeeklyDeflectionPercentage"] : "N/A",
+                            WeeklyNumerator = monitoringDictionary.ContainsKey("WeeklyNumerator") ? monitoringDictionary["WeeklyNumerator"] : "N/A",
+                            WeeklyDenominator = monitoringDictionary.ContainsKey("WeeklyDenominator") ? monitoringDictionary["WeeklyDenominator"] : "N/A",
+                            WeeklyDeflectionTimePeriod = monitoringDictionary.ContainsKey("WeeklyDeflectionTimePeriod") ? monitoringDictionary["WeeklyDeflectionTimePeriod"] : "N/A",
+                            MonthlyDeflectionPercentage = monitoringDictionary.ContainsKey("MonthlyDeflectionPercentage") ? monitoringDictionary["MonthlyDeflectionPercentage"] : "N/A",
+                            MonthlyNumerator = monitoringDictionary.ContainsKey("MonthlyNumerator") ? monitoringDictionary["MonthlyNumerator"] : "N/A",
+                            MonthlyDenominator = monitoringDictionary.ContainsKey("MonthlyDenominator") ? monitoringDictionary["MonthlyDenominator"] : "N/A",
+                            MonthlyDeflectionTimePeriod = monitoringDictionary.ContainsKey("MonthlyDeflectionTimePeriod") ? monitoringDictionary["MonthlyDeflectionTimePeriod"] : "N/A",
+                            CriticalInsightsCoverage = "N/A",
+                            DetectorASCFeedback = "N/A",
+                            ApplensBg = $@"<img src=cid:123123 width='900' height='53' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
                         };
+                        //$@"<img src=cid:123123 />"
+                        //"<img src='https://www.sendwithus.com/assets/img/emailmonks/images/logo.png' width='230' height='80' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
 
-                        await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData);
+                        if (detectorId.Contains("backup"))
+                        {
+
+
+                            await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, attachments);
+                        }
+
                         // await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, ccList);
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public async Task<Response> SendEmail(EmailAddress from, List<EmailAddress> tos, string templateId, Object dynamicTemplateData, List<EmailAddress> ccList = null)
+        public async Task<Response> SendEmail(EmailAddress from, List<EmailAddress> tos, string templateId, Object dynamicTemplateData, List<Attachment> attachments = null, List<EmailAddress> ccList = null)
         {
             var emailMessage = new SendGridMessage();
             emailMessage.SetFrom(from);
@@ -276,6 +394,33 @@ namespace AppLensV3.Services.EmailNotificationService
 
             emailMessage.SetTemplateId(templateId);
             emailMessage.SetTemplateData(dynamicTemplateData);
+
+
+            string assemPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string filePath = Path.Combine(assemPath, @"LocalDevelopmentTemplate\applensbg.png");
+
+            //  string filePath = $@"{appDataFolder}\{Guid.NewGuid().ToString()}.png";
+            FileInfo fs = new FileInfo(filePath);
+            Byte[] imageArray = File.ReadAllBytes(fs.FullName);
+            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+
+            if (!string.IsNullOrWhiteSpace(base64ImageRepresentation))
+            {
+                Image img = new Image()
+                {
+                    Cid = "123123",
+                    ContentBase64Encoded = base64ImageRepresentation
+                };
+
+                emailMessage.AddAttachments(attachments);
+                emailMessage.AddAttachment($"{img.Cid}.png",
+                img.ContentBase64Encoded,
+                "image/jpeg",
+                "inline",
+                img.Cid);
+                //string imgTag = $@"<img src=cid:{img.Cid} />";
+                //monitoringSummary.Add("ApplensBg", imgTag);
+            }
 
             var response = await _sendGridClient.SendEmailAsync(emailMessage);
             return response;
@@ -299,6 +444,72 @@ namespace AppLensV3.Services.EmailNotificationService
             }
 
             return recipientsList;
+        }
+
+
+        internal async Task<List<Tuple<string, string, Image, Image>>> GetSupportTopicsTrends(List<Tuple<string, string, string, string>> supportTopicMappings)
+        {
+            try
+            {
+                List<string> deflectionTrendsTable = new List<string>() { "SupportProductionDeflectionWeeklyVer1023", "SupportProductionDeflectionMonthlyVer1023" };
+                List<Tuple<string, string, Image, Image>> result = new List<Tuple<string, string, Image, Image>>();
+                foreach (var supportTopicMapping in supportTopicMappings)
+                {
+                    string spId = supportTopicMapping.Item1;
+                    string pesId = supportTopicMapping.Item2;
+                    string supportTopicL2 = supportTopicMapping.Item3;
+                    string supportTopicL3 = supportTopicMapping.Item4;
+
+                    List<Image> images = new List<Image>();
+                    for (int i = 0; i < deflectionTrendsTable.Count; i++)
+                    {
+                        string trendQuery = _deflectionTrendQuery.Replace("{deflectionTableName}", deflectionTrendsTable[i]).Replace("{category}", supportTopicL2).Replace("{supportTopic}", supportTopicL3).Replace("{pesId}", pesId);
+                        var trendTask = this._kustoQueryService.ExecuteClusterQuery(trendQuery);
+                        DataTable trendTable = await trendTask;
+
+                        ChartGeneratorPostBody postBody = new ChartGeneratorPostBody();
+                        postBody.XAxis.Type = "string";
+                        postBody.XAxis.Name = i == 0 ? "Week" : "Month";
+                        postBody.YAxis.Type = "double";
+                        postBody.YAxis.Name = "Deflection(%)";
+
+                        foreach (DataRow row in trendTable.Rows)
+                        {
+                            postBody.XAxis.Values.Add(row["TimeStamp"]);
+                            postBody.YAxis.Values.Add(row["Deflection"]);
+                        }
+
+                        postBody.Chart.Color = new RGBColor(83, 186, 226);
+                        postBody.Chart.Height = 150;
+                        postBody.Chart.Width = 450;
+                        postBody.Chart.ChartType = "area";
+
+                        string chartContent = ChartClient.GetChartContent(postBody);
+                        if (!string.IsNullOrWhiteSpace(chartContent))
+                        {
+                            Image img = new Image()
+                            {
+                                Cid = spId+pesId+i.ToString(),
+                                ContentBase64Encoded = chartContent
+                            };
+                            images.Add(img);
+                        }
+                    }
+
+                    if (images.Count > 1)
+                    {
+                        result.Add(new Tuple<string, string, Image, Image>(supportTopicL2, supportTopicL3, images[0], images[1]));
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
+
+
         }
 
         public async Task SendEmail1(string alias, string detectorId, string link, List<EmailAddress> tos, string TemplateId = "d-436ddef95ff144f28d665e7faaf01a2f", string from = "applensv2team@microsoft.com")
@@ -347,7 +558,7 @@ namespace AppLensV3.Services.EmailNotificationService
             var dynamicTemplateData = new ExampleTemplateData
             {
                 DetectorId = detectorId,
-                Alias = alias,
+                Alias = "xipeng",
                 ApplensLink = link
             };
 
@@ -376,6 +587,43 @@ namespace AppLensV3.Services.EmailNotificationService
 
             [JsonProperty("MonitoringLink")]
             public string MonitoringLink { get; set; }
+
+
+            [JsonProperty("AnalyticsLink")]
+            public string AnalyticsLink { get; set; }
+
+            [JsonProperty("WeeklyDeflectionPercentage")]
+            public string WeeklyDeflectionPercentage { get; set; }
+
+            [JsonProperty("WeeklyNumerator")]
+            public string WeeklyNumerator { get; set; }
+
+            [JsonProperty("WeeklyDenominator")]
+            public string WeeklyDenominator { get; set; }
+
+            [JsonProperty("WeeklyDeflectionTimePeriod")]
+            public string WeeklyDeflectionTimePeriod { get; set; }
+
+            [JsonProperty("MonthlyDeflectionPercentage")]
+            public string MonthlyDeflectionPercentage { get; set; }
+
+            [JsonProperty("MonthlyNumerator")]
+            public string MonthlyNumerator { get; set; }
+
+            [JsonProperty("MonthlyDenominator")]
+            public string MonthlyDenominator { get; set; }
+
+            [JsonProperty("MonthlyDeflectionTimePeriod")]
+            public string MonthlyDeflectionTimePeriod { get; set; }
+
+            [JsonProperty("CriticalInsightsCoverage")]
+            public string CriticalInsightsCoverage { get; set; }
+
+            [JsonProperty("DetectorASCFeedback")]
+            public string DetectorASCFeedback { get; set; }
+
+            [JsonProperty("ApplensBg")]
+            public string ApplensBg { get; set; }
         }
 
         private class ExampleTemplateData

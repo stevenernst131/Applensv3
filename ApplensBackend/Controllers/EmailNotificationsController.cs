@@ -53,10 +53,10 @@ namespace AppLensV3.Controllers
                 bool.TryParse(Request.Headers["x-ms-internal-view"], out internalView);
             }
 
-            if (body == null)
-            {
-                return BadRequest();
-            }
+            //if (body == null)
+            //{
+            //    return BadRequest();
+            //}
 
             HttpResponseMessage response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);
             var weeklyMonitoringEmail = this._emailNotificationService.SendWeeklyMonitoringReport(response);
