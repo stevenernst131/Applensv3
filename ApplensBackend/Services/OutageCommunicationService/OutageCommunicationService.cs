@@ -118,19 +118,24 @@ namespace AppLensV3.Services
                 }
             }
 
-            if(impactedServiceComm != null)
-            {
-                // Found an Comm for the desired impacted service
-                return commsList;
-            }
+            /* 
+             * Purposefully commenting out below code section to not show too many comms to customer
+             * In future, if there is a scenario that requires us to show other services Comms too, then we can uncomment the following section
+             */
 
-            Communication otherComm = commsList.FirstOrDefault(p => !p.ImpactedServices.Any(q => q.Name.ToLower().Contains(impactedService.ToLower())));
+            //if(impactedServiceComm != null)
+            //{
+            //    // Found an Comm for the desired impacted service
+            //    return commsList;
+            //}
 
-            if (otherComm != null && (otherComm.Status == CommunicationStatus.Active || (otherComm.Status == CommunicationStatus.Resolved && ((currentTimeUTC - otherComm.PublishedTime) < _commAlertWindow))))
-            {
-                otherComm.IsAlert = true;
-                otherComm.IsExpanded = false;
-            }
+            //Communication otherComm = commsList.FirstOrDefault(p => !p.ImpactedServices.Any(q => q.Name.ToLower().Contains(impactedService.ToLower())));
+
+            //if (otherComm != null && (otherComm.Status == CommunicationStatus.Active || (otherComm.Status == CommunicationStatus.Resolved && ((currentTimeUTC - otherComm.PublishedTime) < _commAlertWindow))))
+            //{
+            //    otherComm.IsAlert = true;
+            //    otherComm.IsExpanded = false;
+            //}
 
             return commsList;
         }
