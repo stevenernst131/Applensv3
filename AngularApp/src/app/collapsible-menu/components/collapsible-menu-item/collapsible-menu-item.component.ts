@@ -1,5 +1,7 @@
-import { Component, Input, Pipe, PipeTransform} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { BehaviorSubject } from 'rxjs';
+import { SearchPipe } from '../../pipes/search.pipe';
 
 @Component({
   selector: 'collapsible-menu-item',
@@ -7,7 +9,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./collapsible-menu-item.component.css'],
   animations: [
     trigger('expand', [
-      state('shown' , style({ height: '*' })),
+      state('shown', style({ height: '*' })),
       state('hidden', style({ height: '0px' })),
       transition('* => *', animate('.1s'))
     ])
@@ -15,13 +17,33 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class CollapsibleMenuItemComponent {
 
+  private _searchValueSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private searchValueLocal: string;
+
   @Input() menuItem: CollapsibleMenuItem;
-
   @Input() level: number = 0;
+  @Input() set searchValue(value) {
+    this._searchValueSubject.next(value);
+  };
 
-  @Input() searchValue: string;
+  children: CollapsibleMenuItem[];
 
-  hasChildren : boolean;
+  hasChildren: boolean;
+  matchesSearchTerm: boolean = true;
+
+  constructor(private _searchPipe: SearchPipe) { }
+
+  ngOnInit() {
+
+    this.children = this.menuItem.subItems;
+    this.hasChildren = this.menuItem.subItems && this.menuItem.subItems.length > 0;
+
+    this._searchValueSubject.subscribe(searchValue => {
+      this.searchValueLocal = searchValue;
+      this.hasChildren = this.menuItem.subItems ? this._searchPipe.transform(this.menuItem.subItems, searchValue).length > 0 : false;
+      this.matchesSearchTerm = !this.searchValueLocal || this.menuItem.label.toLowerCase().indexOf(this.searchValueLocal.toLowerCase()) >= 0 || this.hasChildren;
+    });
+  }
 
   handleClick() {
     if (this.menuItem.subItems && this.menuItem.subItems.length > 0) {
@@ -56,19 +78,9 @@ export class CollapsibleMenuItem {
   constructor(label: string, onClick: Function, isSelected: Function, icon: string = null, expanded: boolean = false, subItems: CollapsibleMenuItem[] = []) {
     this.label = label;
     this.onClick = onClick;
-    this.expanded = expanded; 
+    this.expanded = expanded;
     this.subItems = subItems;
     this.isSelected = isSelected;
     this.icon = icon;
-  }
-}
-
-@Pipe({
-  name:'search',
-  pure: false
-})
-export class SearchPipe implements PipeTransform {
-  transform(items: CollapsibleMenuItem[], searchString: string) {
-    return searchString && items ? items.filter(item => item.label.toLowerCase().indexOf(searchString.toLowerCase()) >= 0): items;
   }
 }

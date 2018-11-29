@@ -4,7 +4,6 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment-timezone';
 import { TimeZones } from '../../../shared/models/datetime';
 import { Http } from '@angular/http';
-import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -17,13 +16,6 @@ export class MainComponent implements OnInit {
   selectedResourceType: ResourceTypeState;
   resourceName: string;
   resourceTypes: ResourceTypeState[] = [
-    {
-      resourceType: null,
-      routeName: () => 'srid',
-      displayName: 'Support Request ID',
-      enabled: true,
-      caseId: true
-    },
     {
       resourceType: ResourceType.Site,
       routeName: (name) => `sites/${name}`,
@@ -44,6 +36,13 @@ export class MainComponent implements OnInit {
       displayName: 'ARM Resource ID',
       enabled: true,
       caseId: false
+    },
+    {
+      resourceType: null,
+      routeName: () => 'srid',
+      displayName: 'Support Request ID',
+      enabled: true,
+      caseId: true
     }
   ];
 
@@ -56,7 +55,7 @@ export class MainComponent implements OnInit {
 
   inIFrame: boolean = false;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _authService: AuthService) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 
@@ -107,5 +106,4 @@ export class MainComponent implements OnInit {
 
     this._router.navigate([route], navigationExtras);
   }
-
 }
