@@ -15,6 +15,7 @@ import { AadAuthGuard } from './shared/auth/aad-auth-guard.service';
 import { LoginComponent } from './shared/components/login/login.component';
 import { AdalService, AdalGuard, AdalInterceptor } from 'adal-angular4';
 import { CustomUrlSerializerService } from './shared/services/custom-url-serializer.service';
+import { CasecleansingModule } from './modules/casecleansing/casecleansing.module';
 
 @Injectable()
 export class ValidResourceResolver implements Resolve<void>{
@@ -72,6 +73,10 @@ export const Routes = RouterModule.forRoot([
             path: 'subscriptions/:subscriptionId/resourceGroups/:resourceGroup/providers/:provider/:resourceTypeName/:resourceName',
             loadChildren: 'app/modules/dashboard/dashboard.module#DashboardModule',
             resolve: { validResources: ValidResourceResolver }
+          },
+          {
+            path: 'caseCleansing',
+            loadChildren: 'app/modules/casecleansing/casecleansing.module#CasecleansingModule'
           }
         ]
       }
