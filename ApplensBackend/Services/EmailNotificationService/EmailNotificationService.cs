@@ -160,7 +160,7 @@ namespace AppLensV3.Services.EmailNotificationService
         }
 
 
-        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string detectorId, List<Tuple<string, string, string, string>> supportTopicMappings, List<Tuple<string, string, Image, Image>> sptrends, DateTime startTime, DateTime endTime, string timeRange = "7d")
+        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string detectorId, List<Tuple<string, string, string, string>> supportTopicMappings, List<Tuple<string, string, Image, Image, string, string>> sptrends, DateTime startTime, DateTime endTime, string timeRange = "7d")
         {
             if (string.IsNullOrWhiteSpace(detectorId))
             {
@@ -173,102 +173,151 @@ namespace AppLensV3.Services.EmailNotificationService
                 Console.WriteLine(detectorId);
             }
 
-            Dictionary<string, string> monitoringSummary = new Dictionary<string, string>();
-            DateTime currentTimeUTC = DateTime.UtcNow;
 
-            string monitoringSummaryQuery = _monitoringSummaryQuery
-                .Replace("{timeRange}", timeRange)
-                .Replace("{detectorId}", detectorId);
-
-            List<string> deflectionSumTables = new List<string> { "SupportProductionDeflectionWeeklyVer1023", "SupportProductionDeflectionMonthlyVer1023" };
-
-            if (supportTopicMappings != null && supportTopicMappings.Count > 0)
+            try
             {
-                for (int i = 0; i < deflectionSumTables.Count; i++)
-                {
-                    double totalNumerator = 0;
-                    double totalDenominator = 0;
-                    double deflectionPercentage = 0;
-                    DateTime timePeriod = DateTime.UtcNow.AddMonths(-1);
+                Dictionary<string, string> monitoringSummary = new Dictionary<string, string>();
+                DateTime currentTimeUTC = DateTime.UtcNow;
 
-                    for (int j = 0; j < supportTopicMappings.Count; j++)
+                string monitoringSummaryQuery = _monitoringSummaryQuery
+                    .Replace("{timeRange}", timeRange)
+                    .Replace("{detectorId}", detectorId);
+
+                List<string> deflectionSumTables = new List<string> { "SupportProductionDeflectionWeeklyVer1023", "SupportProductionDeflectionMonthlyVer1023" };
+
+                double[] totalNumerator = new double[2];
+                double[] totalDenominator = new double[2];
+                double[] deflectionPercentage = new double[2];
+                DateTime[] datetime = new DateTime[2] { DateTime.UtcNow.AddDays(-7), DateTime.UtcNow.AddMonths(-1)};
+
+                DateTime timePeriod = DateTime.UtcNow.AddMonths(-1);
+                string htmlRows = string.Empty;
+                string htmlTable = @"<table style='font-family: arial, sans-serif; border-collapse: collapse; width: 90%; padding: 20px;'>
+                    <tr>
+                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Support Topic</th>
+                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;' >Deflection (Last Week)</th>
+                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Deflection (Last Month)</th>
+                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Weekly Deflection Trends</th>
+                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Monthly Deflection Trends</th>
+                    </tr>
+                    {Rows}
+                </table>";
+
+                for (int i = 0; i < supportTopicMappings.Count; i++)
+                {
+                    string pesId = supportTopicMappings[i].Item2;
+                    string supportTopicL2 = supportTopicMappings[i].Item3;
+                    string supportTopicL3 = supportTopicMappings[i].Item4;
+
+
+                    for (int j = 0; j < deflectionSumTables.Count; j++)
                     {
-                        string pesId = supportTopicMappings[j].Item2;
-                        string supportTopicL2 = supportTopicMappings[j].Item3;
-                        string supportTopicL3 = supportTopicMappings[j].Item4;
-                        string deflectionSumQuery = _totalDeflectionQuery.Replace("{deflectionTableName}", deflectionSumTables[0]).Replace("{category}", supportTopicL2).Replace("{supportTopic}", supportTopicL3).Replace("{pesId}", pesId);
+                        string deflectionSumQuery = _totalDeflectionQuery.Replace("{deflectionTableName}", deflectionSumTables[j]).Replace("{category}", supportTopicL2).Replace("{supportTopic}", supportTopicL3).Replace("{pesId}", pesId);
 
                         var deflectionSumTask = this._kustoQueryService.ExecuteClusterQuery(deflectionSumQuery);
                         var deflectionSumDataTable = await deflectionSumTask;
 
                         if (deflectionSumDataTable != null && deflectionSumDataTable.Rows != null && deflectionSumDataTable.Rows.Count > 0)
                         {
-                            totalNumerator += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Numerator"].ToString());
-                            totalDenominator += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Denominator"].ToString());
-                            timePeriod = DateTime.Parse(deflectionSumDataTable.Rows[0]["period"].ToString());
+                            totalNumerator[j] += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Numerator"].ToString());
+                            totalDenominator[j] += Convert.ToDouble(deflectionSumDataTable.Rows[0]["Denominator"].ToString());
+                            datetime[j] = DateTime.Parse(deflectionSumDataTable.Rows[0]["period"].ToString());
                         }
 
-                        List<Image> spImages = new List<Image>() { sptrends[j].Item3, sptrends[j].Item4 };
-                        foreach (var image in spImages)
-                        {
-                            Attachment imageAttachment = new Attachment();
-                            imageAttachment.Content = image.ContentBase64Encoded;
-                            imageAttachment.Filename = $"{image.Cid}.png";
-                            imageAttachment.ContentId = image.Cid;
-                            imageAttachment.Type = "image/jpeg";
-                            imageAttachment.Disposition = "inline";
+                     
 
-                            attachments.Add(imageAttachment);
-                        }                    
-
-                    //    monitoringSummary.Add(supportTopicL2+"/"+ supportTopicL3+"WeeklyTrends", sptrends[j].Item3.ToString());
-                    //    monitoringSummary.Add(supportTopicL2 + "/" + supportTopicL3 + "WeeklyTrends", sptrends[j].Item4);
                     }
 
-                    if (totalDenominator != 0)
+                    List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
+
+                    string imageTags = string.Empty;
+                    foreach (var image in spImages)
                     {
-                        deflectionPercentage = Math.Round(100.0 * totalNumerator / totalDenominator, 1);
+                        Attachment imageAttachment = new Attachment();
+                        imageAttachment.Content = image.ContentBase64Encoded;
+                        imageAttachment.Filename = $"{image.Cid}.png";
+                        imageAttachment.ContentId = image.Cid;
+                        imageAttachment.Type = "image/jpeg";
+                        imageAttachment.Disposition = "inline";
+
+                        attachments.Add(imageAttachment);
+                        imageTags += $@"
+                            <td style='border: 1px solid #dddddd; text-align: center; padding: 8px><img src=cid:{image.Cid} /></td>
+                            ";
+                    }
+
+
+                    string fullSupportTopic = supportTopicL2 + "/" + supportTopicL3;
+                    string supportTopicWeeklyDeflection = sptrends[i].Item5;
+                    string supportTopicMonthlyDeflection = sptrends[i].Item6;
+
+                    if (!String.IsNullOrWhiteSpace(imageTags))
+                    {
+                        htmlRows += $@"
+                            <tr>
+                                <td style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>{fullSupportTopic}</td>
+                                <td style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>{supportTopicWeeklyDeflection}</td>
+                                <td style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>{supportTopicMonthlyDeflection}</td>
+                                {imageTags}
+                            </tr>
+                            ";
+                    }
+                }
+
+                if (!String.IsNullOrWhiteSpace(htmlRows))
+                {
+                    monitoringSummary.Add("SupportTopicsTrends", htmlTable.Replace("{Rows}", htmlRows));
+                }
+
+                for (int i = 0; i < totalDenominator.Count(); i++)
+                {
+                    if (totalDenominator[i] != 0)
+                    {
+                        deflectionPercentage[i] = Math.Round(100.0 * totalNumerator[i] / totalDenominator[i], 1);
 
                         if (i == 0)
                         {
-                            monitoringSummary.Add("WeeklyDeflectionPercentage", deflectionPercentage.ToString());
-                            monitoringSummary.Add("WeeklyNumerator", totalNumerator.ToString());
-                            monitoringSummary.Add("WeeklyDenominator", totalDenominator.ToString());
-                            monitoringSummary.Add("WeeklyDeflectionTimePeriod", timePeriod.ToString());
+                            monitoringSummary.Add("WeeklyDeflectionPercentage", deflectionPercentage[i].ToString());
+                            monitoringSummary.Add("WeeklyNumerator", totalNumerator[i].ToString());
+                            monitoringSummary.Add("WeeklyDenominator", totalDenominator[i].ToString());
+                            monitoringSummary.Add("WeeklyDeflectionTimePeriod", datetime[i].ToString());
                         }
                         else
                         {
-                            monitoringSummary.Add("MonthlyDeflectionPercentage", deflectionPercentage.ToString());
-                            monitoringSummary.Add("MonthlyNumerator", totalNumerator.ToString());
-                            monitoringSummary.Add("MonthlyDenominator", totalDenominator.ToString());
-                            monitoringSummary.Add("MonthlyDeflectionTimePeriod", timePeriod.ToString());
+                            monitoringSummary.Add("MonthlyDeflectionPercentage", deflectionPercentage[i].ToString());
+                            monitoringSummary.Add("MonthlyNumerator", totalNumerator[i].ToString());
+                            monitoringSummary.Add("MonthlyDenominator", totalDenominator[i].ToString());
+                            monitoringSummary.Add("MonthlyDeflectionTimePeriod", datetime[i].ToString());
                         }
                     }
                 }
-            }
+               
+                var monitoringKustoQueryTask = this._kustoQueryService.ExecuteClusterQuery(monitoringSummaryQuery);
+
+                DataTable monitoringDataTable = await monitoringKustoQueryTask;
+
+                if (monitoringDataTable == null || monitoringDataTable.Rows == null || monitoringDataTable.Rows.Count == 0)
+                {
+                    return monitoringSummary;
+                }
+
+                // totalReqs = count(), failedReqs = countif(StatusCode>=500), avgLatency = avg(LatencyInMilliseconds), p90Latency = percentiles(LatencyInMilliseconds, 90)
+                monitoringSummary.Add("Availability", Convert.ToDouble(monitoringDataTable.Rows[0]["availability"]).ToString("0.00"));
+                monitoringSummary.Add("TotalRequests", Convert.ToDouble(monitoringDataTable.Rows[0]["totalReqs"]).ToString());
+                monitoringSummary.Add("FailedRequests", Convert.ToDouble(monitoringDataTable.Rows[0]["failedReqs"]).ToString());
+                monitoringSummary.Add("AverageLatency", Convert.ToDouble(monitoringDataTable.Rows[0]["avgLatency"]).ToString("0.00"));
+                monitoringSummary.Add("P90Latency", Convert.ToDouble(monitoringDataTable.Rows[0]["p90Latency"]).ToString("0.00"));
+                monitoringSummary.Add("MonitoringLink", monitoringDataTable.Rows[0]["MonitoringLink"].ToString());
+                monitoringSummary.Add("AnalyticsLink", monitoringDataTable.Rows[0]["AnalyticsLink"].ToString());
 
 
-            var monitoringKustoQueryTask = this._kustoQueryService.ExecuteClusterQuery(monitoringSummaryQuery);
-
-
-            DataTable monitoringDataTable = await monitoringKustoQueryTask;
-
-            if (monitoringDataTable == null || monitoringDataTable.Rows == null || monitoringDataTable.Rows.Count == 0)
-            {
                 return monitoringSummary;
             }
-
-            // totalReqs = count(), failedReqs = countif(StatusCode>=500), avgLatency = avg(LatencyInMilliseconds), p90Latency = percentiles(LatencyInMilliseconds, 90)
-            monitoringSummary.Add("Availability", Convert.ToDouble(monitoringDataTable.Rows[0]["availability"]).ToString("0.00"));
-            monitoringSummary.Add("TotalRequests", Convert.ToDouble(monitoringDataTable.Rows[0]["totalReqs"]).ToString());
-            monitoringSummary.Add("FailedRequests", Convert.ToDouble(monitoringDataTable.Rows[0]["failedReqs"]).ToString());
-            monitoringSummary.Add("AverageLatency", Convert.ToDouble(monitoringDataTable.Rows[0]["avgLatency"]).ToString("0.00"));
-            monitoringSummary.Add("P90Latency", Convert.ToDouble(monitoringDataTable.Rows[0]["p90Latency"]).ToString("0.00"));
-            monitoringSummary.Add("MonitoringLink", monitoringDataTable.Rows[0]["MonitoringLink"].ToString());
-            monitoringSummary.Add("AnalyticsLink", monitoringDataTable.Rows[0]["AnalyticsLink"].ToString());
-
-
-            return monitoringSummary;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
         }
 
         //public async Task<HttpResponseMessage> SendEmail(string method, string path, string body = null, bool internalView = true)
@@ -303,7 +352,7 @@ namespace AppLensV3.Services.EmailNotificationService
                         JArray supppotTopicList = (JArray)detectorMetadata["supportTopicList"];
 
                         List<Tuple<string, string, string, string>> supportTopicMappings = await GetSupportTopicList(supppotTopicList);
-                        List<Tuple<string, string, Image, Image>> sptrends = await GetSupportTopicsTrends(supportTopicMappings);
+                        List<Tuple<string, string, Image, Image, string, string>> sptrends = await GetSupportTopicsTrends(supportTopicMappings);
 
                         List<Attachment> attachments = new List<Attachment>();
                         for (int i = 0; i < supportTopicMappings.Count; i++)
@@ -337,7 +386,7 @@ namespace AppLensV3.Services.EmailNotificationService
                         Dictionary<string, string> monitoringDictionary = await GetMonitoringMetricsAsync(detectorId, supportTopicMappings, sptrends, new DateTime(), new DateTime());
 
 
-                       
+
 
                         var monitoringReportTemplateData = new MonitoringReportTemplateData
                         {
@@ -359,7 +408,9 @@ namespace AppLensV3.Services.EmailNotificationService
                             MonthlyDeflectionTimePeriod = monitoringDictionary.ContainsKey("MonthlyDeflectionTimePeriod") ? monitoringDictionary["MonthlyDeflectionTimePeriod"] : "N/A",
                             CriticalInsightsCoverage = "N/A",
                             DetectorASCFeedback = "N/A",
-                            ApplensBg = $@"<img src=cid:123123 width='900' height='53' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
+                            ApplensBg = $@"<img src=cid:123123 width='100%' height='53' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />",
+                            SupportTopicsTrends = monitoringDictionary.ContainsKey("SupportTopicsTrends") ? monitoringDictionary["SupportTopicsTrends"] : string.Empty
+
                         };
                         //$@"<img src=cid:123123 />"
                         //"<img src='https://www.sendwithus.com/assets/img/emailmonks/images/logo.png' width='230' height='80' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
@@ -447,18 +498,20 @@ namespace AppLensV3.Services.EmailNotificationService
         }
 
 
-        internal async Task<List<Tuple<string, string, Image, Image>>> GetSupportTopicsTrends(List<Tuple<string, string, string, string>> supportTopicMappings)
+        internal async Task<List<Tuple<string, string, Image, Image, string, string>>> GetSupportTopicsTrends(List<Tuple<string, string, string, string>> supportTopicMappings)
         {
             try
             {
                 List<string> deflectionTrendsTable = new List<string>() { "SupportProductionDeflectionWeeklyVer1023", "SupportProductionDeflectionMonthlyVer1023" };
-                List<Tuple<string, string, Image, Image>> result = new List<Tuple<string, string, Image, Image>>();
+                List<Tuple<string, string, Image, Image, string, string>> result = new List<Tuple<string, string, Image, Image, string, string>>();
                 foreach (var supportTopicMapping in supportTopicMappings)
                 {
                     string spId = supportTopicMapping.Item1;
                     string pesId = supportTopicMapping.Item2;
                     string supportTopicL2 = supportTopicMapping.Item3;
                     string supportTopicL3 = supportTopicMapping.Item4;
+                    string supportTopicWeeklyDeflection = string.Empty;
+                    string supportTopicMonthlyDeflection = string.Empty;
 
                     List<Image> images = new List<Image>();
                     for (int i = 0; i < deflectionTrendsTable.Count; i++)
@@ -479,7 +532,10 @@ namespace AppLensV3.Services.EmailNotificationService
                             postBody.YAxis.Values.Add(row["Deflection"]);
                         }
 
-                        postBody.Chart.Color = new RGBColor(83, 186, 226);
+
+                        // postBody.Chart.Color = new RGBColor(83, 186, 226); new RGBColor(176, 227, 153);
+
+                        postBody.Chart.Color = new RGBColor(188, 229, 170);
                         postBody.Chart.Height = 150;
                         postBody.Chart.Width = 450;
                         postBody.Chart.ChartType = "area";
@@ -494,11 +550,27 @@ namespace AppLensV3.Services.EmailNotificationService
                             };
                             images.Add(img);
                         }
+
+                        string supportTopicDeflection = string.Empty;
+                
+                        if (trendTable.Rows.Count > 1)
+                        {
+                            supportTopicDeflection = trendTable.Rows[trendTable.Rows.Count - 1]["Deflection"].ToString();
+                        }
+
+                        if (i == 0)
+                        {
+                            supportTopicWeeklyDeflection = supportTopicDeflection;
+                        }
+                        else
+                        {
+                            supportTopicMonthlyDeflection = supportTopicDeflection;
+                        }
                     }
 
                     if (images.Count > 1)
                     {
-                        result.Add(new Tuple<string, string, Image, Image>(supportTopicL2, supportTopicL3, images[0], images[1]));
+                        result.Add(new Tuple<string, string, Image, Image, string, string>(supportTopicL2, supportTopicL3, images[0], images[1], supportTopicWeeklyDeflection, supportTopicMonthlyDeflection));
                     }
                 }
                 return result;
@@ -624,7 +696,10 @@ namespace AppLensV3.Services.EmailNotificationService
 
             [JsonProperty("ApplensBg")]
             public string ApplensBg { get; set; }
-        }
+
+            [JsonProperty("SupportTopicsTrends")]
+            public string SupportTopicsTrends { get; set; }
+}
 
         private class ExampleTemplateData
         {
