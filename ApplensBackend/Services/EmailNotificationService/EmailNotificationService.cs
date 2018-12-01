@@ -156,7 +156,7 @@ namespace AppLensV3.Services.EmailNotificationService
             {
                 throw ex;
             }
-          
+
         }
 
 
@@ -167,7 +167,7 @@ namespace AppLensV3.Services.EmailNotificationService
                 throw new ArgumentNullException("detectorId");
             }
 
-             List<Attachment> attachments = new List<Attachment>();
+            List<Attachment> attachments = new List<Attachment>();
             if (detectorId.Contains("backup"))
             {
                 Console.WriteLine(detectorId);
@@ -188,11 +188,13 @@ namespace AppLensV3.Services.EmailNotificationService
                 double[] totalNumerator = new double[2];
                 double[] totalDenominator = new double[2];
                 double[] deflectionPercentage = new double[2];
-                DateTime[] datetime = new DateTime[2] { DateTime.UtcNow.AddDays(-7), DateTime.UtcNow.AddMonths(-1)};
+                DateTime[] datetime = new DateTime[2] { DateTime.UtcNow.AddDays(-7), DateTime.UtcNow.AddMonths(-1) };
 
                 DateTime timePeriod = DateTime.UtcNow.AddMonths(-1);
                 string htmlRows = string.Empty;
-                string htmlTable = @"<table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
+                string htmlRows1 = string.Empty;
+                string htmlTable = @"
+                <!--table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
                     <tr>
                         <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Support Topic</th>
                         <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;' >Deflection (Last Week)</th>
@@ -201,6 +203,12 @@ namespace AppLensV3.Services.EmailNotificationService
                         <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Monthly Deflection Trends</th>
                     </tr>
                     {Rows}
+                </table-->
+                 <table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
+                    <tr><td height = '35' class='em_height'>&nbsp;</td></tr>
+                    <tr><td style='align: left; valign: middle; height: 45; font-size:17px; font-weight:bold;'><span> Deflection Analytics by Support Topic</span></td></tr>
+                    <tr><td height = '35' class='em_height'>&nbsp;</td></tr>
+                    {Rows1}
                 </table>";
 
                 //string htmlTable = @"<table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
@@ -228,13 +236,14 @@ namespace AppLensV3.Services.EmailNotificationService
                             datetime[j] = DateTime.Parse(deflectionSumDataTable.Rows[0]["period"].ToString());
                         }
 
-                     
+
 
                     }
 
                     List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
 
                     string imageTags = string.Empty;
+                    string imageTags1= string.Empty;
                     foreach (var image in spImages)
                     {
                         Attachment imageAttachment = new Attachment();
@@ -248,10 +257,15 @@ namespace AppLensV3.Services.EmailNotificationService
                         imageTags += $@"
                             <td style='border: 1px solid #dddddd; text-align: left; padding: 8px'><img src=cid:{image.Cid} /></td>
                             ";
+
+                        imageTags1 += $@"
+                            <td style='border: 1px solid #dddddd; text-align: center; width: 50% ;padding: 8px'><img src=cid:{image.Cid} /></td>
+                            ";
                     }
 
 
                     string fullSupportTopic = supportTopicL2 + "/" + supportTopicL3;
+                    string fullSupportTopic1 = supportTopicL2 + " - " + supportTopicL3;
                     string supportTopicWeeklyDeflection = sptrends[i].Item5;
                     string supportTopicMonthlyDeflection = sptrends[i].Item6;
 
@@ -266,6 +280,27 @@ namespace AppLensV3.Services.EmailNotificationService
                             </tr>
                             ";
 
+                        htmlRows1 += $@"
+                            <tr bgcolor='#f6f7f8'><td height = '8' class='em_height'>&nbsp;</td><td height = '8' class='em_height'>&nbsp;</td></tr>
+                            <tr bgcolor='#f6f7f8'>
+                                <td bgcolor='#f6f7f8' style='text-align: left; padding: 8px;'><span style ='font-weight: bold; color:#427ca7'>{fullSupportTopic1}</span>&nbsp; &nbsp; </td>
+                                <td bgcolor='#f6f7f8'>&nbsp;</td>
+                             </tr>
+                           <tr bgcolor='#f6f7f8'>
+                           <td style='text-align: cernter; padding: 8px;'>Last Week Deflection: <span style='font-weight:bold'> {supportTopicWeeklyDeflection}% &nbsp; &nbsp;</span> Last Month Deflection: <span style='font-weight:bold'>  {supportTopicMonthlyDeflection}% </span></td>
+                            <td style='text-align: center; padding: 8px;'> &nbsp;</td>
+                            </tr>
+                            <tr bgcolor='#f6f7f8'><td height = '28' class='em_height'>&nbsp;</td></tr>
+                            <tr bgcolor='#f6f7f8' style='font-weight:bold'>
+                                <td style='border: 1px solid #dddddd; text-align: center; padding: 8px;'>Weekly Deflection Trend</td>
+                                <td style='border: 1px solid #dddddd; text-align: center; padding: 8px;'>Monthly Deflection Trend</td>
+                            </tr>
+                            <tr bgcolor='#f6f7f8'>
+                                {imageTags1}
+                            </tr>
+                            <tr><td height = '20' class='em_height'>&nbsp;</td></tr>
+                            ";
+
                         //htmlRows += $@"
                         //        {imageTags}
                         //    ";
@@ -274,7 +309,8 @@ namespace AppLensV3.Services.EmailNotificationService
 
                 if (!String.IsNullOrWhiteSpace(htmlRows))
                 {
-                    monitoringSummary.Add("SupportTopicsTrends", htmlTable.Replace("{Rows}", htmlRows));
+                    monitoringSummary.Add("SupportTopicsTrends", htmlTable.Replace("{Rows}", htmlRows).Replace("{Rows1}", htmlRows1));
+
                 }
 
                 for (int i = 0; i < totalDenominator.Count(); i++)
@@ -299,7 +335,7 @@ namespace AppLensV3.Services.EmailNotificationService
                         }
                     }
                 }
-               
+
                 var monitoringKustoQueryTask = this._kustoQueryService.ExecuteClusterQuery(monitoringSummaryQuery);
 
                 DataTable monitoringDataTable = await monitoringKustoQueryTask;
@@ -325,7 +361,7 @@ namespace AppLensV3.Services.EmailNotificationService
             {
                 throw ex;
             }
-           
+
         }
 
         //public async Task<HttpResponseMessage> SendEmail(string method, string path, string body = null, bool internalView = true)
@@ -554,14 +590,14 @@ namespace AppLensV3.Services.EmailNotificationService
                         {
                             Image img = new Image()
                             {
-                                Cid = spId+pesId+i.ToString(),
+                                Cid = spId + pesId + i.ToString(),
                                 ContentBase64Encoded = chartContent
                             };
                             images.Add(img);
                         }
 
                         string supportTopicDeflection = string.Empty;
-                
+
                         if (trendTable.Rows.Count > 1)
                         {
                             supportTopicDeflection = trendTable.Rows[trendTable.Rows.Count - 1]["Deflection"].ToString();
@@ -705,7 +741,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
             [JsonProperty("SupportTopicsTrends")]
             public string SupportTopicsTrends { get; set; }
-}
+        }
 
         private class ExampleTemplateData
         {
