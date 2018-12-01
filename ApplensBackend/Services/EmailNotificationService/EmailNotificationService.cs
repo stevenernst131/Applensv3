@@ -207,7 +207,7 @@ namespace AppLensV3.Services.EmailNotificationService
                  <table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
                     <tr><td height = '35' class='em_height'>&nbsp;</td></tr>
                     <tr><td style='align: left; valign: middle; height: 45; font-size:17px; font-weight:bold;'><span> Deflection Analytics by Support Topic</span></td></tr>
-                    <tr><td height = '35' class='em_height'>&nbsp;</td></tr>
+                    <tr><td height = '25' class='em_height'>&nbsp;</td></tr>
                     {Rows1}
                 </table>";
 
@@ -217,6 +217,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
                 for (int i = 0; i < supportTopicMappings.Count; i++)
                 {
+                    string spId = supportTopicMappings[i].Item1;
                     string pesId = supportTopicMappings[i].Item2;
                     string supportTopicL2 = supportTopicMappings[i].Item3;
                     string supportTopicL3 = supportTopicMappings[i].Item4;
@@ -265,6 +266,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
 
                     string fullSupportTopic = supportTopicL2 + "/" + supportTopicL3;
+                    string supportTopicId = "[" + spId + "] ";
                     string fullSupportTopic1 = supportTopicL2 + " - " + supportTopicL3;
                     string supportTopicWeeklyDeflection = sptrends[i].Item5;
                     string supportTopicMonthlyDeflection = sptrends[i].Item6;
@@ -283,7 +285,7 @@ namespace AppLensV3.Services.EmailNotificationService
                         htmlRows1 += $@"
                             <tr bgcolor='#f6f7f8'><td height = '8' class='em_height'>&nbsp;</td><td height = '8' class='em_height'>&nbsp;</td></tr>
                             <tr bgcolor='#f6f7f8'>
-                                <td bgcolor='#f6f7f8' style='text-align: left; padding: 8px;'><span style ='font-weight: bold; color:#427ca7'>{fullSupportTopic1}</span>&nbsp; &nbsp; </td>
+                                <td bgcolor='#f6f7f8' style='text-align: left; padding: 8px;'><span style ='font-weight: bold;color:#427ca7'>{fullSupportTopic1}</span>&nbsp; &nbsp; </td>
                                 <td bgcolor='#f6f7f8'>&nbsp;</td>
                              </tr>
                            <tr bgcolor='#f6f7f8'>
