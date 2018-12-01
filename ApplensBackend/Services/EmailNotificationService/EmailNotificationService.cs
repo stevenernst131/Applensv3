@@ -192,7 +192,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
                 DateTime timePeriod = DateTime.UtcNow.AddMonths(-1);
                 string htmlRows = string.Empty;
-                string htmlTable = @"<table style='font-family: arial, sans-serif; border-collapse: collapse; width: 90%; padding: 20px;'>
+                string htmlTable = @"<table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
                     <tr>
                         <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Support Topic</th>
                         <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;' >Deflection (Last Week)</th>
@@ -202,6 +202,10 @@ namespace AppLensV3.Services.EmailNotificationService
                     </tr>
                     {Rows}
                 </table>";
+
+                //string htmlTable = @"<table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
+                //    {Rows}
+                //</table>";
 
                 for (int i = 0; i < supportTopicMappings.Count; i++)
                 {
@@ -242,7 +246,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
                         attachments.Add(imageAttachment);
                         imageTags += $@"
-                            <td style='border: 1px solid #dddddd; text-align: center; padding: 8px><img src=cid:{image.Cid} /></td>
+                            <td style='border: 1px solid #dddddd; text-align: left; padding: 8px'><img src=cid:{image.Cid} /></td>
                             ";
                     }
 
@@ -261,6 +265,10 @@ namespace AppLensV3.Services.EmailNotificationService
                                 {imageTags}
                             </tr>
                             ";
+
+                        //htmlRows += $@"
+                        //        {imageTags}
+                        //    ";
                     }
                 }
 
@@ -428,6 +436,7 @@ namespace AppLensV3.Services.EmailNotificationService
             }
             catch (Exception ex)
             {
+
                 throw ex;
             }
         }
@@ -535,10 +544,10 @@ namespace AppLensV3.Services.EmailNotificationService
 
                         // postBody.Chart.Color = new RGBColor(83, 186, 226); new RGBColor(176, 227, 153);
 
-                        postBody.Chart.Color = new RGBColor(188, 229, 170);
+                        postBody.Chart.Color = new RGBColor(83, 186, 226);
                         postBody.Chart.Height = 150;
                         postBody.Chart.Width = 450;
-                        postBody.Chart.ChartType = "area";
+                        postBody.Chart.ChartType = "column";
 
                         string chartContent = ChartClient.GetChartContent(postBody);
                         if (!string.IsNullOrWhiteSpace(chartContent))
@@ -579,9 +588,6 @@ namespace AppLensV3.Services.EmailNotificationService
             {
                 throw ex;
             }
-           
-
-
         }
 
         public async Task SendEmail1(string alias, string detectorId, string link, List<EmailAddress> tos, string TemplateId = "d-436ddef95ff144f28d665e7faaf01a2f", string from = "applensv2team@microsoft.com")
