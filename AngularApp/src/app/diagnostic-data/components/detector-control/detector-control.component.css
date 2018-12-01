@@ -8,26 +8,28 @@
 }
 
 .control-group > .control:last-child {
-    border-right: 1px solid #5d6f98;
+    border-right: 1px solid #2e6fa8;
 }
 
 .control {
     padding: 4px 6px;
     background-color: white;
-    border: 1px solid #5d6f98;
+    border: 1px solid #2e6fa8;
     border-right: none;
-    color: #5d6f98;
+    color: #337ab7;
     cursor: pointer;
 }
 
 .control-selected {
-    background-color: #7287b7;
+    background-color: #0078d4;
+    /* background-color: #337ab7; */
     color: white;
 }
 
 .control-static {
     cursor: default;
-    background-color: #eef2fd;
+    background-color: #f5f5f5;
+    color: #345877;
 }
 
 .outer-container {
