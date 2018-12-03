@@ -10,13 +10,17 @@
 .content-header>h1 {
     margin: 0;
     font-size: 24px;
+    font-weight: 400;
 }
 
 .content-header>h1>small {
     font-size: 15px;
-    display: inline-block;
     padding-left: 4px;
     font-weight: 300;
+}
+
+.description {
+    color: #666;
 }
 
 .content-header {

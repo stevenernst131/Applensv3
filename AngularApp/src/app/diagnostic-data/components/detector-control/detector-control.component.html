@@ -29,11 +29,11 @@
 
     <div class="control-group">
       <div class="control date-control">
-        <input class="date-input" [(ngModel)]="startTime" (keyup.enter)="setManualDate()" />
+        <input class="date-input" aria-label="Start Time" [(ngModel)]="startTime" (keyup.enter)="setManualDate()" />
       </div>
 
       <div class="control date-control">
-        <input class="date-input" [(ngModel)]="endTime" (keyup.enter)="setManualDate()" />
+        <input class="date-input" aria-label="End Time" [(ngModel)]="endTime" (keyup.enter)="setManualDate()" />
       </div>
       <div class="control control-static">
         UTC

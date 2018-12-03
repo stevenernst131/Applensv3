@@ -3,8 +3,9 @@
     <section class="content-header">
       <h1 *ngIf="!isSystemInvoker">
         <span *ngIf="!insideDetectorList">{{detectorDataLocalCopy.metadata.name}}</span>
-        <small>{{detectorDataLocalCopy.metadata.description}}</small>
+        
       </h1>
+      <div class="description">{{detectorDataLocalCopy.metadata.description}}</div>
       <section *ngIf="!isPublic">
         <div class="description col-md-3" style="padding-left:0">By
           <span style="padding:2px; color: #0066c0;">
