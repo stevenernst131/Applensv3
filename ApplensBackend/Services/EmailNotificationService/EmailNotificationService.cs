@@ -14,6 +14,7 @@ using System.IO;
 using System.Reflection;
 using AppLensV3.Models;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace AppLensV3.Services.EmailNotificationService
 {
@@ -73,6 +74,108 @@ namespace AppLensV3.Services.EmailNotificationService
         | sort by Timestamp asc
         ";
 
+        private string _ascRatingQuery = @"
+        cluster('azsc').database('ascmds').InsightTelemetryEvent
+    | where insightCategory =~ '{detectorName}'
+    | where env_time >= ago({timeRange})
+    | where telemetryType == 'InsightFeedback' and env_cloud_environment == 'Prod'
+    | project env_time, callerIdentity, srId,  insightTitle, insightType, insightCategory, insightImpactedResources, insightUseful, insightComment
+    | summarize total = count(), usefulCount = countif(insightUseful =~ 'true')
+    | extend detectorEffectiveness = usefulCount*100.0/total
+";
+        private string _ascRatingCommentsQuery = @"
+        cluster('azsc').database('ascmds').InsightTelemetryEvent
+    | where insightCategory =~ '{detectorName}'
+    | where env_time >= ago({timeRange})
+    | where telemetryType == 'InsightFeedback' and env_cloud_environment == 'Prod' and insightComment != ''
+    | project env_time, callerIdentity, srId,  insightTitle, insightType, insightCategory, insightImpactedResources, insightUseful, insightComment
+";
+
+        private async Task<string> GetASCRatingHtmlTable (string detectorName)
+        {
+            string ascRatingHtml = @"
+                <td bgcolor='#ffffff' align='center' width='40%' valign='middle' class='em_font1' height='220' style='bgcolor:#ffffff; font-family:'Open Sans', Arial, sans-serif; font-size:17px; '>
+                    <p>
+                        <span style='color:#ee5151; font-size:30px; font-weight:bold'>                
+                        {ratingStarTableCell}
+                        </span>
+                    </p>
+                    {ratingPercentageHtml}
+                    <p><span style='color:dimgray; font-size:12px; font-weight:initial'>Azure Support Center Rating </span>
+                    </p>
+                </td>";
+
+            string ratingStarTableCell = @"";
+            string ratingPercentageHtml = @"";
+
+            string timeRange = "7d";
+
+            string ascRatingQueryString = _ascRatingQuery
+                .Replace("{detectorName}", detectorName)
+                .Replace("{timeRange}", timeRange);
+
+            var ascRatingQueryTask = _kustoQueryService.ExecuteClusterQuery(ascRatingQueryString);
+            DataTable ascRatingSumTable = await ascRatingQueryTask;
+
+
+            int solidStarNum = 0;
+            int halfStarNum = 0;
+            int emptyStarNum = 5;
+
+            string effectiveness = "";
+            string ratingFraction = "No new feedbacks from last week";
+            string newFlag = "";
+
+            if (ascRatingSumTable.Rows.Count > 0 && ascRatingSumTable.Rows[0]["total"].ToString() != "0")
+            {
+                effectiveness = decimal.Parse(ascRatingSumTable.Rows[0]["detectorEffectiveness"].ToString()).ToString("0.00");
+                double rating = double.Parse(effectiveness, CultureInfo.InvariantCulture);
+
+                ratingFraction =  "(" + ascRatingSumTable.Rows[0]["usefulCount"] + "/" + ascRatingSumTable.Rows[0]["total"].ToString() + ")";
+                effectiveness += "%";
+                newFlag = "new";
+
+
+                solidStarNum = Convert.ToInt32(rating / 20);
+                halfStarNum = Convert.ToInt32(rating % 20) >= 10 ? 1 : 0;
+                emptyStarNum = 5 - solidStarNum - halfStarNum;
+            }
+
+
+            string solidStar = "solidStar";
+            for (int i = 0; i < solidStarNum; i++)
+            {
+                ratingStarTableCell += $@"
+                        <img width='40' src='cid:{solidStar}' />
+                        ";
+            }
+
+                
+            for (int i = 0; i < halfStarNum; i++)
+            {
+                ratingStarTableCell += $@"
+                        <img width='40' src='cid:halfSolidStar' />
+                        ";
+            }
+
+            for (int i = 0; i < emptyStarNum; i++)
+            {
+                ratingStarTableCell += $@"
+                        <img width='40' src='cid:emptyStar' />
+                        ";
+            }
+
+            ratingPercentageHtml += $@"
+                <p style='font-size:18px; font-weight:bold'>
+                    {effectiveness}
+                <span style='font-size:12px; font-weight:initial'>{ratingFraction} &nbsp;<span style='color:red; font-style:italic'>{newFlag}</span>
+                </p>
+            ";
+
+
+            return ascRatingHtml.Replace("{ratingStarTableCell}", ratingStarTableCell).Replace("{ratingPercentageHtml}", ratingPercentageHtml);
+        }
+
         private SendGridClient _sendGridClient { get; set; }
 
         public string SendGridApiKey
@@ -94,18 +197,6 @@ namespace AppLensV3.Services.EmailNotificationService
         private SendGridClient InitializeClient()
         {
             var sendGridClient = new SendGridClient(SendGridApiKey);
-            //var handler = new HttpClientHandler();
-
-            //var client = new HttpClient(handler)
-            //{
-            //    BaseAddress = new Uri("https://api.sendgrid.com/v3/mail/send"),
-            //    Timeout = TimeSpan.FromSeconds(5 * 60),
-            //    MaxResponseContentBufferSize = Int32.MaxValue
-            //};
-
-            //client.DefaultRequestHeaders.Add("content-type", "application/json");
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             return sendGridClient;
         }
 
@@ -160,19 +251,19 @@ namespace AppLensV3.Services.EmailNotificationService
         }
 
 
-        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string detectorId, List<Tuple<string, string, string, string>> supportTopicMappings, List<Tuple<string, string, Image, Image, string, string>> sptrends, DateTime startTime, DateTime endTime, string timeRange = "7d")
+        public async Task<Dictionary<string, string>> GetMonitoringMetricsAsync(string detectorId, string detectorName, List<Tuple<string, string, string, string>> supportTopicMappings, List<Tuple<string, string, Image, Image, string, string>> sptrends, DateTime startTime, DateTime endTime, string timeRange = "7d")
         {
             if (string.IsNullOrWhiteSpace(detectorId))
             {
                 throw new ArgumentNullException("detectorId");
             }
 
-            List<Attachment> attachments = new List<Attachment>();
-            if (detectorId.Contains("backup"))
+            if (detectorId.Contains("backup") )
             {
-                Console.WriteLine(detectorId);
+             //  Console.WriteLine(detectorId);
             }
 
+            Console.WriteLine(detectorId);
 
             try
             {
@@ -194,16 +285,6 @@ namespace AppLensV3.Services.EmailNotificationService
                 string htmlRows = string.Empty;
                 string htmlRows1 = string.Empty;
                 string htmlTable = @"
-                <!--table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
-                    <tr>
-                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Support Topic</th>
-                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;' >Deflection (Last Week)</th>
-                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Deflection (Last Month)</th>
-                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Weekly Deflection Trends</th>
-                        <th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Monthly Deflection Trends</th>
-                    </tr>
-                    {Rows}
-                </table-->
                  <table style='font-family: arial, sans-serif; border-collapse: collapse; width: 100%; padding: 0px;'>
                     <tr><td height = '35' class='em_height'>&nbsp;</td></tr>
                     <tr><td style='align: left; valign: middle; height: 45; font-size:17px; font-weight:bold;'><span> Deflection Analytics by Support Topic</span></td></tr>
@@ -237,8 +318,6 @@ namespace AppLensV3.Services.EmailNotificationService
                             datetime[j] = DateTime.Parse(deflectionSumDataTable.Rows[0]["period"].ToString());
                         }
 
-
-
                     }
 
                     List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
@@ -247,26 +326,26 @@ namespace AppLensV3.Services.EmailNotificationService
                     string imageTags1= string.Empty;
                     foreach (var image in spImages)
                     {
-                        Attachment imageAttachment = new Attachment();
-                        imageAttachment.Content = image.ContentBase64Encoded;
-                        imageAttachment.Filename = $"{image.Cid}.png";
-                        imageAttachment.ContentId = image.Cid;
-                        imageAttachment.Type = "image/jpeg";
-                        imageAttachment.Disposition = "inline";
+                        //Attachment imageAttachment = new Attachment();
+                        //imageAttachment.Content = image.ContentBase64Encoded;
+                        //imageAttachment.Filename = $"{image.Cid}.png";
+                        //imageAttachment.ContentId = image.Cid;
+                        //imageAttachment.Type = "image/jpeg";
+                        //imageAttachment.Disposition = "inline";
 
-                        attachments.Add(imageAttachment);
+                        //attachments.Add(imageAttachment);
                         imageTags += $@"
-                            <td style='border: 1px solid #dddddd; text-align: left; padding: 8px'><img src=cid:{image.Cid} /></td>
+                            <td style='border: 1px solid #dddddd; text-align: left; padding: 8px'><img src='cid:{image.Cid}' /></td>
                             ";
 
                         imageTags1 += $@"
-                            <td style='border: 1px solid #dddddd; text-align: center; width: 50% ;padding: 8px'><img src=cid:{image.Cid} /></td>
+                            <td style='border: 1px solid #dddddd; text-align: center; width: 50% ;padding: 8px'><img src='cid:{image.Cid}' /></td>
                             ";
                     }
 
 
                     string fullSupportTopic = supportTopicL2 + "/" + supportTopicL3;
-                    string supportTopicId = "[" + spId + "] ";
+                    string fullSupportTopicId = "[" + pesId + "-" + spId + "] ";
                     string fullSupportTopic1 = supportTopicL2 + " - " + supportTopicL3;
                     string supportTopicWeeklyDeflection = sptrends[i].Item5;
                     string supportTopicMonthlyDeflection = sptrends[i].Item6;
@@ -285,11 +364,11 @@ namespace AppLensV3.Services.EmailNotificationService
                         htmlRows1 += $@"
                             <tr bgcolor='#f6f7f8'><td height = '8' class='em_height'>&nbsp;</td><td height = '8' class='em_height'>&nbsp;</td></tr>
                             <tr bgcolor='#f6f7f8'>
-                                <td bgcolor='#f6f7f8' style='text-align: left; padding: 8px;'><span style ='font-weight: bold;color:#427ca7'>{fullSupportTopic1}</span>&nbsp; &nbsp; </td>
+                                <td bgcolor='#f6f7f8' style='text-align: left; padding: 8px;'><span style ='font-weight: bold; font-size: 16px; color:#427ca7'><p style='color:black'>{fullSupportTopicId}</p><p>{fullSupportTopic1}</p></span>&nbsp; &nbsp; </td>
                                 <td bgcolor='#f6f7f8'>&nbsp;</td>
                              </tr>
                            <tr bgcolor='#f6f7f8'>
-                           <td style='text-align: cernter; padding: 8px;'>Last Week Deflection: <span style='font-weight:bold'> {supportTopicWeeklyDeflection}% &nbsp; &nbsp;</span> Last Month Deflection: <span style='font-weight:bold'>  {supportTopicMonthlyDeflection}% </span></td>
+                           <td style='text-align: cernter; padding: 8px;'>Last Week Deflection: <span style='font-weight:bold; color:#3118ef'> {supportTopicWeeklyDeflection}% &nbsp; &nbsp;</span> Last Month Deflection: <span style='font-weight:bold; color:#3118ef'>  {supportTopicMonthlyDeflection}% </span></td>
                             <td style='text-align: center; padding: 8px;'> &nbsp;</td>
                             </tr>
                             <tr bgcolor='#f6f7f8'><td height = '28' class='em_height'>&nbsp;</td></tr>
@@ -312,8 +391,10 @@ namespace AppLensV3.Services.EmailNotificationService
                 if (!String.IsNullOrWhiteSpace(htmlRows))
                 {
                     monitoringSummary.Add("SupportTopicsTrends", htmlTable.Replace("{Rows}", htmlRows).Replace("{Rows1}", htmlRows1));
-
                 }
+
+                string ascStarRatingHtml = await GetASCRatingHtmlTable(detectorName);
+                monitoringSummary.Add("AscStarRatingHtml", ascStarRatingHtml);
 
                 for (int i = 0; i < totalDenominator.Count(); i++)
                 {
@@ -356,7 +437,6 @@ namespace AppLensV3.Services.EmailNotificationService
                 monitoringSummary.Add("MonitoringLink", monitoringDataTable.Rows[0]["MonitoringLink"].ToString());
                 monitoringSummary.Add("AnalyticsLink", monitoringDataTable.Rows[0]["AnalyticsLink"].ToString());
 
-
                 return monitoringSummary;
             }
             catch (Exception ex)
@@ -390,32 +470,39 @@ namespace AppLensV3.Services.EmailNotificationService
                     JArray responseObjects = JArray.Parse(responseString);
                     foreach (var detectorObject in responseObjects)
                     {
-                        //  Console.WriteLine(detectorObject);
                         JObject detectorMetadata = (JObject)detectorObject["metadata"];
                         string detectorId = detectorMetadata["id"].ToString();
+                        string detectorName = detectorMetadata["name"].ToString();
                         string author = detectorMetadata["author"].ToString();
                         // List<string> supppotTopicList = JsonConvert.DeserializeObject<List<string>>(detectorMetadata["supportTopicList"].ToString());
                         JArray supppotTopicList = (JArray)detectorMetadata["supportTopicList"];
 
+                        if (detectorId.Contains("swap"))
+                        {
+                            Console.WriteLine(detectorId);
+                        }
+
                         List<Tuple<string, string, string, string>> supportTopicMappings = await GetSupportTopicList(supppotTopicList);
                         List<Tuple<string, string, Image, Image, string, string>> sptrends = await GetSupportTopicsTrends(supportTopicMappings);
 
-                        List<Attachment> attachments = new List<Attachment>();
-                        for (int i = 0; i < supportTopicMappings.Count; i++)
-                        {
-                            List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
-                            foreach (var image in spImages)
-                            {
-                                Attachment imageAttachment = new Attachment();
-                                imageAttachment.Content = image.ContentBase64Encoded;
-                                imageAttachment.Filename = $"{image.Cid}.png";
-                                imageAttachment.ContentId = image.Cid;
-                                imageAttachment.Type = "image/jpeg";
-                                imageAttachment.Disposition = "inline";
+                       
 
-                                attachments.Add(imageAttachment);
-                            }
-                        }
+                        List<Attachment> attachments = GetImagesAttachments(sptrends);
+                        //for (int i = 0; i < supportTopicMappings.Count; i++)
+                        //{
+                        //    List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
+                        //    foreach (var image in spImages)
+                        //    {
+                        //        Attachment imageAttachment = new Attachment();
+                        //        imageAttachment.Content = image.ContentBase64Encoded;
+                        //        imageAttachment.Filename = $"{image.Cid}.png";
+                        //        imageAttachment.ContentId = image.Cid;
+                        //        imageAttachment.Type = "image/jpeg";
+                        //        imageAttachment.Disposition = "inline";
+
+                        //        attachments.Add(imageAttachment);
+                        //    }
+                        //}
 
                         string monitoringTemplateId = "d-2897fa12011e4ffab5188451a94f681d";
                         EmailAddress from = new EmailAddress("applensv2team@microsoft.com", "Applens Notification");
@@ -427,12 +514,9 @@ namespace AppLensV3.Services.EmailNotificationService
                         }
 
                         List<EmailAddress> authorList = FormatRecipients(author);
-                        List<EmailAddress> ccList = new List<EmailAddress> { new EmailAddress("applesnsv2team@microsoft.com", "Applens Notification") };
+                        List<EmailAddress> ccList = new List<EmailAddress> { new EmailAddress("applensv2team@microsoft.com", "Applens Notification") };
 
-                        Dictionary<string, string> monitoringDictionary = await GetMonitoringMetricsAsync(detectorId, supportTopicMappings, sptrends, new DateTime(), new DateTime());
-
-
-
+                        Dictionary<string, string> monitoringDictionary = await GetMonitoringMetricsAsync(detectorId, detectorName, supportTopicMappings, sptrends, new DateTime(), new DateTime());
 
                         var monitoringReportTemplateData = new MonitoringReportTemplateData
                         {
@@ -444,27 +528,28 @@ namespace AppLensV3.Services.EmailNotificationService
                             AverageLatency = monitoringDictionary["AverageLatency"],
                             MonitoringLink = monitoringDictionary["MonitoringLink"],
                             AnalyticsLink = monitoringDictionary["AnalyticsLink"],
-                            WeeklyDeflectionPercentage = monitoringDictionary.ContainsKey("WeeklyDeflectionPercentage") ? monitoringDictionary["WeeklyDeflectionPercentage"] : "N/A",
+                            WeeklyDeflectionPercentage = monitoringDictionary.ContainsKey("WeeklyDeflectionPercentage") ? monitoringDictionary["WeeklyDeflectionPercentage"] + "%" : "N/A",
                             WeeklyNumerator = monitoringDictionary.ContainsKey("WeeklyNumerator") ? monitoringDictionary["WeeklyNumerator"] : "N/A",
-                            WeeklyDenominator = monitoringDictionary.ContainsKey("WeeklyDenominator") ? monitoringDictionary["WeeklyDenominator"] : "N/A",
+                            WeeklyDenominator = monitoringDictionary.ContainsKey("WeeklyDenominator") ? "(" + monitoringDictionary["WeeklyNumerator"] + "/" + monitoringDictionary["WeeklyDenominator"] + ")" : "",
                             WeeklyDeflectionTimePeriod = monitoringDictionary.ContainsKey("WeeklyDeflectionTimePeriod") ? monitoringDictionary["WeeklyDeflectionTimePeriod"] : "N/A",
-                            MonthlyDeflectionPercentage = monitoringDictionary.ContainsKey("MonthlyDeflectionPercentage") ? monitoringDictionary["MonthlyDeflectionPercentage"] : "N/A",
+                            MonthlyDeflectionPercentage = monitoringDictionary.ContainsKey("MonthlyDeflectionPercentage") ? monitoringDictionary["MonthlyDeflectionPercentage"] + "%" : "N/A",
                             MonthlyNumerator = monitoringDictionary.ContainsKey("MonthlyNumerator") ? monitoringDictionary["MonthlyNumerator"] : "N/A",
-                            MonthlyDenominator = monitoringDictionary.ContainsKey("MonthlyDenominator") ? monitoringDictionary["MonthlyDenominator"] : "N/A",
+                            MonthlyDenominator = monitoringDictionary.ContainsKey("MonthlyDenominator") ? "(" + monitoringDictionary["MonthlyNumerator"] + "/" + monitoringDictionary["MonthlyDenominator"] + ")" : "",
                             MonthlyDeflectionTimePeriod = monitoringDictionary.ContainsKey("MonthlyDeflectionTimePeriod") ? monitoringDictionary["MonthlyDeflectionTimePeriod"] : "N/A",
                             CriticalInsightsCoverage = "N/A",
                             DetectorASCFeedback = "N/A",
-                            ApplensBg = $@"<img src=cid:123123 width='100%' height='53' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />",
-                            SupportTopicsTrends = monitoringDictionary.ContainsKey("SupportTopicsTrends") ? monitoringDictionary["SupportTopicsTrends"] : string.Empty
-
+                            //< img src = cid:{ image.Cid} /></ td >
+                            Banner = $@"<img src='cid:banner' width='333' height='250' alt='WELCOME' style='display:block;max-width:333px;' class='em_full_img' />",
+                            ApplensBg = $@"<img src='cid:applensBg' width='100%' height='53' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />",
+                            SupportTopicsTrends = monitoringDictionary.ContainsKey("SupportTopicsTrends") ? monitoringDictionary["SupportTopicsTrends"] : string.Empty,
+                            AscStarRatingHtml = monitoringDictionary["AscStarRatingHtml"],
+                            MicrosoftLogoImage = $@"<img style='display:block;height:auto;' src='cid:microsoftLogo' width='100'>"
                         };
                         //$@"<img src=cid:123123 />"
                         //"<img src='https://www.sendwithus.com/assets/img/emailmonks/images/logo.png' width='230' height='80' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
 
-                        if (detectorId.Contains("backup"))
+                        if (detectorId.Contains("backup") || detectorId.Contains("swap") || detectorId.Contains("ip") || detectorId.Contains("cert"))
                         {
-
-
                             await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, attachments);
                         }
 
@@ -474,9 +559,76 @@ namespace AppLensV3.Services.EmailNotificationService
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
+        }
+
+        private static Dictionary<string, string> imageAttachmentsInfo = new Dictionary<string, string>()
+        {
+            {"microsoftLogo", @"EmailNotificationTemplate\Images\microsoftLogo.png"},
+            {"applensBg", @"EmailNotificationTemplate\Images\applensBg.png"},
+            {"banner", @"EmailNotificationTemplate\Images\banner.png"},
+            {"solidStar", @"EmailNotificationTemplate\Images\solidStar.png"},
+            {"halfSolidStar", @"EmailNotificationTemplate\Images\halfSolidStar.png"},
+            {"emptyStar", @"EmailNotificationTemplate\Images\emptyStar.png"}
+        };
+
+        private List<Attachment> GetImagesAttachments(List<Tuple<string, string, Image, Image, string, string>> sptrends)
+        {
+            string assemPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            List<Attachment> attachments = new List<Attachment>();
+
+            foreach (KeyValuePair<string, string> staticImage in imageAttachmentsInfo)
+            {
+                string filePath = Path.Combine(assemPath, staticImage.Value);
+
+                FileInfo fs = new FileInfo(filePath);
+                Byte[] imageArray = File.ReadAllBytes(fs.FullName);
+                string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+
+                if (!string.IsNullOrWhiteSpace(base64ImageRepresentation))
+                {
+                    Image image = new Image()
+                    {
+                        Cid = staticImage.Key,
+                        ContentBase64Encoded = base64ImageRepresentation
+                    };
+
+                    Attachment imageAttachment = new Attachment();
+
+                    imageAttachment.Content = image.ContentBase64Encoded;
+                    imageAttachment.Filename = $"{image.Cid}.png";
+                    imageAttachment.ContentId = image.Cid;
+                    imageAttachment.Type = "image/jpeg";
+                    imageAttachment.Disposition = "inline";
+
+                    attachments.Add(imageAttachment);
+                }
+            }
+
+
+            for (int i = 0; i < sptrends.Count; i++)
+            {
+                List<Image> spImages = new List<Image>() { sptrends[i].Item3, sptrends[i].Item4 };
+
+                string imageTags = string.Empty;
+                string imageTags1 = string.Empty;
+                foreach (var image in spImages)
+                {
+                    Attachment imageAttachment = new Attachment();
+                    imageAttachment.Content = image.ContentBase64Encoded;
+                    imageAttachment.Filename = $"{image.Cid}.png";
+                    imageAttachment.ContentId = image.Cid;
+                    imageAttachment.Type = "image/jpeg";
+                    imageAttachment.Disposition = "inline";
+
+                    attachments.Add(imageAttachment);
+                }
+
+            }
+            
+                return attachments;
         }
 
         public async Task<Response> SendEmail(EmailAddress from, List<EmailAddress> tos, string templateId, Object dynamicTemplateData, List<Attachment> attachments = null, List<EmailAddress> ccList = null)
@@ -493,32 +645,8 @@ namespace AppLensV3.Services.EmailNotificationService
             emailMessage.SetTemplateId(templateId);
             emailMessage.SetTemplateData(dynamicTemplateData);
 
+            emailMessage.AddAttachments(attachments);
 
-            string assemPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string filePath = Path.Combine(assemPath, @"LocalDevelopmentTemplate\applensbg.png");
-
-            //  string filePath = $@"{appDataFolder}\{Guid.NewGuid().ToString()}.png";
-            FileInfo fs = new FileInfo(filePath);
-            Byte[] imageArray = File.ReadAllBytes(fs.FullName);
-            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-
-            if (!string.IsNullOrWhiteSpace(base64ImageRepresentation))
-            {
-                Image img = new Image()
-                {
-                    Cid = "123123",
-                    ContentBase64Encoded = base64ImageRepresentation
-                };
-
-                emailMessage.AddAttachments(attachments);
-                emailMessage.AddAttachment($"{img.Cid}.png",
-                img.ContentBase64Encoded,
-                "image/jpeg",
-                "inline",
-                img.Cid);
-                //string imgTag = $@"<img src=cid:{img.Cid} />";
-                //monitoringSummary.Add("ApplensBg", imgTag);
-            }
 
             var response = await _sendGridClient.SendEmailAsync(emailMessage);
             return response;
@@ -741,8 +869,17 @@ namespace AppLensV3.Services.EmailNotificationService
             [JsonProperty("ApplensBg")]
             public string ApplensBg { get; set; }
 
+            [JsonProperty("Banner")]
+            public string Banner { get; set; }
+
             [JsonProperty("SupportTopicsTrends")]
             public string SupportTopicsTrends { get; set; }
+
+            [JsonProperty("AscStarRatingHtml")]
+            public string AscStarRatingHtml { get; set; }
+
+            [JsonProperty("MicrosoftLogoImage")]
+            public string MicrosoftLogoImage { get; set; }    
         }
 
         private class ExampleTemplateData
