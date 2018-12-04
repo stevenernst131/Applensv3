@@ -27,10 +27,10 @@
             <search-box [(searchValue)]="searchValue"></search-box>
             <menu-scroll>
                 <section-divider label="Create">
-                    <collapsible-menu-item [searchValue]="searchValue" [menuItem]="createNew"></collapsible-menu-item>
+                    <collapsible-menu-item [menuItem]="createNew"></collapsible-menu-item>
                 </section-divider>
                 <section-divider label="Documentation">
-                    <collapsible-menu-item *ngFor="let doc of documentation" [searchValue]="searchValue" [menuItem]="doc"></collapsible-menu-item>
+                    <collapsible-menu-item *ngFor="let doc of documentation" [menuItem]="doc"></collapsible-menu-item>
                 </section-divider>
                 <section-divider label="Detectors">
                     <collapsible-menu-item *ngFor="let category of categories" [searchValue]="searchValue" [menuItem]="category"></collapsible-menu-item>
