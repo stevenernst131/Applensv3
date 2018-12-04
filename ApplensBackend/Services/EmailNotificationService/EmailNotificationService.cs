@@ -258,12 +258,6 @@ namespace AppLensV3.Services.EmailNotificationService
                 throw new ArgumentNullException("detectorId");
             }
 
-            if (detectorId.Contains("backup") )
-            {
-             //  Console.WriteLine(detectorId);
-            }
-
-            Console.WriteLine(detectorId);
 
             try
             {
@@ -402,18 +396,21 @@ namespace AppLensV3.Services.EmailNotificationService
                     {
                         deflectionPercentage[i] = Math.Round(100.0 * totalNumerator[i] / totalDenominator[i], 1);
 
+                        int numerator = Convert.ToInt32(totalNumerator[i]);
+                        int denominator = Convert.ToInt32(totalDenominator[i]);
+           
                         if (i == 0)
                         {
                             monitoringSummary.Add("WeeklyDeflectionPercentage", deflectionPercentage[i].ToString());
-                            monitoringSummary.Add("WeeklyNumerator", totalNumerator[i].ToString());
-                            monitoringSummary.Add("WeeklyDenominator", totalDenominator[i].ToString());
+                            monitoringSummary.Add("WeeklyNumerator", numerator.ToString());
+                            monitoringSummary.Add("WeeklyDenominator", denominator.ToString());
                             monitoringSummary.Add("WeeklyDeflectionTimePeriod", datetime[i].ToString());
                         }
                         else
                         {
                             monitoringSummary.Add("MonthlyDeflectionPercentage", deflectionPercentage[i].ToString());
-                            monitoringSummary.Add("MonthlyNumerator", totalNumerator[i].ToString());
-                            monitoringSummary.Add("MonthlyDenominator", totalDenominator[i].ToString());
+                            monitoringSummary.Add("MonthlyNumerator", numerator.ToString());
+                            monitoringSummary.Add("MonthlyDenominator", denominator.ToString());
                             monitoringSummary.Add("MonthlyDeflectionTimePeriod", datetime[i].ToString());
                         }
                     }
@@ -433,7 +430,21 @@ namespace AppLensV3.Services.EmailNotificationService
                 monitoringSummary.Add("TotalRequests", Convert.ToDouble(monitoringDataTable.Rows[0]["totalReqs"]).ToString());
                 monitoringSummary.Add("FailedRequests", Convert.ToDouble(monitoringDataTable.Rows[0]["failedReqs"]).ToString());
                 monitoringSummary.Add("AverageLatency", Convert.ToDouble(monitoringDataTable.Rows[0]["avgLatency"]).ToString("0.00"));
-                monitoringSummary.Add("P90Latency", Convert.ToDouble(monitoringDataTable.Rows[0]["p90Latency"]).ToString("0.00"));
+
+                if (DBNull.Value.Equals(monitoringDataTable.Rows[0]["p90Latency"]))
+                {
+                    Console.WriteLine("Empty value");
+                    Console.WriteLine(detectorId);
+                    Console.WriteLine(" ");
+
+                    monitoringSummary.Add("P90Latency", "N/A");
+                }
+                else
+                {
+                    monitoringSummary.Add("P90Latency", Convert.ToDouble(monitoringDataTable.Rows[0]["p90Latency"]).ToString("0.00"));
+                }
+
+               
                 monitoringSummary.Add("MonitoringLink", monitoringDataTable.Rows[0]["MonitoringLink"].ToString());
                 monitoringSummary.Add("AnalyticsLink", monitoringDataTable.Rows[0]["AnalyticsLink"].ToString());
 
@@ -472,6 +483,7 @@ namespace AppLensV3.Services.EmailNotificationService
                     {
                         JObject detectorMetadata = (JObject)detectorObject["metadata"];
                         string detectorId = detectorMetadata["id"].ToString();
+                        detectorId = detectorId.Replace(" ", "%20");
                         string detectorName = detectorMetadata["name"].ToString();
                         string author = detectorMetadata["author"].ToString();
                         // List<string> supppotTopicList = JsonConvert.DeserializeObject<List<string>>(detectorMetadata["supportTopicList"].ToString());
@@ -512,7 +524,6 @@ namespace AppLensV3.Services.EmailNotificationService
                             author = "xipeng;";
                         }
 
-                        author = "xipeng;";
 
 
                         List<EmailAddress> authorList = FormatRecipients(author);
@@ -522,7 +533,7 @@ namespace AppLensV3.Services.EmailNotificationService
 
                         var monitoringReportTemplateData = new MonitoringReportTemplateData
                         {
-                            DetectorId = detectorId,
+                            DetectorId = detectorId.Replace("%20", " "),
                             Availability = monitoringDictionary["Availability"],
                             TotalRequests = monitoringDictionary["TotalRequests"],
                             FailedRequests = monitoringDictionary["FailedRequests"],
@@ -552,7 +563,7 @@ namespace AppLensV3.Services.EmailNotificationService
                         //"<img src='https://www.sendwithus.com/assets/img/emailmonks/images/logo.png' width='230' height='80' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
 
 
-                        await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, attachments);
+                        await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, attachments, ccList);
 
                         // await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, ccList);
                     }

@@ -84,6 +84,7 @@ namespace AppLensV3
                 {
                     HttpRequestMessage requestMessage = new HttpRequestMessage(method == "POST" ? HttpMethod.Post: HttpMethod.Get, path);
                     requestMessage.Headers.Add("x-ms-internal-view", internalView.ToString());
+                    requestMessage.Headers.Add("x-ms-internal-client", "true");
 
                     if (method.ToUpper() == "POST")
                     {
