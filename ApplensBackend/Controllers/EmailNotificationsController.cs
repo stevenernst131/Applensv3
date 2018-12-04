@@ -59,7 +59,7 @@ namespace AppLensV3.Controllers
             //}
 
             HttpResponseMessage response = await this._diagnosticClient.Execute(method, path, body?.ToString(), internalView);
-            var weeklyMonitoringEmail = this._emailNotificationService.SendWeeklyMonitoringReport(response);
+            await this._emailNotificationService.SendWeeklyMonitoringReport(response);
 
             return Ok();
 

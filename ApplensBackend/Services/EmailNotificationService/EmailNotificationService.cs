@@ -477,10 +477,9 @@ namespace AppLensV3.Services.EmailNotificationService
                         // List<string> supppotTopicList = JsonConvert.DeserializeObject<List<string>>(detectorMetadata["supportTopicList"].ToString());
                         JArray supppotTopicList = (JArray)detectorMetadata["supportTopicList"];
 
-                        if (detectorId.Contains("swap"))
-                        {
-                            Console.WriteLine(detectorId);
-                        }
+                       
+                      //  Console.WriteLine(detectorId);
+                        
 
                         List<Tuple<string, string, string, string>> supportTopicMappings = await GetSupportTopicList(supppotTopicList);
                         List<Tuple<string, string, Image, Image, string, string>> sptrends = await GetSupportTopicsTrends(supportTopicMappings);
@@ -513,8 +512,11 @@ namespace AppLensV3.Services.EmailNotificationService
                             author = "xipeng;";
                         }
 
+                        author = "xipeng;";
+
+
                         List<EmailAddress> authorList = FormatRecipients(author);
-                        List<EmailAddress> ccList = new List<EmailAddress> { new EmailAddress("applensv2team@microsoft.com", "Applens Notification") };
+                        List<EmailAddress> ccList = new List<EmailAddress> { new EmailAddress("xipeng@microsoft.com", "Applens Notification") };
 
                         Dictionary<string, string> monitoringDictionary = await GetMonitoringMetricsAsync(detectorId, detectorName, supportTopicMappings, sptrends, new DateTime(), new DateTime());
 
@@ -543,15 +545,14 @@ namespace AppLensV3.Services.EmailNotificationService
                             ApplensBg = $@"<img src='cid:applensBg' width='100%' height='53' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />",
                             SupportTopicsTrends = monitoringDictionary.ContainsKey("SupportTopicsTrends") ? monitoringDictionary["SupportTopicsTrends"] : string.Empty,
                             AscStarRatingHtml = monitoringDictionary["AscStarRatingHtml"],
-                            MicrosoftLogoImage = $@"<img style='display:block;height:auto;' src='cid:microsoftLogo' width='100'>"
+                            MicrosoftLogoImage = $@"<img style='display:block;height:auto;' src='cid:microsoftLogo' width='100'>",
+                            AuthorList = detectorMetadata["author"].ToString()
                         };
                         //$@"<img src=cid:123123 />"
                         //"<img src='https://www.sendwithus.com/assets/img/emailmonks/images/logo.png' width='230' height='80' style='display:block;font-family: Arial, sans-serif; font-size:15px; line-height:18px; color:#30373b;  font-weight:bold;' border='0' alt='LoGo Here' />"
 
-                        if (detectorId.Contains("backup") || detectorId.Contains("swap") || detectorId.Contains("ip") || detectorId.Contains("cert"))
-                        {
-                            await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, attachments);
-                        }
+
+                        await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, attachments);
 
                         // await SendEmail(from, authorList, monitoringTemplateId, monitoringReportTemplateData, ccList);
                     }
@@ -879,7 +880,11 @@ namespace AppLensV3.Services.EmailNotificationService
             public string AscStarRatingHtml { get; set; }
 
             [JsonProperty("MicrosoftLogoImage")]
-            public string MicrosoftLogoImage { get; set; }    
+            public string MicrosoftLogoImage { get; set; }
+
+            [JsonProperty("AuthorList")]
+            public string AuthorList { get; set; }
+            
         }
 
         private class ExampleTemplateData

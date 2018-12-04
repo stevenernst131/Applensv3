@@ -20,8 +20,8 @@ namespace AppLensV3.Services.EmailNotificationService
 
         public static string GetChartContent(ChartGeneratorPostBody chartPostBody)
         {
-            // HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "https://asdchartgenerator.azurewebsites.net/api/chart");
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:4970/api/chart");
+             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "https://chartgeneratorwebapi.azurewebsites.net/api/chart");
+           // HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:4970/api/chart");
             request.Content = new StringContent(JsonConvert.SerializeObject(chartPostBody), Encoding.UTF8, "application/json");
 
             var response = _httpClient.SendAsync(request).Result;
