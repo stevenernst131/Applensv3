@@ -4,6 +4,7 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import * as moment from 'moment-timezone';
 import { TimeZones } from '../../../shared/models/datetime';
 import { Http } from '@angular/http';
+import { AdalService } from 'adal-angular4';
 
 @Component({
   selector: 'app-main',
@@ -13,6 +14,7 @@ import { Http } from '@angular/http';
 export class MainComponent implements OnInit {
 
   showResourceTypeOptions: boolean = false;
+  showCaseCleansingOption: boolean = false;
   selectedResourceType: ResourceTypeState;
   resourceName: string;
   resourceTypes: ResourceTypeState[] = [
@@ -55,7 +57,7 @@ export class MainComponent implements OnInit {
 
   inIFrame: boolean = false;
 
-  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http) {
+  constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _adalService: AdalService,) {
     this.endTime = moment.tz(TimeZones.UTC);
     this.startTime = this.endTime.clone().add(-1, 'days');
 
@@ -71,6 +73,10 @@ export class MainComponent implements OnInit {
     this._http.get('assets/enabledResourceTypes.json').map(response => {
       this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
     });
+
+    if (_adalService.userInfo.userName === 'cmaher@microsoft.com' || _adalService.userInfo.userName === "shgup@microsoft.com"){
+      this.showCaseCleansingOption = true;
+    }
   }
 
   ngOnInit() {
@@ -105,5 +111,9 @@ export class MainComponent implements OnInit {
     }
 
     this._router.navigate([route], navigationExtras);
+  }
+
+  caseCleansingNavigate(){
+    this._router.navigate(["caseCleansing"]);
   }
 }
