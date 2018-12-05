@@ -4,7 +4,8 @@ import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
 import { InstanceDetails, DetailedInstanceTimeSeries } from '../../models/time-series';
 import { TimeZones, TimeUtilities } from '../../utilities/time-utilities';
-import * as momentNs from 'moment-timezone';
+import * as momentNs from 'moment';
+
 const moment = momentNs;
 
 @Component({
@@ -100,7 +101,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
         valueColumns.forEach(column => {
           let columnIndex: number = data.table.columns.indexOf(column);
 
-          let timestamp = moment.tz(row[timestampColumnIndex], TimeZones.UTC);
+          let timestamp = moment.utc(row[timestampColumnIndex]);
 
           let point: InstanceTablePoint = <InstanceTablePoint>{
             timestamp: timestamp,
@@ -136,7 +137,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
 
       data.table.rows.forEach(row => {
 
-        let timestamp = moment.tz(row[timestampColumnIndex], TimeZones.UTC);
+        let timestamp = moment.utc(row[timestampColumnIndex]);
         let instance = this._getInstanceFromRow(data.table, row);
 
         let point: InstanceTablePoint = <InstanceTablePoint>{
@@ -162,7 +163,7 @@ export class TimeSeriesInstanceGraphComponent extends DataRenderBaseComponent im
       for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrainInMinutes, 'minutes')) {
         let value = this.defaultValue;
 
-        if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
+        if (pointToAdd && d.isSame(moment.utc(pointToAdd.timestamp))) {
           value = pointToAdd.value;
 
           pointToAdd = pointsForThisSeries.pop();

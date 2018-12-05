@@ -16,13 +16,12 @@
     background-color: white;
     border: 1px solid #2e6fa8;
     border-right: none;
-    color: #337ab7;
+    color: #015cda;
     cursor: pointer;
 }
 
 .control-selected {
-    background-color: #0078d4;
-    /* background-color: #337ab7; */
+    background-color: #015cda;
     color: white;
 }
 

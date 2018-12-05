@@ -3,7 +3,7 @@ import { CommsService } from '../../services/comms.service';
 import { Communication, CommunicationStatus } from '../../models/communication';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../../config/diagnostic-data-config';
 import * as momentNs from 'moment';
-import 'moment-timezone';
+
 const moment = momentNs;
 
 @Component({
@@ -41,7 +41,7 @@ export class CommAlertComponent implements OnInit {
       if (commAlert) {
         this.commAlertToShow = commAlert;
         this.isAlertExpanded = this.autoExpand && this.commAlertToShow.isExpanded;
-        this.commPublishedTime = moment.tz(this.commAlertToShow.publishedTime, 'Etc/UTC').format('YYYY-MM-DD HH:mm A');
+        this.commPublishedTime = moment.utc(this.commAlertToShow.publishedTime).format('YYYY-MM-DD HH:mm A');
         if (commAlert.status === CommunicationStatus.Active) {
           this.commAlertTitle = this.activeAlertTitle;
         }

@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import * as momentNs from 'moment-timezone';
+import * as momentNs from 'moment';
 import { TimeSeriesType } from '../../models/detector';
 import { nvd3Utilities } from '../../utilities/nvd3-utilities';
+
 const moment = momentNs;
 
 declare let d3: any;

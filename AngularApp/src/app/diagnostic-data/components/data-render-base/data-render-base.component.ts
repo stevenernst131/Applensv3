@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { DiagnosticData, RenderingType } from '../../models/detector';
-import * as momentNs from 'moment-timezone';
+import * as momentNs from 'moment';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
-const moment = momentNs;
 
 @Component({
   templateUrl: './data-render-base.component.html'

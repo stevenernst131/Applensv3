@@ -1,5 +1,5 @@
 import { GraphSeries } from "../components/nvd3-graph/nvd3-graph.component";
-import * as momentNs from 'moment-timezone';
+import * as momentNs from 'moment';
 
 export interface TimeSeries {
   name: string;

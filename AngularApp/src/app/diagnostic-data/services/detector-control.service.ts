@@ -1,7 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
 import * as momentNs from 'moment';
-import 'moment-timezone';
-import { TimeZones } from '../../shared/models/datetime';
 import { BehaviorSubject } from 'rxjs';
 import { DIAGNOSTIC_DATA_CONFIG, DiagnosticDataConfig } from '../config/diagnostic-data-config';
 
@@ -15,22 +13,22 @@ export class DetectorControlService {
   durationSelections: DurationSelector[] = [
     {
       displayName: '1h',
-      duration: moment.duration(1, 'hours'),
+      duration: momentNs.duration(1, 'hours'),
       internalOnly: false
     },
     {
       displayName: '6h',
-      duration: moment.duration(6, 'hours'),
+      duration: momentNs.duration(6, 'hours'),
       internalOnly: false
     },
     { 
       displayName: '1d',
-      duration: moment.duration(1, 'days'),
+      duration: momentNs.duration(1, 'days'),
       internalOnly: false
     },
     { 
       displayName: '3d',
-      duration: moment.duration(3, 'days'),
+      duration: momentNs.duration(3, 'days'),
       internalOnly: true
     }
   ];
@@ -66,15 +64,15 @@ export class DetectorControlService {
     this._duration = null;
     let startTime, endTime: momentNs.Moment;
     if (start && end) {
-      startTime = moment.tz(start, TimeZones.UTC);
-      endTime = moment.tz(end, TimeZones.UTC);
+      startTime = moment.utc(start);
+      endTime = moment.utc(end);
     }
     else if (start) {
-      startTime = moment.tz(start, TimeZones.UTC);
+      startTime = moment.utc(start);
       endTime = startTime.clone().add(1, 'days');
     }
     else if (end) {
-      endTime = moment.tz(end, TimeZones.UTC);
+      endTime = moment.utc(end);
       startTime = endTime.clone().subtract(1, 'days');
     }
     else {
@@ -82,17 +80,17 @@ export class DetectorControlService {
       return;
     }
 
-    // let startTime = moment.tz(start, this.stringFormat,TimeZones.UTC);
-    // let endTime = moment.tz(end, this.stringFormat, TimeZones.UTC);
-
     this._startTime = startTime;
     this._endTime = endTime;
+
+    console.log(this.startTime);
+    console.log(this.endTime);
     this._refreshData();
   }
 
   public selectDuration(duration: DurationSelector) {
     this._duration = duration;
-    this._startTime = moment.tz(TimeZones.UTC).subtract(duration.duration);
+    this._startTime = moment.utc().subtract(duration.duration);
     this._endTime = this._startTime.clone().add(duration.duration);
     this._refreshData();
   }

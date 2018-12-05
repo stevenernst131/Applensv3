@@ -2,9 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { OnboardingFlowComponent, DevelopMode } from '../../onboarding-flow/onboarding-flow.component';
 import * as momentNs from 'moment';
-import { TimeZones } from '../../../../shared/models/datetime';
-import 'moment-timezone';
-import * as moment from 'moment';
+
+const moment = momentNs;
 
 @Component({
   selector: 'tab-monitoring-develop',
@@ -34,8 +33,8 @@ export class TabMonitoringDevelopComponent implements OnInit {
   timeRangeKeys: string[];
   selectedTimeRange: string = "Last Week";
   timeRangeInHours: string = "168"; 
-  endTime: moment.Moment = moment.tz(TimeZones.UTC);
-  startTime: moment.Moment = this.endTime.clone().subtract(7, 'days');
+  endTime: momentNs.Moment = moment.utc();
+  startTime: momentNs.Moment = this.endTime.clone().subtract(7, 'days');
 
   constructor(private _route: ActivatedRoute) {
   }

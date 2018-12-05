@@ -3,8 +3,8 @@ import { DataTableDataType, DiagnosticData, TimeSeriesRendering, DataTableRespon
 import { GraphSeries, GraphPoint } from '../nvd3-graph/nvd3-graph.component';
 import { DataRenderBaseComponent, DataRenderer } from '../data-render-base/data-render-base.component';
 import { TimeSeries, TablePoint } from '../../models/time-series';
-import * as momentNs from 'moment-timezone';
-import { TimeUtilities, TimeZones } from '../../utilities/time-utilities';
+import * as momentNs from 'moment';
+import { TimeUtilities } from '../../utilities/time-utilities';
 import { TelemetryService } from '../../services/telemetry/telemetry.service';
 
 const moment = momentNs;
@@ -87,7 +87,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
       numberValueColumns.forEach(column => {
         let columnIndex: number = data.table.columns.indexOf(column);
 
-        let timestamp = moment.tz(row[timestampColumn], TimeZones.UTC);
+        let timestamp = moment.utc(row[timestampColumn]);
 
         if (!this.customizeXAxis && timestamp.isAfter(lastTimeStamp)) {
           let currentGcf = this._getGreatestCommonFactor(timestamp)
@@ -136,7 +136,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
         for (var d = this.startTime.clone(); d.isBefore(this.endTime); d.add(this.timeGrain)) {
           let value = this.defaultValue;
-          if (pointToAdd && d.isSame(moment.tz(pointToAdd.timestamp, TimeZones.UTC))) {
+          if (pointToAdd && d.isSame(moment.utc(pointToAdd.timestamp))) {
             value = pointToAdd.value;
             pointToAdd = pointsForThisSeries.pop();
           }
@@ -148,7 +148,7 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
           if (pointToAdd.timestamp.isBefore(this.startTime)) {
             this.startTime = pointToAdd.timestamp;
           }
-          timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: moment.tz(pointToAdd.timestamp, TimeZones.UTC), y: pointToAdd.value });
+          timeSeriesDictionary[key].series.values.push(<GraphPoint>{ x: momentNs.utc(pointToAdd.timestamp), y: pointToAdd.value });
         });
       }
 
@@ -190,20 +190,20 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     // Greater than 1 month: 1 month
     if (rangeInMonths > 1 || this.customizeXAxis && rangeInMonths === 1) {
-      return momentNs.duration(1, 'months');
+      return moment.duration(1, 'months');
     }
     // 7 days -> 1 month: 1 day
     if (rangeInHours >= 168) {
-      return momentNs.duration(7, 'days');
+      return moment.duration(7, 'days');
     }
     
     // 1 days -> 7 days
     if (rangeInHours > 24) {
-      return momentNs.duration(1, 'days');
+      return moment.duration(1, 'days');
     }
 
     // else 1 hr
-    return momentNs.duration(1, 'hours');
+    return moment.duration(1, 'hours');
   }
 
   // No data time grain: The default in the case of one or no data points
@@ -213,20 +213,20 @@ export class TimeSeriesGraphComponent extends DataRenderBaseComponent implements
 
     // Greater than 1 month: 1 month
     if (rangeInMonths > 1) {
-      return momentNs.duration(1, 'months');
+      return moment.duration(1, 'months');
     }
     // 7 days -> 1 month: 1 day
     if (rangeInHours >= 168) {
-      return momentNs.duration(1, 'days');
+      return moment.duration(1, 'days');
     }
     
     // 1 days -> 7 days
     if (rangeInHours > 24) {
-      return momentNs.duration(1, 'hours');
+      return moment.duration(1, 'hours');
     }
 
     // else 1 hr
-    return momentNs.duration(5, 'minutes');
+    return moment.duration(5, 'minutes');
   }
 
   private _prepareStartAndEndTime() {

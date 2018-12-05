@@ -1,6 +1,5 @@
 
-import * as momentNs from 'moment-timezone';
-
+import * as momentNs from 'moment';
 
 export class TimeUtilities {
     public static roundDownByMinute(date: momentNs.Moment, minutes: number) {
