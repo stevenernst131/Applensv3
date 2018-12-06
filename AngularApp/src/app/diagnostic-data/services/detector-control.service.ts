@@ -83,8 +83,6 @@ export class DetectorControlService {
     this._startTime = startTime;
     this._endTime = endTime;
 
-    console.log(this.startTime);
-    console.log(this.endTime);
     this._refreshData();
   }
 
