@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ResourceService } from '../../../shared/services/resource.service';
-import * as moment from 'moment';
+import * as momentNs from 'moment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DetectorControlService } from '../../../diagnostic-data/services/detector-control.service';
 
@@ -11,8 +11,8 @@ import { DetectorControlService } from '../../../diagnostic-data/services/detect
 })
 export class DashboardComponent {
 
-  startTime: moment.Moment;
-  endTime: moment.Moment;
+  startTime: momentNs.Moment;
+  endTime: momentNs.Moment;
 
   contentHeight: string;
 

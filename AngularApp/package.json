@@ -1,6 +1,6 @@
 {
   "name": "applens-diagnostics",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -35,7 +35,6 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "moment": "^2.21.0",
-    "moment-timezone": "^0.5.14",
     "ng-pick-datetime": "^5.1.8",
     "ng-pick-datetime-moment": "1.0.6",
     "ng2-nvd3": "^2.0.0",

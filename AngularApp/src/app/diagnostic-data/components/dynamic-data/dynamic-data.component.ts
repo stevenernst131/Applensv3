@@ -7,13 +7,12 @@ import { BehaviorSubject } from 'rxjs';
 import { DataSummaryComponent } from '../data-summary/data-summary.component';
 import { EmailComponent } from '../email/email.component';
 import { InsightsComponent } from '../insights/insights.component';
-import * as momentNs from 'moment-timezone';
+import * as momentNs from 'moment';
 import { TimeSeriesInstanceGraphComponent } from '../time-series-instance-graph/time-series-instance-graph.component';
 import { DynamicInsightComponent } from '../dynamic-insight/dynamic-insight.component';
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { DetectorListComponent } from '../detector-list/detector-list.component';
 import { DropdownComponent } from '../dropdown/dropdown.component';
-const moment = momentNs;
 
 @Component({
   selector: 'dynamic-data',

@@ -7,7 +7,6 @@ import { Package } from '../../../shared/models/package';
 import { ApplensDiagnosticService } from '../services/applens-diagnostic.service';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import * as momentNs from 'moment';
-import { TimeZones } from '../../../shared/models/datetime';
 import { DetectorControlService } from '../../../diagnostic-data/services/detector-control.service';
 import { Observable } from 'rxjs';
 import { AdalService } from 'adal-angular4';
@@ -32,8 +31,8 @@ export class OnboardingFlowComponent implements OnInit, OnDestroy {
   @Input() detectorId: string = '';
   @Input() dataSource: string = '';
   @Input() timeRange: string = '';
-  @Input() startTime: momentNs.Moment = moment.tz(TimeZones.UTC).subtract(1, 'days');
-  @Input() endTime: momentNs.Moment =  moment.tz(TimeZones.UTC);
+  @Input() startTime: momentNs.Moment = moment.utc().subtract(1, 'days');
+  @Input() endTime: momentNs.Moment =  moment.utc();
 
   DevelopMode = DevelopMode;
 

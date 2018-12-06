@@ -3,10 +3,9 @@ import { DetectorResponse, DetectorMetaData } from '../../../../diagnostic-data/
 import { ActivatedRoute, Params } from '@angular/router';
 import { ApplensDiagnosticService } from '../../services/applens-diagnostic.service';
 import { DiagnosticService } from '../../../../diagnostic-data/services/diagnostic.service';
-import * as moment from 'moment';
-import 'moment-timezone';
-import { TimeZones } from '../../../../shared/models/datetime';
+import * as momentNs from 'moment';
 
+const moment = momentNs;
 
 export enum StatisticsType {
   Monitoring,
@@ -50,8 +49,8 @@ export class TabMonitoringComponent implements OnInit {
   selectedTimeRange: string = "Last Week";
   private timeRangeInHours: string = "168";
 
-  endTime: moment.Moment = moment.tz(TimeZones.UTC);
-  startTime: moment.Moment = this.endTime.clone().subtract(7, 'days');
+  endTime: momentNs.Moment = moment.utc();
+  startTime: momentNs.Moment = this.endTime.clone().subtract(7, 'days');
 
   error: any;
 
