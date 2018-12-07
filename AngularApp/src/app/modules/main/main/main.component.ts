@@ -75,7 +75,7 @@ export class MainComponent implements OnInit {
       this.enabledResourceTypes = <ResourceServiceInputs[]>response.json().enabledResourceTypes;
     });
 
-    if (_adalService.userInfo.username === 'cmaher@microsoft.com' || _adalService.userInfo.username === "shgup@microsoft.com"){
+    if (_adalService.userInfo.userName === 'cmaher@microsoft.com' || _adalService.userInfo.userName === "shgup@microsoft.com"){
       this.showCaseCleansingOption = true;
     }
   }
