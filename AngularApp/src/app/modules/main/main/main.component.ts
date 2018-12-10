@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ResourceTypeState, ResourceType, ResourceServiceInputs } from '../../../shared/models/resources';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
-import * as moment from 'moment-timezone';
-import { TimeZones } from '../../../shared/models/datetime';
+import * as momentNs from 'moment';
 import { Http } from '@angular/http';
 import { AdalService } from 'adal-angular4';
+
+const moment = momentNs;
 
 @Component({
   selector: 'app-main',
@@ -48,8 +49,8 @@ export class MainComponent implements OnInit {
     }
   ];
 
-  startTime: moment.Moment;
-  endTime: moment.Moment;
+  startTime: momentNs.Moment;
+  endTime: momentNs.Moment;
 
   contentHeight: string;
 
@@ -58,7 +59,7 @@ export class MainComponent implements OnInit {
   inIFrame: boolean = false;
 
   constructor(private _router: Router, private _activatedRoute: ActivatedRoute, private _http: Http, private _adalService: AdalService,) {
-    this.endTime = moment.tz(TimeZones.UTC);
+    this.endTime = moment.utc();
     this.startTime = this.endTime.clone().add(-1, 'days');
 
     this.contentHeight = window.innerHeight + 'px';
@@ -98,8 +99,8 @@ export class MainComponent implements OnInit {
       window.location.href = `https://azuresupportcenter.msftcloudes.com/caseoverview?srId=${form.resourceName}`;
     }
 
-    let startUtc = moment.tz(form.startTime.format('YYYY-MM-DD HH:mm'), TimeZones.UTC);
-    let endUtc = moment.tz(form.endTime.format('YYYY-MM-DD HH:mm'), TimeZones.UTC);
+    let startUtc = moment.utc(form.startTime.format('YYYY-MM-DD HH:mm'));
+    let endUtc = moment.utc(form.endTime.format('YYYY-MM-DD HH:mm'));
 
     let timeParams = { 
       startTime: startUtc.format('YYYY-MM-DDTHH:mm'),
