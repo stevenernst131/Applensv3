@@ -15,5 +15,7 @@ namespace AppLensV3
         Task<string> GetDetectorFile(string detectorId);
 
         Task Publish(Package pkg);
+
+        Task<Dictionary<string, Tuple<string, string, string, string>>> GetAllCommits(string detectorId);
     }
 }

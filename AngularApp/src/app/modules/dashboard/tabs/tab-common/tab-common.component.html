@@ -10,6 +10,10 @@
           [routerLinkActiveOptions]="{exact:true}">Develop</a>
       </li>
       <li class="nav-item">
+        <a [routerLink]="['changelist']" queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab']"
+        [routerLinkActiveOptions]="{exact:true}">Detector Changelist</a>
+      </li>
+      <li class="nav-item">
           <a [routerLink]="['datasource']" queryParamsHandling="preserve" [routerLinkActive]="['active', 'active-tab']"
           [routerLinkActiveOptions]="{exact:true}">Data Sources</a>
         </li>

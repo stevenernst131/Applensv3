@@ -68,6 +68,14 @@ export class DiagnosticApiService {
     return this.invoke<any>(path, HttpMethod.POST, packageToPublish, false, true);
   }
 
+  public getDetectorChangelist(detectorId: string): Observable<any> {
+    var url: string = `${this.diagnosticApi}api/github/detectors/${detectorId}/changelist`;
+
+    return this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+  }
+
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
     var url: string = `${this.diagnosticApi}api/invoke`
 
