@@ -27,8 +27,8 @@ export class TabDetectorChangelistComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private githubService: GithubApiService) { }
 
   setCodeDiffView(commit: DetectorCommit) {
-    // Because monaco editor instance is not able to show the code content change dynamically, we have to wait for the API calls to get file content
-    //  of the previous commit and current commit, before we can load the view.
+    // Because monaco editor instance is not able to show the code content change dynamically, we have to wait for the API calls of getting file content
+    //  of the previous commit and current commit to complete, before we can load the view.
 
     // This flag is used to determine whether we have got the result of both the two commits from github api already.
     // We will only show the monaco editor view when loadingChange >= 2
