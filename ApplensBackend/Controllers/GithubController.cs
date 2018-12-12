@@ -48,7 +48,6 @@ namespace AppLensV3.Controllers
             return Accepted();
         }
 
-
         [HttpGet("detectors/{id}/changelist")]
         public async Task<IActionResult> GetDetectorChangelist(string id)
         {

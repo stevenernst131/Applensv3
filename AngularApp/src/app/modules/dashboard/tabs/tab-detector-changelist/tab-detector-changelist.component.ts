@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DiffEditorModel } from 'ngx-monaco-editor';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GithubApiService } from '../../../../shared/services/github-api.service';
-import { Commit } from '../../../../diagnostic-data/models/changelist';
 import { Dictionary } from '../../../../shared/models/extensions';
-import {DetectorCommit} from '../../../../../app/shared/models/package';
- import { Observable } from 'rxjs';
+import { DetectorCommit } from '../../../../../app/shared/models/detectorCommit';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'tab-detector-changelist',
@@ -17,139 +16,80 @@ export class TabDetectorChangelistComponent implements OnInit {
   selectedCommit: DetectorCommit;
   code: string;
   loadingChange: number = 0;
-  noCommits: boolean = false;
-  private detectorId;
+  noCommitsHistory: boolean = false;
+  detectorId: string;
   commitsList: DetectorCommit[] = [];
-  currentSha: string;
   previousSha: string;
   previousCode: string;
+  currentSha: string;
   currentCode: string;
 
   constructor(private _route: ActivatedRoute, private githubService: GithubApiService) { }
 
-  setCodeDiffView(commit: DetectorCommit)
-  {
-      this.loadingChange = 0;
-      this.selectedCommit = commit;
-    // this.previousCode = this.githubService.getCommitContent(this.detectorId, previousSha);
-    if (commit.previousSha === "")
-    {
-        this.loadingChange++;
-        this.originalModel = 
+  setCodeDiffView(commit: DetectorCommit) {
+    // Because monaco editor instance is not able to show the code content change dynamically, we have to wait for the API calls to get file content
+    //  of the previous commit and current commit, before we can load the view.
+
+    // This flag is used to determine whether we have got the result of both the two commits from github api already.
+    // We will only show the monaco editor view when loadingChange >= 2
+    this.loadingChange = 0;
+
+    this.selectedCommit = commit;
+    if (commit.previousSha === "") {
+      this.loadingChange++;
+      this.originalModel =
         {
-            code: "",
-            language: 'csharp'
+          code: "",
+          language: 'csharp'
         };
-        console.log("previous Empty ");
     }
-    else
-    {
-        this.githubService.getCommitContent(this.detectorId, commit.previousSha).subscribe(code => {
-            this.loadingChange++;
-            this.previousSha = commit.previousSha;
-            this.previousCode = code;
-           // this.originalModel.code = code;
-    
-            this.originalModel = 
-            {
-                code: code,
-                language: 'csharp'
-            };
-            console.log("previous: " + this.previousSha);
-         //   console.log(this.previousCode);
-         });
-    }
-
-
-   //  this.currentCode = this.githubService.getCommitContent(this.detectorId, sha);
-
-     this.githubService.getCommitContent(this.detectorId, commit.sha).subscribe(code => {
-
+    else {
+      this.githubService.getCommitContent(this.detectorId, commit.previousSha).subscribe(code => {
+      if (code)
+      {
         this.loadingChange++;
-        this.currentSha = commit.sha;
-        this.currentCode = code;
-        // this.modifiedModel.code = code;
+        this.previousSha = commit.previousSha;
+        this.previousCode = code;
 
-        this.modifiedModel = 
-        {
+        this.originalModel =
+          {
             code: code,
             language: 'csharp'
           };
+      }
+      });
+    }
 
-          console.log("current: " + this.currentSha);
-     });
+    this.githubService.getCommitContent(this.detectorId, commit.sha).subscribe(code => {
+      if (code)
+      {
+        this.loadingChange++;
+        this.currentSha = commit.sha;
+        this.currentCode = code;
+  
+        this.modifiedModel =
+        {
+          code: code,
+          language: 'csharp'
+        };
+      }
+    });
   }
 
   ngOnInit() {
     this.detectorId = this._route.parent.snapshot.params['detector'];
- //   console.log(`id: ${this.detectorId}`);
-    let changelist = this.githubService.getDetectorChangelist(this.detectorId);
 
-    changelist.subscribe(commits => {
-    //   console.log(commits);
-    //   console.log(typeof commits);
-    
-      if (commits && commits.length > 0)
-      {
-
+    this.githubService.getDetectorChangelist(this.detectorId).subscribe(commits => {
+      if (commits && commits.length > 0) {
         this.commitsList = commits;
-        let defaultCommit = commits[commits.length-1];
-
-        //   Object.keys(commits).forEach(key => {
-        //       let commit = commits[key];
-        //    //  console.log(commit);
-        //       this.currentSha = commit.sha;
-        //       this.previousSha = commit.previousSha;
-
-        //     //   let onClick = () => {
-        //     //     this.setCodeDiffView(commit.sha, commit.previousSha);
-        //     //   };
-
-        //       this.commitsList.push(commit);
-        //     });
-
-            
-         //   let defaultCommit = commits[Object.keys(commits)[Object.keys(commits).length-1]];
-
-        
-        
-            // this.githubService.getCommitContent(this.detectorId, this.previousSha).subscribe(code => {
-            //     this.previousCode = code;
-            //  //   this.originalModel.code = code;
-        
-            //     this.originalModel = 
-            //     {
-            //         code: code,
-            //         language: 'text/plain'
-            //     };
-            //     console.log(this.originalModel);
-            //  });
-
-            this.setCodeDiffView(defaultCommit);
+        let defaultCommit = commits[commits.length - 1];
+        this.setCodeDiffView(defaultCommit);
       }
-      else{
-          this.noCommits = true;
+      else {
+        this.noCommitsHistory = true;
       }
-      // if (commits) {
-      //   commits.forEach(element => {
-      //     console.log(element);
-      //     // let onClick = () => {
-      //     //   this.currentSha = element.Key;
-      //     //   this.previousSha = element.Value.Item4;
-      //     // };
-      //   });
-      // };
-    },
-      error => {
-        // TODO: handle detector route not found
-        if (error && error.status === 404) {
-        //   this.getDetectorsRouteNotFound = true;
-        }
-      }
-    );
+    });
   }
-
-
 
   options = {
     theme: 'vs-dark',
@@ -161,15 +101,6 @@ export class TabDetectorChangelistComponent implements OnInit {
     folding: true
   };
 
-  originalModel: DiffEditorModel = {
-    code: `${this.previousCode}`,
-    language: 'text/plain'
-  };
-
-  modifiedModel: DiffEditorModel = {
-    code: `${this.currentCode}`,
-    language: 'text/plain',
-    //  fontSize: 14,
-  };
-
+  originalModel: DiffEditorModel;
+  modifiedModel: DiffEditorModel;
 }

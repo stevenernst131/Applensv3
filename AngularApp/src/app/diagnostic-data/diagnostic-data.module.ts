@@ -38,9 +38,8 @@ import { DetectorControlService } from './services/detector-control.service';
 import { DetectorContainerComponent } from './components/detector-container/detector-container.component';
 import { CommAlertComponent } from './components/comm-alert/comm-alert.component';
 import { CommsService } from './services/comms.service';
-import { HahaComponent } from './components/haha/haha.component';
 import { DiffEditorModel } from 'ngx-monaco-editor';
-import {MonacoEditorModule} from 'ngx-monaco-editor';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 /**
  * THIS MODULE SHOULD NOT DEPEND ON ANY OTHER MODULES IN THIS PROJECT
@@ -63,10 +62,10 @@ import {MonacoEditorModule} from 'ngx-monaco-editor';
   ],
   declarations: [Nvd3GraphComponent, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DataRenderBaseComponent,
     DataContainerComponent, TimeSeriesInstanceGraphComponent, DetectorViewComponent, DataSummaryComponent, EmailComponent, InsightsComponent,
-    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent, 
-    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, HahaComponent],
+    LoaderViewComponent, DynamicInsightComponent, MarkdownComponent, DetectorListComponent, DetectorOrderPipe, StarRatingComponent, StarRatingFeedbackComponent,
+    DropdownComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
   exports: [FormsModule, TimeSeriesGraphComponent, DataTableComponent, DynamicDataComponent, DetectorViewComponent, DataSummaryComponent,
-    LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent, HahaComponent],
+    LoaderViewComponent, StatusIconComponent, DetectorControlComponent, DetectorContainerComponent, InternalPipe, CommAlertComponent],
 })
 export class DiagnosticDataModule {
   static forRoot(config: DiagnosticDataConfig = INTERNAL_CONFIGURATION): ModuleWithProviders {
@@ -83,4 +82,4 @@ export class DiagnosticDataModule {
       ]
     }
   }
- }
+}
