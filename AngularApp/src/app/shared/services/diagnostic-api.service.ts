@@ -76,6 +76,12 @@ export class DiagnosticApiService {
     });
   }
 
+  public getCommitContent(detectorId: string, sha: string): Observable<any> {
+    var url: string = `${this.diagnosticApi}api/github/detectors/${detectorId}/commit/${sha}`;
+    return this._httpClient.get(url, {
+      headers: this._getHeaders()
+    });
+  }
   public invoke<T>(path: string, method: HttpMethod = HttpMethod.GET, body: any = {}, useCache: boolean = true, invalidateCache: boolean = false, internalView: boolean = true): Observable<T> {
     var url: string = `${this.diagnosticApi}api/invoke`
 

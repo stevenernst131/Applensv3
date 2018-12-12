@@ -3,7 +3,7 @@ import { DiagnosticApiService } from './diagnostic-api.service';
 import {Package} from '../models/package';
 import { Observable } from 'rxjs';
 import { Dictionary } from '../models/extensions';
-import { Commit } from '../../diagnostic-data/models/changelist';
+import { DetectorCommit } from '../../../app/shared/models/package';
 
 @Injectable()
 export class GithubApiService {
@@ -26,7 +26,11 @@ export class GithubApiService {
     return this._diagnosticApiService.get<string>(`api/github/detectors/${detectorId}/statistics/${invokerId}`, true);
   }
 
-  public getDetectorChangelist(detectorId: string): Observable<Dictionary<Dictionary<string>>> {
+  public getDetectorChangelist(detectorId: string): Observable<Dictionary<DetectorCommit>> {
     return this._diagnosticApiService.getDetectorChangelist(detectorId);
+  }
+
+  public getCommitContent(detectorId: string, sha: string): Observable<string> {
+    return this._diagnosticApiService.getCommitContent(detectorId, sha);
   }
 }

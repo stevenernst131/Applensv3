@@ -1,1 +1,37 @@
-<ngx-monaco-diff-editor class="diff-view" [options]="options" [originalModel]="originalModel" [modifiedModel]="modifiedModel"></ngx-monaco-diff-editor>
+<div class="container-fluid col-md-2">
+        <div class="row-fluid">
+                <div class="sidebar-nav">
+<ul class="heroes">
+        <li *ngFor="let commit of commitsList.slice().reverse()"
+          [class.selected]="commit === selectedCommit"
+          (click)="setCodeDiffView(commit)"> 
+          <!-- <a>{{commit.dateTime}}  {{commit.author}} </a> </li> -->
+          <span class="badge"> {{commit.author}} </span> {{commit.dateTime}} 
+        </li>
+      </ul> 
+          </div>
+    </div>
+</div>
+
+
+<!-- <div class="container-fluid col-md-2">
+    <div class="row-fluid">
+            <div class="sidebar-nav">
+                <ul id="myTab" class="nav nav-bar">
+                 
+                    <li *ngFor="let commit of commitsList.slice().reverse()" [class.selected] = "commit === selectedCommit" (click)="setCodeDiffView(commit.sha, commit.previousSha)"> <a>{{commit.dateTime}}  {{commit.author}} </a> </li>
+                </ul>
+            </div>
+    </div>
+</div> -->
+
+<div>
+        <loader-view *ngIf="loadingDetector" message="Loading Changes...">
+        </loader-view>
+      </div>
+
+<!-- <haha *ngIf="!loadingDetector" [originalModel] = "originalModel" [modifiedModel]="modifiedModel"></haha> -->
+
+<div *ngIf="!loadingDetector" class="col-md-10">
+    <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="originalModel" [(modifiedModel)]="modifiedModel"></ngx-monaco-diff-editor>
+</div>

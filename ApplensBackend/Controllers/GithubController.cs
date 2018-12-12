@@ -56,5 +56,12 @@ namespace AppLensV3.Controllers
             var changelist = await _githubService.GetAllCommits(id);
             return Ok(changelist);
         }
+
+        [HttpGet("detectors/{id}/commit/{sha}")]
+        public async Task<IActionResult> GetDetectorChangelist(string id, string sha)
+        {
+            var changelist = await _githubService.GetCommitContent(id, sha);
+            return Ok(changelist);
+        }
     }
 }

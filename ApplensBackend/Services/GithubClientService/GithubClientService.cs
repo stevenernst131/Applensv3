@@ -184,7 +184,28 @@ namespace AppLensV3
             return string.Empty;
         }
         
-        public async Task<Dictionary<string, Tuple<string, string, string, string>>> GetAllCommits(string detectorId)
+
+        public async Task<string> GetCommitContent(string detectorId, string sha)
+        {
+            try
+            {
+                string filePath = $"{detectorId.ToLower()}/{detectorId.ToLower()}.csx";
+                CommitRequest request = new CommitRequest();
+                request.Path = filePath;
+                request.Sha = _branch;
+
+                // var commitContent = await _octokitClient.Repository.Commit.GetSha1(_userName, _repoName, sha);
+
+                var commitContent = await _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, sha);
+                return commitContent?[0].Content;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Dictionary<string, DetectorCommit>> GetAllCommits(string detectorId)
         {
             try
             {
@@ -194,25 +215,47 @@ namespace AppLensV3
                 request.Sha = _branch;
 
                 var allCommits = await _octokitClient.Repository.Commit.GetAll(_userName, _repoName, request);
-                Dictionary<string, Tuple<string, string, string, string>> detectorCommits = new Dictionary<string, Tuple<string, string, string, string>>();
+                Dictionary<string, DetectorCommit> detectorCommits = new Dictionary<string, DetectorCommit>();
 
-                var commits = allCommits.Select(p => new Tuple<string, string, string>(p.Sha, p.Commit.Committer.Date.ToString(), p.Commit.Message));
+   
+                var commits = allCommits.Select(p => new Tuple<string, string, string>(p.Sha, p.Commit.Committer.Date.ToString(), p.Commit.Message)).OrderByDescending(o => o.Item2);
 
                 String previousSha= String.Empty;
                 String currentSha = String.Empty;
-                foreach (var commit in commits)
+               
+                for (int i = commits.Count()-1; i >= 0; i--)
                 {
+                    var commit = commits.ElementAt(i);
                     previousSha = currentSha;
                     currentSha = commit.Item1;
+
                     if (commit.Item3.Contains("CommittedBy"))
                     {
                         string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
-
+                        string date = commit.Item2.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
+                        // DetectorCommit detectorCommit = new DetectorCommit(currentSha, author, commit.Item2, previousSha);
                         //var currentFileObject = await _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, currentSha);
                         //currentFileContent = currentFileObject?[0].Content;
-                        detectorCommits.Add(currentSha, new Tuple<string, string, string, string>(commit.Item2, author, currentSha, previousSha));
+                        // detectorCommits.Add(currentSha, new Tuple<string, string, string, string>(commit.Item2, author, currentSha, previousSha));
+                        detectorCommits.Add(currentSha, new DetectorCommit(currentSha, author, date, previousSha));
                     }
                 }
+                //foreach (var commit in commits)
+                //{
+                //    previousSha = currentSha;
+                //    currentSha = commit.Item1;
+
+                //    if (commit.Item3.Contains("CommittedBy"))
+                //    {
+                //        string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
+
+                //       // DetectorCommit detectorCommit = new DetectorCommit(currentSha, author, commit.Item2, previousSha);
+                //        //var currentFileObject = await _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, currentSha);
+                //        //currentFileContent = currentFileObject?[0].Content;
+                //        // detectorCommits.Add(currentSha, new Tuple<string, string, string, string>(commit.Item2, author, currentSha, previousSha));
+                //        detectorCommits.Add(currentSha, new DetectorCommit(currentSha, author, commit.Item2, previousSha));
+                //    }
+                //}
 
                 return detectorCommits;
             }
