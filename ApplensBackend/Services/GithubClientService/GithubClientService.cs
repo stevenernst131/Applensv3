@@ -205,7 +205,7 @@ namespace AppLensV3
             }
         }
 
-        public async Task<Dictionary<string, DetectorCommit>> GetAllCommits(string detectorId)
+        public async Task<List<DetectorCommit>> GetAllCommits(string detectorId)
         {
             try
             {
@@ -215,10 +215,9 @@ namespace AppLensV3
                 request.Sha = _branch;
 
                 var allCommits = await _octokitClient.Repository.Commit.GetAll(_userName, _repoName, request);
-                Dictionary<string, DetectorCommit> detectorCommits = new Dictionary<string, DetectorCommit>();
+                List<DetectorCommit> detectorCommits = new List<DetectorCommit>();
 
-   
-                var commits = allCommits.Select(p => new Tuple<string, string, string>(p.Sha, p.Commit.Committer.Date.ToString(), p.Commit.Message)).OrderByDescending(o => o.Item2);
+                var commits = allCommits.Select(p => new Tuple<string, DateTimeOffset, string>(p.Sha, p.Commit.Committer.Date, p.Commit.Message)).OrderByDescending(o => o.Item2);
 
                 String previousSha= String.Empty;
                 String currentSha = String.Empty;
@@ -232,12 +231,13 @@ namespace AppLensV3
                     if (commit.Item3.Contains("CommittedBy"))
                     {
                         string author = commit.Item3.Split(new string[] { "CommittedBy :" }, StringSplitOptions.RemoveEmptyEntries).Last();
-                        string date = commit.Item2.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
+                        author = author.Replace("@microsoft.com", "", StringComparison.OrdinalIgnoreCase);
+                        string date = commit.Item2.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).First();
                         // DetectorCommit detectorCommit = new DetectorCommit(currentSha, author, commit.Item2, previousSha);
                         //var currentFileObject = await _octokitClient.Repository.Content.GetAllContentsByRef(_userName, _repoName, filePath, currentSha);
                         //currentFileContent = currentFileObject?[0].Content;
                         // detectorCommits.Add(currentSha, new Tuple<string, string, string, string>(commit.Item2, author, currentSha, previousSha));
-                        detectorCommits.Add(currentSha, new DetectorCommit(currentSha, author, date, previousSha));
+                        detectorCommits.Add(new DetectorCommit(currentSha, author, date, previousSha));
                     }
                 }
                 //foreach (var commit in commits)

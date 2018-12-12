@@ -1,37 +1,31 @@
-<div class="container-fluid col-md-2">
-        <div class="row-fluid">
-                <div class="sidebar-nav">
-<ul class="heroes">
-        <li *ngFor="let commit of commitsList.slice().reverse()"
-          [class.selected]="commit === selectedCommit"
-          (click)="setCodeDiffView(commit)"> 
-          <!-- <a>{{commit.dateTime}}  {{commit.author}} </a> </li> -->
-          <span class="badge"> {{commit.author}} </span> {{commit.dateTime}} 
-        </li>
-      </ul> 
-          </div>
+<div class="container-fluid">
+<div class=" col-md-2">
+    <div class="row-fluid">
+        <div class="sidebar-nav">
+            <ul class="commits-table">
+                <li *ngFor="let commit of commitsList.slice().reverse()" [class.selected]="commit === selectedCommit"
+                    (click)="setCodeDiffView(commit)">
+                    <!-- <a>{{commit.dateTime}}  {{commit.author}} </a> </li> -->
+                    <span class="badge"> {{commit.author}} </span> {{commit.dateTime}}
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 
-
-<!-- <div class="container-fluid col-md-2">
-    <div class="row-fluid">
-            <div class="sidebar-nav">
-                <ul id="myTab" class="nav nav-bar">
-                 
-                    <li *ngFor="let commit of commitsList.slice().reverse()" [class.selected] = "commit === selectedCommit" (click)="setCodeDiffView(commit.sha, commit.previousSha)"> <a>{{commit.dateTime}}  {{commit.author}} </a> </li>
-                </ul>
-            </div>
-    </div>
-</div> -->
+<div *ngIf="noCommits">
+    <h1></h1>
+    <p>No commits history so far..</p>
+</div>
 
 <div>
-        <loader-view *ngIf="loadingDetector" message="Loading Changes...">
-        </loader-view>
-      </div>
+    <loader-view *ngIf="!noCommits && loadingChange < 1" message="Loading Changes...">
+    </loader-view>
+</div>
 
 <!-- <haha *ngIf="!loadingDetector" [originalModel] = "originalModel" [modifiedModel]="modifiedModel"></haha> -->
 
-<div *ngIf="!loadingDetector" class="col-md-10">
+<div *ngIf="!noCommits && loadingChange > 1" class="col-md-10" style="padding-left: 0">
     <ngx-monaco-diff-editor class="diff-view" [options]="options" [(originalModel)]="originalModel" [(modifiedModel)]="modifiedModel"></ngx-monaco-diff-editor>
+</div>
 </div>

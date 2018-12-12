@@ -13,43 +13,60 @@ import {DetectorCommit} from '../../../../../app/shared/models/package';
   styleUrls: ['./tab-detector-changelist.component.css']
 })
 
-
 export class TabDetectorChangelistComponent implements OnInit {
-    selectedCommit: DetectorCommit;
-code: string;
-loadingDetector: boolean = true;
+  selectedCommit: DetectorCommit;
+  code: string;
+  loadingChange: number = 0;
+  noCommits: boolean = false;
   private detectorId;
   commitsList: DetectorCommit[] = [];
   currentSha: string;
   previousSha: string;
-  previousCode: string = "haha";
+  previousCode: string;
   currentCode: string;
 
   constructor(private _route: ActivatedRoute, private githubService: GithubApiService) { }
 
   setCodeDiffView(commit: DetectorCommit)
   {
-      this.loadingDetector = true;
+      this.loadingChange = 0;
       this.selectedCommit = commit;
     // this.previousCode = this.githubService.getCommitContent(this.detectorId, previousSha);
-     this.githubService.getCommitContent(this.detectorId, commit.previousSha).subscribe(code => {
-         
-        this.previousCode = code;
-       // this.originalModel.code = code;
-
+    if (commit.previousSha === "")
+    {
+        this.loadingChange++;
         this.originalModel = 
         {
-            code: `${this.previousCode}`,
+            code: "",
             language: 'csharp'
         };
-        console.log(this.originalModel);
-     //   console.log(this.previousCode);
-     });
+        console.log("previous Empty ");
+    }
+    else
+    {
+        this.githubService.getCommitContent(this.detectorId, commit.previousSha).subscribe(code => {
+            this.loadingChange++;
+            this.previousSha = commit.previousSha;
+            this.previousCode = code;
+           // this.originalModel.code = code;
+    
+            this.originalModel = 
+            {
+                code: code,
+                language: 'csharp'
+            };
+            console.log("previous: " + this.previousSha);
+         //   console.log(this.previousCode);
+         });
+    }
+
 
    //  this.currentCode = this.githubService.getCommitContent(this.detectorId, sha);
 
      this.githubService.getCommitContent(this.detectorId, commit.sha).subscribe(code => {
-        this.loadingDetector = false;
+
+        this.loadingChange++;
+        this.currentSha = commit.sha;
         this.currentCode = code;
         // this.modifiedModel.code = code;
 
@@ -59,12 +76,11 @@ loadingDetector: boolean = true;
             language: 'csharp'
           };
 
-   //     console.log(this.modifiedModel);
+          console.log("current: " + this.currentSha);
      });
   }
 
   ngOnInit() {
-      this.code1 = "haha";
     this.detectorId = this._route.parent.snapshot.params['detector'];
  //   console.log(`id: ${this.detectorId}`);
     let changelist = this.githubService.getDetectorChangelist(this.detectorId);
@@ -73,25 +89,27 @@ loadingDetector: boolean = true;
     //   console.log(commits);
     //   console.log(typeof commits);
     
-      if (commits)
+      if (commits && commits.length > 0)
       {
 
-        
-          Object.keys(commits).forEach(key => {
-              let commit = commits[key];
-           //  console.log(commit);
-              this.currentSha = commit.sha;
-              this.previousSha = commit.previousSha;
+        this.commitsList = commits;
+        let defaultCommit = commits[commits.length-1];
 
-            //   let onClick = () => {
-            //     this.setCodeDiffView(commit.sha, commit.previousSha);
-            //   };
+        //   Object.keys(commits).forEach(key => {
+        //       let commit = commits[key];
+        //    //  console.log(commit);
+        //       this.currentSha = commit.sha;
+        //       this.previousSha = commit.previousSha;
 
-              this.commitsList.push(commit);
-            });
+        //     //   let onClick = () => {
+        //     //     this.setCodeDiffView(commit.sha, commit.previousSha);
+        //     //   };
+
+        //       this.commitsList.push(commit);
+        //     });
 
             
-            let defaultCommit = commits[Object.keys(commits)[Object.keys(commits).length-1]];
+         //   let defaultCommit = commits[Object.keys(commits)[Object.keys(commits).length-1]];
 
         
         
@@ -108,6 +126,9 @@ loadingDetector: boolean = true;
             //  });
 
             this.setCodeDiffView(defaultCommit);
+      }
+      else{
+          this.noCommits = true;
       }
       // if (commits) {
       //   commits.forEach(element => {
@@ -140,7 +161,6 @@ loadingDetector: boolean = true;
     folding: true
   };
 
-  code1: string = "";
   originalModel: DiffEditorModel = {
     code: `${this.previousCode}`,
     language: 'text/plain'

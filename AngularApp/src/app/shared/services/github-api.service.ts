@@ -26,7 +26,7 @@ export class GithubApiService {
     return this._diagnosticApiService.get<string>(`api/github/detectors/${detectorId}/statistics/${invokerId}`, true);
   }
 
-  public getDetectorChangelist(detectorId: string): Observable<Dictionary<DetectorCommit>> {
+  public getDetectorChangelist(detectorId: string): Observable<DetectorCommit[]> {
     return this._diagnosticApiService.getDetectorChangelist(detectorId);
   }
 
