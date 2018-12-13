@@ -3,7 +3,7 @@ import { DiffEditorModel } from 'ngx-monaco-editor';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GithubApiService } from '../../../../shared/services/github-api.service';
 import { Dictionary } from '../../../../shared/models/extensions';
-import { DetectorCommit } from '../../../../../app/shared/models/detectorCommit';
+import { DetectorCommit } from '../../../../../app/shared/models/detector-commit';
 import { Observable } from 'rxjs';
 
 @Component({

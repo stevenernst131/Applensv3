@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DiagnosticApiService } from './diagnostic-api.service';
 import {Package} from '../models/package';
 import { Observable } from 'rxjs';
-import { DetectorCommit } from '../../../app/shared/models/detectorCommit';
+import { DetectorCommit } from '../../../app/shared/models/detector-commit';
 
 @Injectable()
 export class GithubApiService {
