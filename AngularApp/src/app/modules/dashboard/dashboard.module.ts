@@ -81,33 +81,27 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           {
             path: 'edit',
             component: TabDevelopComponent
-          }
-          ,
+          },
           {
             path: 'changelist',
             component: TabDetectorChangelistComponent
-          }
-          ,
+          },
           {
             path: 'datasource',
             component: TabDataSourcesComponent
-          }
-          ,
+          },
           {
             path: 'monitoring',
             component: TabMonitoringComponent
-          }          
-          ,
+          },
           {
             path: 'analytics',
             component: TabAnalyticsDashboardComponent
-          }
-          ,
+          },
           {
             path: 'monitoring/edit',
             component: TabMonitoringDevelopComponent
-          }
-          ,
+          },
           {
             path: 'analytics/edit',
             component: TabAnalyticsDevelopComponent
@@ -116,7 +110,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       }
     ]
   },
-
 ]);
 
 @NgModule({

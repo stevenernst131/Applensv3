@@ -200,7 +200,7 @@ namespace AppLensV3
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -241,7 +241,7 @@ namespace AppLensV3
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
