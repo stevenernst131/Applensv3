@@ -75,7 +75,6 @@ export class SideNavComponent implements OnInit {
   }
 
   initializeDetectors() {
-
     this._diagnosticApiService.getDetectors().subscribe(detectorList => {
       if (detectorList) {
         detectorList.forEach(element => {

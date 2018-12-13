@@ -35,6 +35,7 @@ import { TabMonitoringDevelopComponent } from './tabs/tab-monitoring-develop/tab
 import { TabAnalyticsDevelopComponent } from './tabs/tab-analytics-develop/tab-analytics-develop.component';
 import { TabAnalyticsDashboardComponent } from './tabs/tab-analytics-dashboard/tab-analytics-dashboard.component';
 import { DetectorControlService } from '../../diagnostic-data/services/detector-control.service';
+import { TabDetectorChangelistComponent } from './tabs/tab-detector-changelist/tab-detector-changelist.component';
 
 @Injectable()
 export class InitResolver implements Resolve<Observable<boolean>>{
@@ -80,28 +81,27 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
           {
             path: 'edit',
             component: TabDevelopComponent
-          }
-          ,
+          },
+          {
+            path: 'changelist',
+            component: TabDetectorChangelistComponent
+          },
           {
             path: 'datasource',
             component: TabDataSourcesComponent
-          }
-          ,
+          },
           {
             path: 'monitoring',
             component: TabMonitoringComponent
-          }          
-          ,
+          },
           {
             path: 'analytics',
             component: TabAnalyticsDashboardComponent
-          }
-          ,
+          },
           {
             path: 'monitoring/edit',
             component: TabMonitoringDevelopComponent
-          }
-          ,
+          },
           {
             path: 'analytics/edit',
             component: TabAnalyticsDevelopComponent
@@ -110,7 +110,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
       }
     ]
   },
-
 ]);
 
 @NgModule({
@@ -144,6 +143,6 @@ export const DashboardModuleRoutes: ModuleWithProviders = RouterModule.forChild(
     { provide: DiagnosticService, useExisting: ApplensDiagnosticService },
     { provide: CommsService, useExisting: ApplensCommsService }
   ],
-  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent]
+  declarations: [DashboardComponent, SideNavComponent, ResourceMenuItemComponent, ResourceHomeComponent, OnboardingFlowComponent, SearchMenuPipe, TabDataComponent, TabDevelopComponent, TabCommonComponent, TabDataSourcesComponent, TabMonitoringComponent, TabMonitoringDevelopComponent, TabAnalyticsDevelopComponent, TabAnalyticsDashboardComponent, TabDetectorChangelistComponent]
 })
 export class DashboardModule { }
